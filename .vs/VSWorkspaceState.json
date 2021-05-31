@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\PairMatching",
+    "\\PairMatching\\DalJson",
+    "\\PairMatching\\DataLayer",
+    "\\PairMatching\\DataLayer\\DO",
+    "\\PairMatching\\LogicLayer",
+    "\\PairMatching\\Tests",
+    "\\PairMatching\\Tests\\bin",
+    "\\PairMatching\\Tests\\bin\\Debug"
+  ],
+  "SelectedNode": "\\PairMatching\\DalJson\\DalJson.cs",
+  "PreviewInSolutionExplorer": false
+}
