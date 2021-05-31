@@ -1,9 +1,0 @@
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DataLayer\bin\Debug\netstandard2.0\DataLayer.deps.json
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DataLayer\bin\Debug\netstandard2.0\DataLayer.dll
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DataLayer\obj\Debug\netstandard2.0\DataLayer.AssemblyInfoInputs.cache
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DataLayer\obj\Debug\netstandard2.0\DataLayer.AssemblyInfo.cs
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DataLayer\bin\Debug\netstandard2.0\DataLayer.pdb
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DataLayer\obj\Debug\netstandard2.0\DataLayer.csproj.CoreCompileInputs.cache
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DataLayer\obj\Debug\netstandard2.0\DataLayer.dll
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DataLayer\obj\Debug\netstandard2.0\DataLayer.pdb
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DataLayer\obj\Debug\netstandard2.0\DataLayer.csprojAssemblyReference.cache

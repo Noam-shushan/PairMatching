@@ -1,0 +1,10 @@
+C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Tests.exe.config
+C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Tests.exe
+C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Tests.pdb
+C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\obj\Debug\Tests.csprojAssemblyReference.cache
+C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\obj\Debug\Tests.csproj.CoreCompileInputs.cache
+C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\obj\Debug\Tests.csproj.CopyComplete
+C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\obj\Debug\Tests.exe
+C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\obj\Debug\Tests.pdb

@@ -2,13 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DalJson
 {
     public class JsonTools
     {
         static string dir = @"json\";
+
         static JsonTools()
         {
             if (!Directory.Exists(dir))
@@ -45,5 +48,15 @@ namespace DalJson
             var jsonString = File.ReadAllText(dir + filePath);
             return JsonConvert.DeserializeObject<T>(jsonString);
         }
+
+        public static void SaveObjToJsonFile<T>(T obj, string filePath)
+        {
+            using (StreamWriter file = File.CreateText(dir + filePath))
+            {
+                JsonSerializer serializer = new JsonSerializer() { Formatting = Formatting.Indented };
+                serializer.Serialize(file, obj);
+            }
+        }
     }
 }
+

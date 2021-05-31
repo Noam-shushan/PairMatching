@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DO
 {
@@ -14,5 +16,4 @@ namespace DO
     public enum EnglishLevels { GOOD, TALK_LEVEL, NOT_GOOD }
     public enum SkillLevels { ADVANCED, MODERATE, BEGGINER, DONT_MATTER }
     public enum LearningStyles { DEEP_AND_SLOW, PROGRESSED_FLOWING, TEXTUALL_CENTERED, FREE }
-
 }
