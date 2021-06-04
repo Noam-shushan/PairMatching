@@ -39,5 +39,7 @@ namespace LogicLayer
         /// </summary>
         /// <param name="id">the student id</param>
         void RemoveStudent(int id);
+
+        void UpdateData();
     }
 }

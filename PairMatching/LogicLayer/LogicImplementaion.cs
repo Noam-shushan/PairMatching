@@ -7,10 +7,24 @@ using DataLayer;
 
 namespace LogicLayer
 {
-    public class LogicImplementaion : IBL
+    class LogicImplementaion : IBL
     {
         IDataLayer dal = DalFactory.GetDal("json");
         Matching match = new Matching();
+
+        public static IBL Instance { get; } = new LogicImplementaion();
+
+        public IEnumerable<BO.Student> StudentList { get; set; }  
+
+        LogicImplementaion()
+        {
+            StudentList = GetAllStudents();
+        }
+
+        public void UpdateData()
+        {
+            StudentList = GetAllStudents();
+        }
 
         public void AddStudent(BO.Student student)
         {
@@ -117,5 +131,6 @@ namespace LogicLayer
         {
             throw new NotImplementedException();
         }
+
     }
 }
