@@ -16,4 +16,5 @@ namespace DO
     public enum EnglishLevels { GOOD, TALK_LEVEL, NOT_GOOD }
     public enum SkillLevels { ADVANCED, MODERATE, BEGGINER, DONT_MATTER }
     public enum LearningStyles { DEEP_AND_SLOW, PROGRESSED_FLOWING, TEXTUALL_CENTERED, FREE }
+    public enum MatchingDegrees { FIRST, SECONDE}
 }

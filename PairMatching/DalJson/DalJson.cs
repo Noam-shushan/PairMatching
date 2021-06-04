@@ -10,6 +10,12 @@ namespace DalJson
 {
     public class DalJson : IDataLayer
     {
+        #region Singleton
+        public static IDataLayer Instance { get; } = new DalJson();
+
+        DalJson() { } 
+        #endregion
+
         #region paths
         const string studentsPath = @"studentListJson.json";
         const string pairsPath = @"pairListJson.json";

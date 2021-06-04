@@ -36,18 +36,54 @@ namespace Tests
     {
         static void Main(string[] args)
         {
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
+            /*            if (!Directory.Exists(dir))
+                            Directory.CreateDirectory(dir);
+
+                        string countersPath = @"counters.josn";
+                        var count = LoadObjFromJsonFile<Counters>(countersPath);
+                        //Counters.Instance.IncStudentCounter();
+                        count.IncStudentCounter();
+                        var c = count.StudentCounter; 
+                        Console.WriteLine(c);
+                        SaveObjToJsonFile(count, countersPath);
+                        Console.ReadKey();*/
             
-            string countersPath = @"counters.josn";
-            var count = LoadObjFromJsonFile<Counters>(countersPath);
-            //Counters.Instance.IncStudentCounter();
-            count.IncStudentCounter();
-            var c = count.StudentCounter; 
-            Console.WriteLine(c);
-            SaveObjToJsonFile(count, countersPath);
+            
+            var time = (from t in TimeZoneInfo.GetSystemTimeZones()
+                where t.Id == "Germany Standard Time"
+                        select t).FirstOrDefault();
+            //Console.WriteLine(TimeZoneInfo.FindSystemTimeZoneById("Germany Standard Time"));
+            
+            Console.WriteLine(TimeSpan.Parse("-05:00") + DateTime.UtcNow.TimeOfDay);
+            Console.WriteLine(getTimesInDay(DateTime.UtcNow.TimeOfDay + TimeSpan.Parse("-05:00")));
             Console.ReadKey();
         }
+
+        private static string getTimesInDay(TimeSpan studentOffset)
+        {
+            if (studentOffset >= TimeSpan.Parse("7:00") && studentOffset <= TimeSpan.Parse("12:30"))
+                return "MORNING";
+
+            if (studentOffset >= TimeSpan.Parse("12:30") && studentOffset <= TimeSpan.Parse("18:30"))
+                return "NOON";
+
+            if (studentOffset >= TimeSpan.Parse("18:30") && studentOffset <= TimeSpan.Parse("22:00"))
+                return "EVENING";
+
+            if (studentOffset >= TimeSpan.Parse("22:00") && studentOffset <= TimeSpan.Parse("1:00"))
+                return "NIGHT";
+
+
+            return "bad";
+        }
+
+
+
+
+
+
+
+
 
         static string dir = @"json\";
 

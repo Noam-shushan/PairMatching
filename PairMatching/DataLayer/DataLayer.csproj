@@ -46,6 +46,7 @@
     <Compile Include="DO\Pair.cs" />
     <Compile Include="DO\Student.cs" />
     <Compile Include="DS\DataSource.cs" />
+    <Compile Include="DS\GoogleSheetReader.cs" />
     <Compile Include="IDataLayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

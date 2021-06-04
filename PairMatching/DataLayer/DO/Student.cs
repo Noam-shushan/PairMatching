@@ -34,6 +34,11 @@ namespace DO
         public string Email { get; set; }
 
         /// <summary>
+        /// the phone number of the student
+        /// </summary>
+        public int PhoneNumber { get; set; }
+
+        /// <summary>
         /// the gender of the student
         /// </summary>
         public Genders Gender { get; set; }
@@ -42,6 +47,11 @@ namespace DO
         /// Desired learning time and day
         /// </summary>
         public LearningTime DesiredLearningTime { get; set; }
+
+        /// <summary>
+        /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}
+        /// </summary>
+        public PrefferdTracks PrefferdTracks { get; set; }
 
         /// <summary>
         /// the prefferd gender to lern with
@@ -54,9 +64,19 @@ namespace DO
         public EnglishLevels DesiredEnglishLevel { get; set; }
 
         /// <summary>
+        ///  level of english
+        /// </summary>
+        public EnglishLevels EnglishLevel { get; set; }
+
+        /// <summary>
         ///  Desired level of skiil from the other pair
         /// </summary>
         public SkillLevels DesiredSkillLevel { get; set; }
+
+        /// <summary>
+        /// level of skiil 
+        /// </summary>
+        public SkillLevels SkillLevel { get; set; }
 
         /// <summary>
         /// learning style 
@@ -65,7 +85,7 @@ namespace DO
 
     }
 
-    public class LearningTime
+    public struct LearningTime
     {
         public TimesInDay TimeInDay { get; set; }
         public Days Day { get; set; }

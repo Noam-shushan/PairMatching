@@ -41,8 +41,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="BO\Student.cs" />
+    <Compile Include="CopyTools.cs" />
+    <Compile Include="IBL.cs" />
+    <Compile Include="LogicImplementaion.cs" />
+    <Compile Include="Matching.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DalFactory\DalFactory.csproj">
+      <Project>{b9dc3e74-f80b-4c6c-b3fe-dd6b1be084db}</Project>
+      <Name>DalFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataLayer\DataLayer.csproj">
+      <Project>{cc9290ca-4323-43d9-b840-785b6d113957}</Project>
+      <Name>DataLayer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
