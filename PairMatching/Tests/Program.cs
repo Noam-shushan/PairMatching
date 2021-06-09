@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DataLayer;
+using DS;
 
 namespace Tests
 {
@@ -56,6 +58,13 @@ namespace Tests
             
             Console.WriteLine(TimeSpan.Parse("-05:00") + DateTime.UtcNow.TimeOfDay);
             Console.WriteLine(getTimesInDay(DateTime.UtcNow.TimeOfDay + TimeSpan.Parse("-05:00")));
+
+            var l = DS.DataSource.StudentsList;
+            foreach(var s in l)
+            {
+                Console.WriteLine(s.Name);
+            }
+
             Console.ReadKey();
         }
 

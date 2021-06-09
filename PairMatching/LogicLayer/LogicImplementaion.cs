@@ -55,6 +55,12 @@ namespace LogicLayer
                     };
                     dal.AddPair(pair);
                 }
+
+                foreach(var l in student.DesiredLearningTime)
+                {
+                    dal.AddLearningTime(l);
+                }
+
                 var studDO = student.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
                 dal.AddStudent(studDO);
             }
@@ -116,10 +122,7 @@ namespace LogicLayer
                 var studDO = dal.GetAllStudentsBy(s => s.Id == id).FirstOrDefault();
                 var studBO = studDO.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
                 
-                studBO.FirstMatchingStudents = getFirstMatchingStudents(studBO);
-                studBO.SecondeMatchingStudents = getSecondeMatchingStudents(studBO);
-                
-                return studBO;
+                return buildStudent(studBO);
             }
             catch (Exception ex)
             {
@@ -130,6 +133,14 @@ namespace LogicLayer
         public void RemoveStudent(int id)
         {
             throw new NotImplementedException();
+        }
+
+        BO.Student buildStudent(BO.Student student)
+        {
+            student.DesiredLearningTime = dal.GetAllLearningTimesBy(l => l.Id == student.Id);
+            student.FirstMatchingStudents = getFirstMatchingStudents(student);
+            student.SecondeMatchingStudents = getSecondeMatchingStudents(student);
+            return student;
         }
 
     }

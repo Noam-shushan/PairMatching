@@ -1,7 +1,6 @@
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\bin\Gui.exe.config
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\bin\Gui.exe
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\bin\Gui.pdb
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Gui\obj\Debug\Gui.csprojAssemblyReference.cache
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Gui\obj\Debug\MainWindow.g.cs
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Gui\obj\Debug\App.g.cs
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Gui\obj\Debug\Gui_MarkupCompile.cache
@@ -13,3 +12,4 @@ C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Gui\obj\Debug\Gui.csproj
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Gui\obj\Debug\Gui.csproj.CoreCompileInputs.cache
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Gui\obj\Debug\Gui.exe
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Gui\obj\Debug\Gui.pdb
+C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Gui\obj\Debug\Gui.csproj.AssemblyReference.cache

@@ -1,16 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\PairMatching",
-    "\\PairMatching\\DataLayer",
-    "\\PairMatching\\DataLayer\\DO",
-    "\\PairMatching\\DataLayer\\DS",
-    "\\PairMatching\\LogicLayer",
-    "\\PairMatching\\Tests",
-    "\\PairMatching\\Tests\\bin",
-    "\\PairMatching\\Tests\\bin\\Debug",
-    "\\PairMatching\\Tests\\bin\\Debug\\json"
+    ""
   ],
-  "SelectedNode": "\\PairMatching\\DataLayer\\Counters.cs",
+  "SelectedNode": "\\PairMatching.sln",
   "PreviewInSolutionExplorer": false
 }

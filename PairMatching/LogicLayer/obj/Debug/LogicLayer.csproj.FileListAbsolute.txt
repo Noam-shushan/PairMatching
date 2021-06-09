@@ -1,7 +1,8 @@
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\bin\LogicLayer.dll
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\bin\LogicLayer.pdb
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\LogicLayer\obj\Debug\LogicLayer.csprojAssemblyReference.cache
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\LogicLayer\obj\Debug\LogicLayer.csproj.CoreCompileInputs.cache
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\LogicLayer\obj\Debug\LogicLayer.dll
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\LogicLayer\obj\Debug\LogicLayer.pdb
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\LogicLayer\obj\Debug\LogicLayer.csproj.CopyComplete
+C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\LogicLayer\obj\Debug\LogicLayer.csproj.AssemblyReference.cache
+C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\bin\LogicLayer.dll.config

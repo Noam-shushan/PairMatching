@@ -42,6 +42,16 @@ namespace DataLayer
         void RemoveStudent(int id);
         #endregion
 
+        #region LearningTime
+        IEnumerable<DO.LearningTime> GetAllLearningTimes();
+
+        IEnumerable<DO.LearningTime> GetAllLearningTimesBy(Predicate<DO.LearningTime> predicate);
+
+        DO.LearningTime GetLearningTime(int id);
+
+        void AddLearningTime(DO.LearningTime learningTime); 
+        #endregion
+
         #region Pair
         /// <summary>
         /// Get all the pairs from the data source

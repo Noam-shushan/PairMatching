@@ -47,7 +47,7 @@ namespace BO
         /// <summary>
         /// Desired learning time and day
         /// </summary>
-        public LearningTime DesiredLearningTime { get; set; }
+        public IEnumerable<LearningTime> DesiredLearningTime { get; set; }
 
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}

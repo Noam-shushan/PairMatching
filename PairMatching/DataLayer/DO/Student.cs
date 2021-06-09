@@ -36,17 +36,12 @@ namespace DO
         /// <summary>
         /// the phone number of the student
         /// </summary>
-        public int PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
 
         /// <summary>
         /// the gender of the student
         /// </summary>
         public Genders Gender { get; set; }
-
-        /// <summary>
-        /// Desired learning time and day
-        /// </summary>
-        public LearningTime DesiredLearningTime { get; set; }
 
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}
@@ -83,11 +78,5 @@ namespace DO
         /// </summary>
         public LearningStyles LearningStyle { get; set; }
 
-    }
-
-    public struct LearningTime
-    {
-        public TimesInDay TimeInDay { get; set; }
-        public Days Day { get; set; }
     }
 }

@@ -19,7 +19,8 @@ namespace DalJson
         #region paths
         const string studentsPath = @"studentListJson.json";
         const string pairsPath = @"pairListJson.json";
-        const string countersPath = @"counters.json"; 
+        const string countersPath = @"counters.json";
+        const string learningTimePath = @"learningTime.json";
         #endregion
 
         #region Student
@@ -144,6 +145,35 @@ namespace DalJson
             return from p in JsonTools.LoadListFromJsonFile<Pair>(pairsPath)
                    where !p.IsDeleted && predicate(p)
                    select p;
+        }
+        #endregion
+
+        #region LearningTime
+        public IEnumerable<LearningTime> GetAllLearningTimes()
+        {
+            return from l in JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath)
+                   select l;
+        }
+
+        public IEnumerable<LearningTime> GetAllLearningTimesBy(Predicate<LearningTime> predicate)
+        {
+            return from l in JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath)
+                   where predicate(l)
+                   select l;
+        }
+
+        public LearningTime GetLearningTime(int id)
+        {
+            return (from l in JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath)
+                    where l.Id == id
+                    select l).FirstOrDefault();
+        }
+
+        public void AddLearningTime(LearningTime learningTime)
+        {
+            var learningTimesList = JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath);
+            learningTimesList.Add(learningTime);
+            JsonTools.SaveListToJsonFile(learningTimesList, learningTimePath);
         } 
         #endregion
     }
