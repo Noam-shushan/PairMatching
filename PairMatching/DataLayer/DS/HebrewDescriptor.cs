@@ -9,6 +9,12 @@ namespace DS
 {
     class HebrewDescriptor : IStudentDescriptor
     {
+        public static readonly string Range = "A2:P";
+
+        public static readonly string SpreadsheetIdHebrew = "1iNKE8QeDxPqCkOvnmi4Qa7tiDCDjOQ6uDZ6Z_eL4b8Q";
+
+        public static readonly string SheetInHebrew = "shalhevet in hebrew";
+
         public EnglishLevels GetEnglishLevel(object row)
         {
             switch (row.ToString())

@@ -8,6 +8,7 @@ namespace DO
 {
     public class Student
     {
+
         /// <summary>
         /// the id number of the student
         /// </summary>
@@ -78,5 +79,11 @@ namespace DO
         /// </summary>
         public LearningStyles LearningStyle { get; set; }
 
+        public override string ToString()
+        {
+            return $"Name: {Name}\n" +
+                $"Country: {Country}\n" +
+                $"Gender: {Gender}";
+        }
     }
 }

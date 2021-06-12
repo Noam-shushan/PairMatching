@@ -21,10 +21,10 @@ namespace DS
         static void InitializationHebrew()
         {
             GoogleSheetReader sheetReader = new GoogleSheetReader();
-            var googleSheetValue = sheetReader.ReadEntries(GoogleSheetReader.SheetInHebrew,
-                GoogleSheetReader.SpreadsheetIdHebrew);
-            IStudentDescriptor sd = new HebrewDescriptor();
             
+            IStudentDescriptor sd = new HebrewDescriptor();
+            var googleSheetValue = sheetReader.ReadEntries(HebrewDescriptor.SpreadsheetIdHebrew, 
+                HebrewDescriptor.Range);
 
             if (googleSheetValue == null)
                 throw new Exception("canot parse the sheet file");
@@ -33,16 +33,16 @@ namespace DS
             {
                 StudentsList.Add(new Student
                 {
-                    Name = row[0].ToString(),
-                    PrefferdTracks = sd.GetPrefferdTracks(row[6]),
-                    PrefferdGender = sd.GetPrefferdGender(row[7]),
-                    EnglishLevel = sd.GetEnglishLevel(row[8]),
-                    DesiredSkillLevel = sd.GetSkillLevel(row[9]),
-                    LearningStyle = sd.GetLearningStyle(row[10]),
-                    Gender = sd.GetGender(row[11]),
-                    Country = row[12].ToString(),
-                    PhoneNumber =  row[13].ToString(),
-                    Email = row[14].ToString()                    
+                    Name = row[1].ToString(),
+                    PrefferdTracks = sd.GetPrefferdTracks(row[7]),
+                    PrefferdGender = sd.GetPrefferdGender(row[8]),
+                    EnglishLevel = sd.GetEnglishLevel(row[9]),
+                    DesiredSkillLevel = sd.GetSkillLevel(row[10]),
+                    LearningStyle = sd.GetLearningStyle(row[11]),
+                    Gender = sd.GetGender(row[12]),
+                    Country = row[13].ToString(),
+                    PhoneNumber =  row[14].ToString(),
+                    Email = row[15].ToString()                    
                 }) ;
             }
         }
