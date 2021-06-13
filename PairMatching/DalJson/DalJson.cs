@@ -21,6 +21,7 @@ namespace DalJson
         const string pairsPath = @"pairListJson.json";
         const string countersPath = @"counters.json";
         const string learningTimePath = @"learningTime.json";
+        const string lastDateOfSheetsPath = @"lastDateOfSheets.json";
         #endregion
 
         #region Student
@@ -174,7 +175,17 @@ namespace DalJson
             var learningTimesList = JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath);
             learningTimesList.Add(learningTime);
             JsonTools.SaveListToJsonFile(learningTimesList, learningTimePath);
-        } 
+        }
         #endregion
+
+        public void UpdateLastDateOfSheets(LastDateOfSheets lastDateOfSheets)
+        {
+            JsonTools.SaveObjToJsonFile(lastDateOfSheets, lastDateOfSheetsPath);
+        }
+
+        public LastDateOfSheets GetLastDateOfSheets()
+        {
+            return JsonTools.LoadObjFromJsonFile<LastDateOfSheets>(lastDateOfSheetsPath);
+        }
     }
 }

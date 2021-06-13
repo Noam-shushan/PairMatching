@@ -37,7 +37,7 @@ namespace BO
         /// <summary>
         /// the phone number of the student
         /// </summary>
-        public int PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
 
         /// <summary>
         /// the gender of the student

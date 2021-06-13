@@ -31,7 +31,7 @@ namespace DalJson
         {
             if (!File.Exists(dir + filePath))
             {
-                throw new Exception("the file" + filePath + "\nis not exist");
+                File.Create(dir + filePath);
             }
 
             var jsonString = File.ReadAllText(dir + filePath);
@@ -42,7 +42,7 @@ namespace DalJson
         {
             if (!File.Exists(dir + filePath))
             {
-                throw new Exception("the file" + filePath + "\nis not exist");
+                File.Create(dir + filePath);
             }
 
             var jsonString = File.ReadAllText(dir + filePath);

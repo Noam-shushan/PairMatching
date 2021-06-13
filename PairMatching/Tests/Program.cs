@@ -59,12 +59,6 @@ namespace Tests
             Console.WriteLine(TimeSpan.Parse("-05:00") + DateTime.UtcNow.TimeOfDay);
             Console.WriteLine(getTimesInDay(DateTime.UtcNow.TimeOfDay + TimeSpan.Parse("-05:00")));
 
-            var l = DataSource.StudentsList;
-            foreach (var s in l)
-            {
-                Console.WriteLine(s);
-            }
-
             Console.ReadKey();
         }
 

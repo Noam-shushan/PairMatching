@@ -5,10 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using DO;
 
-namespace DS
+namespace LogicLayer
 {
-    interface IStudentDescriptor
+    public interface IStudentDescriptor
     {
+        string SpreadsheetId { get; }
+        string Range { get; }
+        string SheetName { get; }
+
         Genders GetGender(object row);
         LearningStyles GetLearningStyle(object row);
         SkillLevels GetSkillLevel(object row);

@@ -12,12 +12,12 @@ using Google.Apis.Util.Store;
 using System.IO;
 using System.Threading;
 
-namespace DS
+namespace LogicLayer
 {
     public class GoogleSheetReader
     {
         static string[] Scopes = { SheetsService.Scope.Drive };
-        
+
         string ApplicationName = "PairMathcing";
 
         SheetsService Service;
@@ -62,7 +62,7 @@ namespace DS
 
             var values = response.Values;
 
-            if(values != null && values.Count > 0)
+            if (values != null && values.Count > 0)
             {
                 return values;
             }

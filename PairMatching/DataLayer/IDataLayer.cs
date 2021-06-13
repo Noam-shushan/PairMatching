@@ -87,5 +87,8 @@ namespace DataLayer
         /// <param name="secondStudent">second student id</param>
         void RemovePair(int firstStudent, int secondStudent);
         #endregion
+
+        void UpdateLastDateOfSheets(DO.LastDateOfSheets lastDateOfSheets);
+        DO.LastDateOfSheets GetLastDateOfSheets();
     }
 }

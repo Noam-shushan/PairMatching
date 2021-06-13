@@ -5,15 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DS
+namespace LogicLayer
 {
     class HebrewDescriptor : IStudentDescriptor
     {
-        public static readonly string Range = "A2:P";
+        public string Range { get => "A2:P"; }
 
-        public static readonly string SpreadsheetIdHebrew = "1iNKE8QeDxPqCkOvnmi4Qa7tiDCDjOQ6uDZ6Z_eL4b8Q";
+        public string SpreadsheetId { get => "1iNKE8QeDxPqCkOvnmi4Qa7tiDCDjOQ6uDZ6Z_eL4b8Q"; }
 
-        public static readonly string SheetInHebrew = "shalhevet in hebrew";
+        public string SheetName { get => "shalhevet in hebrew"; }
 
         public EnglishLevels GetEnglishLevel(object row)
         {
