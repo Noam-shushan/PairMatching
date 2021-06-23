@@ -17,8 +17,7 @@ namespace LogicLayer
     public class GoogleSheetReader
     {
         static string[] Scopes = { SheetsService.Scope.Drive };
-
-        string ApplicationName = "PairMathcing";
+        readonly string ApplicationName = "PairMathcing";
 
         SheetsService Service;
 

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataLayer;
-using DS;
+using System.Text.RegularExpressions;
 
 namespace Tests
 {
@@ -51,29 +51,72 @@ namespace Tests
                         Console.ReadKey();*/
             
             
-            var time = (from t in TimeZoneInfo.GetSystemTimeZones()
-                where t.Id == "Germany Standard Time"
-                        select t).FirstOrDefault();
-            //Console.WriteLine(TimeZoneInfo.FindSystemTimeZoneById("Germany Standard Time"));
-            
-            Console.WriteLine(TimeSpan.Parse("-05:00") + DateTime.UtcNow.TimeOfDay);
-            Console.WriteLine(getTimesInDay(DateTime.UtcNow.TimeOfDay + TimeSpan.Parse("-05:00")));
-
+            var diff = TimeZoneInfo.Local.BaseUtcOffset - TimeSpan.Parse("-05:00");
+            Console.WriteLine(diff);
+            var list = new List<TimeSpan>
+            {
+                TimeSpan.Parse("12:30"),
+                TimeSpan.Parse("18:30"),
+                TimeSpan.Parse("22:00"),
+                TimeSpan.Parse("1:00")
+            };
+            var lll = GetTimesInDey("morning, Noon, Evening, Late night");
+            Console.WriteLine(GetStudentOffset("Hongary -01:00"));
+            //Console.WriteLine(TimeSpan.Parse("+01:00"));
+            //(var t in list)
+            // {
+            //Console.WriteLine(getTimesInDay(TimeSpan.Parse("18:30") - diff));
+            //}
             Console.ReadKey();
         }
 
-        private static string getTimesInDay(TimeSpan studentOffset)
+        public static IEnumerable<string> GetTimesInDey(string row)
         {
-            if (studentOffset >= TimeSpan.Parse("7:00") && studentOffset <= TimeSpan.Parse("12:30"))
-                return "MORNING";
+            var timesInString = row
+                .Replace(",", "")
+                .Replace("Late", "")
+                .Split(' ');
+            var result = new List<string>();
 
-            if (studentOffset >= TimeSpan.Parse("12:30") && studentOffset <= TimeSpan.Parse("18:30"))
+            foreach (var s in timesInString)
+            {
+                switch (s)
+                {
+                    case "morning":
+                        result.Add("morning");
+                        break;
+                    case "Noon":
+                        result.Add("Noon");
+                        break;
+                    case "Evening":
+                        result.Add("Evening");
+                        break;
+                    case "night":
+                        result.Add("night");
+                        break;
+                }
+            }
+            return result;
+        }
+
+        public static TimeSpan GetStudentOffset(string row)
+        {
+            string timeFormat = Regex.Replace(row, "[^0-9.:-]", "");
+            return TimeSpan.Parse(timeFormat);
+        }
+
+        private static string getTimesInDay(TimeSpan t)
+        {
+            if (t >= TimeSpan.Parse("7:00") && t <= TimeSpan.Parse("12:30"))
+                return "MORNING";
+            
+            if (t >= TimeSpan.Parse("12:30") && t <= TimeSpan.Parse("18:30"))
                 return "NOON";
 
-            if (studentOffset >= TimeSpan.Parse("18:30") && studentOffset <= TimeSpan.Parse("22:00"))
+            if (t >= TimeSpan.Parse("18:30") && t <= TimeSpan.Parse("22:00"))
                 return "EVENING";
 
-            if (studentOffset >= TimeSpan.Parse("22:00") && studentOffset <= TimeSpan.Parse("1:00"))
+            if (t >= TimeSpan.Parse("22:00") && t <= TimeSpan.Parse("1:00"))
                 return "NIGHT";
 
 

@@ -16,53 +16,21 @@ namespace LogicLayer
 
         public IEnumerable<BO.Student> StudentList { get; set; }  
 
-        LogicImplementaion()
-        {
-            StudentList = GetAllStudents();
-        }
+        LogicImplementaion() {}
 
         public void UpdateData()
         {
-            StudentList = GetAllStudents();
-        }
-
-        public void AddStudent(BO.Student student)
-        {
-            student.FirstMatchingStudents = getFirstMatchingStudents(student);
-            student.SecondeMatchingStudents = getSecondeMatchingStudents(student);
             try
             {
-                foreach (var mPair in student.FirstMatchingStudents)
+                var lastDate = dal.GetLastDateOfSheets();
+                if(lastDate == null)
                 {
-                    var pair = new DO.Pair
-                    {
-                        FirstStudent = student.Id,
-                        SecondStudent = mPair.Id,
-                        IsDeleted = false,
-                        MatchingDegree = DO.MatchingDegrees.FIRST
-                    };
-                    dal.AddPair(pair);
+                    lastDate = new DO.LastDateOfSheets();
                 }
-
-                foreach (var mPair in student.SecondeMatchingStudents)
-                {
-                    var pair = new DO.Pair
-                    {
-                        FirstStudent = student.Id,
-                        SecondStudent = mPair.Id,
-                        IsDeleted = false,
-                        MatchingDegree = DO.MatchingDegrees.SECONDE
-                    };
-                    dal.AddPair(pair);
-                }
-
-                foreach(var l in student.DesiredLearningTime)
-                {
-                    dal.AddLearningTime(l);
-                }
-
-                var studDO = student.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
-                dal.AddStudent(studDO);
+                //lastDate.EnglishSheets = GoogleSheetParser.UpdateDataInEnglish(lastDate);
+                lastDate.HebrewSheets = GoogleSheetParser.UpdateDataInHebrew(lastDate);
+                dal.UpdateLastDateOfSheets(lastDate);
+                StudentList = GetAllStudents();
             }
             catch (Exception ex)
             {
@@ -70,35 +38,104 @@ namespace LogicLayer
             }
         }
 
-        private IEnumerable<BO.Student> getFirstMatchingStudents(BO.Student student)
+        public void Match(BO.Student fromIsreal, BO.Student fromWord)
         {
-            var studList = GetAllStudents();
-            var result = new List<BO.Student>();
-            foreach (var stud in studList)
+            try
             {
-                if(match.IsFirstMatching(student, stud))
+                fromIsreal.MatchTo = fromWord.Id;
+                fromWord.MatchTo = fromIsreal.Id;
+                
+                var isSt = fromIsreal.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
+                var wrSt = fromWord.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
+                
+                dal.UpdateStudent(isSt);
+                dal.UpdateStudent(wrSt);
+                
+                dal.AddPair(new DO.Pair()
                 {
-                    result.Add(stud);
-                } 
+                    FirstStudent = fromIsreal.Id,
+                    SecondStudent = fromWord.Id,
+                    IsDeleted = false
+                });
             }
-            return result;
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        private IEnumerable<BO.Student> getSecondeMatchingStudents(BO.Student student)
+        public int AddStudent(BO.Student student)
         {
-            var studList = GetAllStudents();
-            var result = new List<BO.Student>();
-            foreach (var stud in studList)
+            int id = 0;
+            try
             {
-                if (match.IsMatchingStudentsCritical(student, stud))
+                var studDO = student.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
+                id = dal.AddStudent(studDO);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return id;
+        }
+
+        private IEnumerable<BO.Student> GetFirstMatchingStudents(BO.Student student)
+        {
+            var result = new List<BO.Student>();
+            if (student.Country == "Isreal")
+            {
+                var studList = GetAllStudentsBy(s => s.Country != "Israel");
+                foreach (var studFromWord in studList)
                 {
-                    result.Add(stud);
+                    if (match.IsFirstMatching(student, studFromWord))
+                    {
+                        result.Add(studFromWord);
+                    }
                 }
             }
+            else
+            {
+                var studList = GetAllStudentsBy(s => s.Country == "Israel");
+                foreach (var studFromIsreal in studList)
+                {
+                    if (match.IsFirstMatching(studFromIsreal, student))
+                    {
+                        result.Add(studFromIsreal);
+                    }
+                }
+            }
+
             return result;
         }
 
-        
+        private IEnumerable<BO.Student> GetSecondeMatchingStudents(BO.Student student)
+        {
+            var result = new List<BO.Student>();
+            if (student.Country == "Isreal")
+            {
+                var studList = GetAllStudentsBy(s => s.Country != "Israel");
+                foreach (var studFromWord in studList)
+                {
+                    if (match.IsMatchingStudentsCritical(student, studFromWord))
+                    {
+                        result.Add(studFromWord);
+                    }
+                }
+            }
+            else
+            {
+                var studList = GetAllStudentsBy(s => s.Country == "Israel");
+                foreach (var studFromIsreal in studList)
+                {
+                    if (match.IsMatchingStudentsCritical(studFromIsreal, student))
+                    {
+                        result.Add(studFromIsreal);
+                    }
+                }
+            }
+
+            return result;
+        }  
 
         public IEnumerable<BO.Student> GetAllStudents()
         {
@@ -119,10 +156,10 @@ namespace LogicLayer
         {
             try
             {
-                var studDO = dal.GetAllStudentsBy(s => s.Id == id).FirstOrDefault();
+                var studDO = dal.GetStudent(id);
                 var studBO = studDO.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
                 
-                return buildStudent(studBO);
+                return BuildStudent(studBO);
             }
             catch (Exception ex)
             {
@@ -132,14 +169,21 @@ namespace LogicLayer
 
         public void RemoveStudent(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                dal.RemoveStudent(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        BO.Student buildStudent(BO.Student student)
+        BO.Student BuildStudent(BO.Student student)
         {
             student.DesiredLearningTime = dal.GetAllLearningTimesBy(l => l.Id == student.Id);
-            student.FirstMatchingStudents = getFirstMatchingStudents(student);
-            student.SecondeMatchingStudents = getSecondeMatchingStudents(student);
+            //student.FirstMatchingStudents = GetFirstMatchingStudents(student);
+            //student.SecondeMatchingStudents = GetSecondeMatchingStudents(student);
             return student;
         }
 

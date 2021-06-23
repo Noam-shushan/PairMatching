@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using LogicLayer;
 
 namespace Gui
 {
@@ -20,9 +22,23 @@ namespace Gui
     /// </summary>
     public partial class MainWindow : Window
     {
+        IBL bl = BlFactory.GetBL();
+        ObservableCollection<BO.Student> StudentsList; 
         public MainWindow()
         {
             InitializeComponent();
+
+            try
+            {
+                bl.UpdateData();
+                StudentsList = new ObservableCollection<BO.Student>(bl.StudentList);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+            lvStudents.ItemsSource = StudentsList;
         }
     }
 }

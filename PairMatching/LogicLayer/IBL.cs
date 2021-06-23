@@ -25,7 +25,7 @@ namespace LogicLayer
         /// Add new student to the data source
         /// </summary>
         /// <param name="student">the new student</param>
-        void AddStudent(BO.Student student);
+        int AddStudent(BO.Student student);
 
         /// <summary>
         /// Get Student from the data source
@@ -40,6 +40,21 @@ namespace LogicLayer
         /// <param name="id">the student id</param>
         void RemoveStudent(int id);
 
+        /// <summary>
+        /// Update all the data from the google sheets
+        /// </summary>
         void UpdateData();
+
+        /// <summary>
+        /// the students list
+        /// </summary>
+        IEnumerable<BO.Student> StudentList { get; set; }
+
+        /// <summary>
+        /// making the match between the tow students
+        /// </summary>
+        /// <param name="fromIsreal"></param>
+        /// <param name="fromWord"></param>
+        void Match(BO.Student fromIsreal, BO.Student fromWord);
     }
 }

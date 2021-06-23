@@ -19,5 +19,8 @@ namespace LogicLayer
         EnglishLevels GetEnglishLevel(object row);
         Genders GetPrefferdGender(object row);
         PrefferdTracks GetPrefferdTracks(object row);
+        TimeSpan GetStudentOffset(object v);
+        Days GetDay(int i);
+        IEnumerable<TimesInDay> GetTimesInDey(object v);
     }
 }

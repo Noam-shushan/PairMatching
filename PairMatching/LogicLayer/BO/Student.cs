@@ -84,6 +84,16 @@ namespace BO
         /// </summary>
         public LearningStyles LearningStyle { get; set; }
 
+        /// <summary>
+        /// the utc offset of the student
+        /// </summary>
+        public TimeSpan UtcOffset { get; set; }
+
+        /// <summary>
+        /// the id of the student that match to this.
+        /// </summary>
+        public int MatchTo { get; set; }
+
         public IEnumerable<Student> FirstMatchingStudents { get; set; }
 
         public IEnumerable<Student> SecondeMatchingStudents { get; set; }

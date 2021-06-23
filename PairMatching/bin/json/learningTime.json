@@ -1,0 +1,441 @@
+[
+  {
+    "Id": 1,
+    "TimeInDay": [
+      2,
+      3
+    ],
+    "Day": 0
+  },
+  {
+    "Id": 1,
+    "TimeInDay": [
+      2,
+      3
+    ],
+    "Day": 1
+  },
+  {
+    "Id": 1,
+    "TimeInDay": [
+      2,
+      3
+    ],
+    "Day": 2
+  },
+  {
+    "Id": 1,
+    "TimeInDay": [
+      2,
+      3
+    ],
+    "Day": 3
+  },
+  {
+    "Id": 1,
+    "TimeInDay": [
+      2,
+      3
+    ],
+    "Day": 4
+  },
+  {
+    "Id": 2,
+    "TimeInDay": [
+      1
+    ],
+    "Day": 0
+  },
+  {
+    "Id": 2,
+    "TimeInDay": [
+      1
+    ],
+    "Day": 1
+  },
+  {
+    "Id": 2,
+    "TimeInDay": [
+      1
+    ],
+    "Day": 2
+  },
+  {
+    "Id": 2,
+    "TimeInDay": [
+      1
+    ],
+    "Day": 3
+  },
+  {
+    "Id": 2,
+    "TimeInDay": [
+      1
+    ],
+    "Day": 4
+  },
+  {
+    "Id": 3,
+    "TimeInDay": [
+      2,
+      3
+    ],
+    "Day": 0
+  },
+  {
+    "Id": 3,
+    "TimeInDay": [
+      2,
+      3
+    ],
+    "Day": 1
+  },
+  {
+    "Id": 3,
+    "TimeInDay": [
+      2,
+      3
+    ],
+    "Day": 2
+  },
+  {
+    "Id": 3,
+    "TimeInDay": [
+      2,
+      3
+    ],
+    "Day": 3
+  },
+  {
+    "Id": 3,
+    "TimeInDay": [
+      1,
+      2,
+      3
+    ],
+    "Day": 4
+  },
+  {
+    "Id": 4,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 0
+  },
+  {
+    "Id": 4,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 1
+  },
+  {
+    "Id": 4,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 2
+  },
+  {
+    "Id": 4,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 3
+  },
+  {
+    "Id": 4,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 4
+  },
+  {
+    "Id": 5,
+    "TimeInDay": [
+      2
+    ],
+    "Day": 0
+  },
+  {
+    "Id": 5,
+    "TimeInDay": [
+      2
+    ],
+    "Day": 1
+  },
+  {
+    "Id": 5,
+    "TimeInDay": [
+      2
+    ],
+    "Day": 2
+  },
+  {
+    "Id": 5,
+    "TimeInDay": [
+      2
+    ],
+    "Day": 3
+  },
+  {
+    "Id": 5,
+    "TimeInDay": [
+      2
+    ],
+    "Day": 4
+  },
+  {
+    "Id": 6,
+    "TimeInDay": [
+      2,
+      3
+    ],
+    "Day": 0
+  },
+  {
+    "Id": 6,
+    "TimeInDay": [
+      2,
+      3
+    ],
+    "Day": 1
+  },
+  {
+    "Id": 6,
+    "TimeInDay": [
+      2,
+      3
+    ],
+    "Day": 2
+  },
+  {
+    "Id": 6,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 3
+  },
+  {
+    "Id": 6,
+    "TimeInDay": [
+      2,
+      3
+    ],
+    "Day": 4
+  },
+  {
+    "Id": 7,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 0
+  },
+  {
+    "Id": 7,
+    "TimeInDay": [
+      1,
+      3
+    ],
+    "Day": 1
+  },
+  {
+    "Id": 7,
+    "TimeInDay": [
+      1
+    ],
+    "Day": 2
+  },
+  {
+    "Id": 7,
+    "TimeInDay": [
+      1,
+      3
+    ],
+    "Day": 3
+  },
+  {
+    "Id": 7,
+    "TimeInDay": [
+      0
+    ],
+    "Day": 4
+  },
+  {
+    "Id": 8,
+    "TimeInDay": [
+      2
+    ],
+    "Day": 0
+  },
+  {
+    "Id": 8,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 1
+  },
+  {
+    "Id": 8,
+    "TimeInDay": [
+      1,
+      2
+    ],
+    "Day": 2
+  },
+  {
+    "Id": 8,
+    "TimeInDay": [
+      1,
+      2
+    ],
+    "Day": 3
+  },
+  {
+    "Id": 8,
+    "TimeInDay": [
+      1
+    ],
+    "Day": 4
+  },
+  {
+    "Id": 9,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 0
+  },
+  {
+    "Id": 9,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 1
+  },
+  {
+    "Id": 9,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 2
+  },
+  {
+    "Id": 9,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 3
+  },
+  {
+    "Id": 9,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 4
+  },
+  {
+    "Id": 10,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 0
+  },
+  {
+    "Id": 10,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 1
+  },
+  {
+    "Id": 10,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 2
+  },
+  {
+    "Id": 10,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 3
+  },
+  {
+    "Id": 10,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 4
+  },
+  {
+    "Id": 11,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 0
+  },
+  {
+    "Id": 11,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 1
+  },
+  {
+    "Id": 11,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 2
+  },
+  {
+    "Id": 11,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 3
+  },
+  {
+    "Id": 11,
+    "TimeInDay": [
+      3
+    ],
+    "Day": 4
+  },
+  {
+    "Id": 12,
+    "TimeInDay": [
+      2
+    ],
+    "Day": 0
+  },
+  {
+    "Id": 12,
+    "TimeInDay": [
+      2
+    ],
+    "Day": 1
+  },
+  {
+    "Id": 12,
+    "TimeInDay": [
+      2
+    ],
+    "Day": 2
+  },
+  {
+    "Id": 12,
+    "TimeInDay": [
+      2
+    ],
+    "Day": 3
+  },
+  {
+    "Id": 12,
+    "TimeInDay": [
+      1
+    ],
+    "Day": 4
+  }
+]

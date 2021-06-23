@@ -9,17 +9,4 @@ C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\obj\Debug\Tests.ex
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\obj\Debug\Tests.pdb
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\obj\Debug\Tests.csproj.AssemblyReference.cache
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\DataLayer.dll
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Google.Apis.Sheets.v4.dll
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Google.Apis.Auth.dll
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Google.Apis.dll
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Google.Apis.Core.dll
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\DataLayer.pdb
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Google.Apis.Sheets.v4.pdb
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Google.Apis.Sheets.v4.xml
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Google.Apis.Auth.pdb
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Google.Apis.Auth.xml
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Google.Apis.pdb
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Google.Apis.xml
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Google.Apis.Core.pdb
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\bin\Debug\Google.Apis.Core.xml
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Tests\obj\Debug\Tests.exe.config

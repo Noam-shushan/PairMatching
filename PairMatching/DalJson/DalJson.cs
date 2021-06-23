@@ -25,11 +25,11 @@ namespace DalJson
         #endregion
 
         #region Student
-        public void AddStudent(Student student)
+        public int AddStudent(Student student)
         {
             // load all students from the json file 
             var studList = JsonTools.LoadListFromJsonFile<Student>(studentsPath);
-            var stud = studList.FirstOrDefault(s => s.Id == student.Id);
+            var stud = studList.Find(s => s.Email == student.Email);
             // Checks for duplication student
             if (stud != null && !stud.IsDeleted)
             {
@@ -37,13 +37,17 @@ namespace DalJson
             }
             
             var counter = JsonTools.LoadObjFromJsonFile<Counters>(countersPath);
-            
+            if (counter == null)
+            {
+                counter = Counters.Instance;
+            }
             counter.IncStudentCounter();
             student.Id = counter.StudentCounter;
             studList.Add(student);
             
             JsonTools.SaveListToJsonFile(studList, studentsPath);
             JsonTools.SaveObjToJsonFile(counter, countersPath);
+            return student.Id;
         }
 
         public void RemoveStudent(int id)
@@ -76,17 +80,43 @@ namespace DalJson
 
         public IEnumerable<Student> GetAllStudents()
         {
-            return from s in JsonTools.LoadListFromJsonFile<Student>(studentsPath)
+            var list = JsonTools.LoadListFromJsonFile<Student>(studentsPath);
+            if(list == null)
+            {
+                return null;
+            }
+            return from s in list
                    where !s.IsDeleted
                    select s;
         }
 
         public IEnumerable<Student> GetAllStudentsBy(Predicate<Student> predicate)
         {
-            return from s in JsonTools.LoadListFromJsonFile<Student>(studentsPath)
+            var list = JsonTools.LoadListFromJsonFile<Student>(studentsPath);
+            if (list == null)
+            {
+                return null;
+            }
+            return from s in list
                    where !s.IsDeleted && predicate(s)
                    select s;
-        } 
+        }
+
+        public void UpdateStudent(DO.Student student)
+        {
+            var studList = JsonTools.LoadListFromJsonFile<Student>(studentsPath);
+            var stud = studList.FirstOrDefault(s => s.Id == student.Id);
+
+            if (stud != null && !stud.IsDeleted)
+            {
+                studList.Remove(stud);
+                studList.Add(student);
+
+                JsonTools.SaveListToJsonFile(studList, studentsPath);
+                return;
+            }
+            throw new Exception($"can not find the sutdent {student}");
+        }
         #endregion
 
         #region Pair
@@ -152,22 +182,37 @@ namespace DalJson
         #region LearningTime
         public IEnumerable<LearningTime> GetAllLearningTimes()
         {
-            return from l in JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath)
+            var list = JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath);
+            if(list == null)
+            {
+                return null;
+            }
+            return from l in list 
                    select l;
         }
 
         public IEnumerable<LearningTime> GetAllLearningTimesBy(Predicate<LearningTime> predicate)
         {
-            return from l in JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath)
+            var list = JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath);
+            if (list == null)
+            {
+                return null;
+            }
+            return from l in list
                    where predicate(l)
                    select l;
         }
 
         public LearningTime GetLearningTime(int id)
         {
-            return (from l in JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath)
+            var learningTime = (from l in JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath)
                     where l.Id == id
                     select l).FirstOrDefault();
+            if(learningTime == default)
+            {
+                return null;
+            }
+            return learningTime;
         }
 
         public void AddLearningTime(LearningTime learningTime)

@@ -5,8 +5,50 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Gui"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="MainWindow" Height="800" Width="1200">
     <Grid>
-        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <ListView 
+                x:Name="lvStudents"
+                Grid.Row="0"
+                Grid.Column="0"
+                ItemsSource="{Binding}">
+                <ListView.View>
+                    <GridView>
+                        <GridView.Columns>
+                            <GridViewColumn Header="מגדר מועדף" 
+                                            DisplayMemberBinding="{Binding Path=PrefferdGender}"/>
+                            <GridViewColumn Header="תחום מועדף" 
+                                            DisplayMemberBinding="{Binding Path=PrefferdTracks}"/>
+                            <GridViewColumn Header="רמת אנגלית" 
+                                            DisplayMemberBinding="{Binding Path=EnglishLevel}"/>
+                            <GridViewColumn Header="מגדר" 
+                                            DisplayMemberBinding="{Binding Path=Gender}"/>
+                            <GridViewColumn Header="פלאפון" 
+                                            DisplayMemberBinding="{Binding Path=PhoneNumber}"/>
+                            <GridViewColumn Header="מייל" 
+                                            DisplayMemberBinding="{Binding Path=Email}"/>
+                            <GridViewColumn Header="שם" 
+                                            DisplayMemberBinding="{Binding Path=Name}"/>
+                            
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
     </Grid>
 </Window>

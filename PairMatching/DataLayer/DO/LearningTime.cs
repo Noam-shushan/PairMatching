@@ -9,7 +9,7 @@ namespace DO
     public class LearningTime
     {
         public int Id { get; set; }
-        public TimesInDay TimeInDay { get; set; }
+        public IEnumerable<TimesInDay> TimeInDay { get; set; }
         public Days Day { get; set; }
     }
 }

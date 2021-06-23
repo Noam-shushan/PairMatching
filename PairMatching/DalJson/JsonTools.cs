@@ -8,14 +8,44 @@ using System.Threading.Tasks;
 
 namespace DalJson
 {
-    public class JsonTools
+    public class JsonTools 
     {
         static string dir = @"json\";
+        static string studentsPath = @"studentListJson.json";
+        static string pairsPath = @"pairListJson.json";
+        static string countersPath = @"counters.json";
+        static string learningTimePath = @"learningTime.json";
+        static string lastDateOfSheetsPath = @"lastDateOfSheets.json";
 
         static JsonTools()
         {
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
+
+            if (!File.Exists(dir + studentsPath))
+            {
+                File.Create(dir + studentsPath);
+            }
+
+            if (!File.Exists(dir + pairsPath))
+            {
+                File.Create(dir + pairsPath);
+            }
+
+            if (!File.Exists(dir + countersPath))
+            {
+                File.Create(dir + countersPath);
+            }
+
+            if (!File.Exists(dir + learningTimePath))
+            {
+                File.Create(dir + learningTimePath);
+            }
+
+            if (!File.Exists(dir + lastDateOfSheetsPath))
+            {
+                File.Create(dir + lastDateOfSheetsPath);
+            }
         }
 
         public static void SaveListToJsonFile<T>(List<T> list, string filePath)
@@ -35,6 +65,10 @@ namespace DalJson
             }
 
             var jsonString = File.ReadAllText(dir + filePath);
+            if (jsonString == string.Empty)
+            {
+                return new List<T>();
+            }
             return JsonConvert.DeserializeObject<List<T>>(jsonString);
         }
 

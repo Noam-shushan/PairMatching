@@ -49,8 +49,8 @@
     <Reference Include="Google.Apis.Sheets.v4, Version=1.51.0.2338, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Sheets.v4.1.51.0.2338\lib\net45\Google.Apis.Sheets.v4.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -65,6 +65,7 @@
     <Compile Include="BlFactory.cs" />
     <Compile Include="BO\Student.cs" />
     <Compile Include="CopyTools.cs" />
+    <Compile Include="EnglishDiscriptor.cs" />
     <Compile Include="GoogleSheetParser.cs" />
     <Compile Include="GoogleSheetReader.cs" />
     <Compile Include="HebrewDescriptor.cs" />

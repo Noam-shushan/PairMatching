@@ -26,7 +26,7 @@ namespace DataLayer
         /// Add new student to the data source
         /// </summary>
         /// <param name="student">the new student</param>
-        void AddStudent(DO.Student student);
+        int AddStudent(DO.Student student);
 
         /// <summary>
         /// Get Student from the data source
@@ -40,6 +40,11 @@ namespace DataLayer
         /// </summary>
         /// <param name="id">the student id</param>
         void RemoveStudent(int id);
+
+        /// <summary>
+        /// update student in the data source
+        /// </summary>
+        void UpdateStudent(DO.Student student);
         #endregion
 
         #region LearningTime

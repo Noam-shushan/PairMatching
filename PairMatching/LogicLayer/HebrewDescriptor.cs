@@ -9,11 +9,11 @@ namespace LogicLayer
 {
     class HebrewDescriptor : IStudentDescriptor
     {
-        public string Range { get => "A2:P"; }
+        public string Range { get => "A2:Y"; }
 
-        public string SpreadsheetId { get => "1iNKE8QeDxPqCkOvnmi4Qa7tiDCDjOQ6uDZ6Z_eL4b8Q"; }
+        public string SpreadsheetId { get => "17gvL05Ar-0nCAKvLtAj_HUXDCmXs5L61qk_lkBSUIFo"; }
 
-        public string SheetName { get => "shalhevet in hebrew"; }
+        public string SheetName { get => "טופס רישום שלהבת תשפ\"א (תגובות)"; }
 
         public EnglishLevels GetEnglishLevel(object row)
         {
@@ -26,7 +26,7 @@ namespace LogicLayer
                 case "רמת שיחה":
                     return EnglishLevels.TALK_LEVEL;
             }
-            return default;
+            return EnglishLevels.DONT_MATTER;
         }
 
         public Genders GetGender(object row)
@@ -40,7 +40,7 @@ namespace LogicLayer
                 case "לא משנה":
                     return Genders.DONT_MATTER;
             }
-            return default;
+            return Genders.DONT_MATTER;
         }
 
         public LearningStyles GetLearningStyle(object row)
@@ -56,21 +56,21 @@ namespace LogicLayer
                 case "לימוד מעודד מחשבה מחוץ לטקסט, פילוסופי":
                     return LearningStyles.FREE;
             }
-            return default;
+            return LearningStyles.DONT_MATTER;
         }
 
         public Genders GetPrefferdGender(object row)
         {
             switch (row.ToString())
             {
-                case "רק עם גבר":
+                case "אני מעוניין ללמוד רק עם גבר":
                     return Genders.MALE;
-                case "רק עם אישה":
+                case "אני מעוניינת ללמוד רק עם אישה":
                     return Genders.FMALE;
                 case "אין לי העדפה":
                     return Genders.DONT_MATTER;
             }
-            return default;
+            return Genders.DONT_MATTER;
         }
 
         public PrefferdTracks GetPrefferdTracks(object row)
@@ -90,7 +90,7 @@ namespace LogicLayer
                 case "אין לי העדפה":
                     return PrefferdTracks.DONT_MATTER;
             }
-            return default;
+            return PrefferdTracks.DONT_MATTER;
         }
 
         public SkillLevels GetSkillLevel(object row)
@@ -106,7 +106,59 @@ namespace LogicLayer
                 case "אין לי העדפה":
                     return SkillLevels.DONT_MATTER;
             }
-            return default;
+            return SkillLevels.DONT_MATTER;
+        }
+
+        public TimeSpan GetStudentOffset(object v)
+        {
+            return TimeZoneInfo.Local.BaseUtcOffset;
+        }
+
+        public IEnumerable<TimesInDay> GetTimesInDey(object row)
+        {
+            var timesInString = row.ToString()
+                .Replace(",", "")
+                .Split(' ');
+            var result = new List<TimesInDay>();
+
+            foreach (var s in timesInString)
+            {
+                switch (s)
+                {
+                    case "בוקר":
+                        result.Add(TimesInDay.MORNING);
+                        break;
+                    case "צהריים":
+                        result.Add(TimesInDay.NOON);
+                        break;
+                    case "ערב":
+                        result.Add(TimesInDay.EVENING);
+                        break;
+                    case "לילה":
+                        result.Add(TimesInDay.NIGHT);
+                        break;
+                }
+            }
+            return result;
+        }
+
+        public Days GetDay(int i)
+        {
+            switch (i)
+            {
+                case 2:
+                    return Days.SUNDAY;
+                case 3:
+                    return Days.MONDAY;
+                case 4:
+                    return Days.TUESDAY;
+                case 5:
+                    return Days.WEDNESDAY;
+                case 6:
+                    return Days.THURSDAY;
+
+            }
+            return Days.DONT_MATTER;
         }
     }
 }
