@@ -79,63 +79,36 @@ namespace LogicLayer
             return id;
         }
 
-        private IEnumerable<BO.Student> GetFirstMatchingStudents(BO.Student student)
+        private IEnumerable<BO.Student> GetMatchingStudents(BO.Student student, Func<BO.Student, BO.Student, bool> func)
         {
             var result = new List<BO.Student>();
-            if (student.Country == "Isreal")
+            if (student.Country == "Israel")
             {
-                var studList = GetAllStudentsBy(s => s.Country != "Israel");
+                var studList = dal.GetAllStudentsBy(s => s.Country != "Israel");
                 foreach (var studFromWord in studList)
                 {
-                    if (match.IsFirstMatching(student, studFromWord))
+                    var studFromWordBo = studFromWord.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
+                    if (func(student, studFromWordBo))
                     {
-                        result.Add(studFromWord);
+                        result.Add(studFromWordBo);
                     }
                 }
             }
             else
             {
-                var studList = GetAllStudentsBy(s => s.Country == "Israel");
+                var studList = dal.GetAllStudentsBy(s => s.Country == "Israel");
                 foreach (var studFromIsreal in studList)
                 {
-                    if (match.IsFirstMatching(studFromIsreal, student))
+                    var studFromIsrealBo = studFromIsreal.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
+                    if (func(studFromIsrealBo, student))
                     {
-                        result.Add(studFromIsreal);
+                        result.Add(studFromIsrealBo);
                     }
                 }
             }
 
             return result;
         }
-
-        private IEnumerable<BO.Student> GetSecondeMatchingStudents(BO.Student student)
-        {
-            var result = new List<BO.Student>();
-            if (student.Country == "Isreal")
-            {
-                var studList = GetAllStudentsBy(s => s.Country != "Israel");
-                foreach (var studFromWord in studList)
-                {
-                    if (match.IsMatchingStudentsCritical(student, studFromWord))
-                    {
-                        result.Add(studFromWord);
-                    }
-                }
-            }
-            else
-            {
-                var studList = GetAllStudentsBy(s => s.Country == "Israel");
-                foreach (var studFromIsreal in studList)
-                {
-                    if (match.IsMatchingStudentsCritical(studFromIsreal, student))
-                    {
-                        result.Add(studFromIsreal);
-                    }
-                }
-            }
-
-            return result;
-        }  
 
         public IEnumerable<BO.Student> GetAllStudents()
         {
@@ -182,8 +155,8 @@ namespace LogicLayer
         BO.Student BuildStudent(BO.Student student)
         {
             student.DesiredLearningTime = dal.GetAllLearningTimesBy(l => l.Id == student.Id);
-            //student.FirstMatchingStudents = GetFirstMatchingStudents(student);
-            //student.SecondeMatchingStudents = GetSecondeMatchingStudents(student);
+            student.FirstMatchingStudents = GetMatchingStudents(student, match.IsFirstMatching);
+            student.SecondeMatchingStudents = GetMatchingStudents(student, match.IsMatchingStudentsCritical);
             return student;
         }
 

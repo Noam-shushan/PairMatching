@@ -22,7 +22,7 @@ namespace DalJson
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
 
-            if (!File.Exists(dir + studentsPath))
+/*            if (!File.Exists(dir + studentsPath))
             {
                 File.Create(dir + studentsPath);
             }
@@ -45,7 +45,7 @@ namespace DalJson
             if (!File.Exists(dir + lastDateOfSheetsPath))
             {
                 File.Create(dir + lastDateOfSheetsPath);
-            }
+            }*/
         }
 
         public static void SaveListToJsonFile<T>(List<T> list, string filePath)
