@@ -5,37 +5,19 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DataLayer;
+using LogicLayer;
 using System.Text.RegularExpressions;
 
 namespace Tests
 {
-    class Counters
-    {
-        static int _studentCounter = 0;
-
-        public static Counters Instance { get; } = new Counters();
-
-        Counters() { }
-
-        public int StudentCounter
-        {
-            get
-            {
-                return _studentCounter;
-            }
-            set => _studentCounter = value;
-        }
-
-        public void IncStudentCounter()
-        {
-            ++_studentCounter;
-        }
-
-    }
 
     class Program
     {
+
+        public static string GetCountryName(object row)
+        {
+            return Regex.Replace(row.ToString(), "[^a-zA-Z0-9-]", "");
+        }
         static void Main(string[] args)
         {
             /*            if (!Directory.Exists(dir))
@@ -61,12 +43,17 @@ namespace Tests
                 TimeSpan.Parse("1:00")
             };
             var lll = GetTimesInDey("morning, Noon, Evening, Late night");
-            Console.WriteLine(GetStudentOffset("Hongary -01:00"));
+            Console.WriteLine(GetCountryName("Hongary -01:00"));
             //Console.WriteLine(TimeSpan.Parse("+01:00"));
             //(var t in list)
             // {
             //Console.WriteLine(getTimesInDay(TimeSpan.Parse("18:30") - diff));
             //}
+            IBL bl = BlFactory.GetBL();
+            var stud = bl.GetAllStudentsBy(s => s.PhoneNumber == "123456");
+            stud.Count();
+            Console.WriteLine(stud);
+
             Console.ReadKey();
         }
 

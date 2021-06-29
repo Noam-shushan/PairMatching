@@ -24,11 +24,11 @@ namespace LogicLayer
         public GoogleSheetReader()
         {
             UserCredential credential;
-
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "client_secret.json");
             try
             {
                 using (var stream =
-            new FileStream(@"c:\users\asuspcc\source\repos\pairmatching\pairmatching\bin\client_secret.json", FileMode.Open, FileAccess.Read))
+            new FileStream(path, FileMode.Open, FileAccess.Read))
                 {
                     // The file token.json stores the user's access and refresh tokens, and is created
                     // automatically when the authorization flow completes for the first time.
@@ -51,6 +51,23 @@ namespace LogicLayer
                 HttpClientInitializer = credential,
                 ApplicationName = ApplicationName,
             });
+        }
+
+        public async Task<IList<IList<object>>> ReadEntriesAsync(string spreadsheetId, string range)
+        {
+            var request = Service.Spreadsheets.Values.Get(spreadsheetId, range);
+
+            //var response = await Task.Run(() => request.Execute());
+
+            var response = await request.ExecuteAsync();
+
+            var values = response.Values;
+
+            if (values != null && values.Count > 0)
+            {
+                return values;
+            }
+            return null;
         }
 
         public IList<IList<object>> ReadEntries(string spreadsheetId, string range)

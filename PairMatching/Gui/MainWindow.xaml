@@ -36,6 +36,8 @@
                                             DisplayMemberBinding="{Binding Path=PrefferdTracks}"/>
                             <GridViewColumn Header="רמת אנגלית" 
                                             DisplayMemberBinding="{Binding Path=EnglishLevel}"/>
+                            <GridViewColumn Header="ארץ" 
+                                            DisplayMemberBinding="{Binding Path=Country}"/>
                             <GridViewColumn Header="מגדר" 
                                             DisplayMemberBinding="{Binding Path=Gender}"/>
                             <GridViewColumn Header="פלאפון" 

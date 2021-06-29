@@ -11,41 +11,11 @@ namespace DalJson
     public class JsonTools 
     {
         static string dir = @"json\";
-        static string studentsPath = @"studentListJson.json";
-        static string pairsPath = @"pairListJson.json";
-        static string countersPath = @"counters.json";
-        static string learningTimePath = @"learningTime.json";
-        static string lastDateOfSheetsPath = @"lastDateOfSheets.json";
 
         static JsonTools()
         {
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
-
-/*            if (!File.Exists(dir + studentsPath))
-            {
-                File.Create(dir + studentsPath);
-            }
-
-            if (!File.Exists(dir + pairsPath))
-            {
-                File.Create(dir + pairsPath);
-            }
-
-            if (!File.Exists(dir + countersPath))
-            {
-                File.Create(dir + countersPath);
-            }
-
-            if (!File.Exists(dir + learningTimePath))
-            {
-                File.Create(dir + learningTimePath);
-            }
-
-            if (!File.Exists(dir + lastDateOfSheetsPath))
-            {
-                File.Create(dir + lastDateOfSheetsPath);
-            }*/
         }
 
         public static void SaveListToJsonFile<T>(List<T> list, string filePath)
@@ -59,28 +29,42 @@ namespace DalJson
 
         public static List<T> LoadListFromJsonFile<T>(string filePath)
         {
-            if (!File.Exists(dir + filePath))
+            try
             {
-                File.Create(dir + filePath);
+                if (File.Exists(dir + filePath))
+                {
+                    var jsonString = File.ReadAllText(dir + filePath);
+                    return JsonConvert.DeserializeObject<List<T>>(jsonString);
+                }
+                else
+                {
+                    return new List<T>();
+                }
             }
-
-            var jsonString = File.ReadAllText(dir + filePath);
-            if (jsonString == string.Empty)
+            catch (Exception ex)
             {
-                return new List<T>();
+                throw new Exception($"can not load the file {dir + filePath}" + ex.Message);
             }
-            return JsonConvert.DeserializeObject<List<T>>(jsonString);
         }
 
         public static T LoadObjFromJsonFile<T>(string filePath)
         {
-            if (!File.Exists(dir + filePath))
+            try
             {
-                File.Create(dir + filePath);
+                if (File.Exists(dir + filePath))
+                {
+                    var jsonString = File.ReadAllText(dir + filePath);
+                    return JsonConvert.DeserializeObject<T>(jsonString);
+                }
+                else
+                {
+                    return default;
+                }
             }
-
-            var jsonString = File.ReadAllText(dir + filePath);
-            return JsonConvert.DeserializeObject<T>(jsonString);
+            catch (Exception ex)
+            {
+                throw new Exception($"can not load the file {dir + filePath}" + ex.Message);
+            } 
         }
 
         public static void SaveObjToJsonFile<T>(T obj, string filePath)

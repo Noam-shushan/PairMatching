@@ -21,6 +21,7 @@ namespace LogicLayer
         PrefferdTracks GetPrefferdTracks(object row);
         TimeSpan GetStudentOffset(object v);
         Days GetDay(int i);
-        IEnumerable<TimesInDay> GetTimesInDey(object v);
+        IEnumerable<TimesInDay> GetTimesInDey(object row);
+        string GetCountryName(object row);
     }
 }

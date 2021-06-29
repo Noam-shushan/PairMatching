@@ -160,5 +160,10 @@ namespace LogicLayer
             }
             return Days.DONT_MATTER;
         }
+
+        public string GetCountryName(object row)
+        {
+            return "Israel";
+        }
     }
 }

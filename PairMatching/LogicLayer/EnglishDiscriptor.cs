@@ -12,7 +12,7 @@ namespace LogicLayer
     {
         public string SpreadsheetId => "1s8JObwXhv9kCdAEX6e_m4SV6N0_RRRgmoeyoG1oR82c";
 
-        public string Range => "A:Y";
+        public string Range => "A2:Y";
 
         public string SheetName => "Shalhevet Regestration form תשפ\"א(תגובות)";
 
@@ -160,6 +160,12 @@ namespace LogicLayer
 
             }
             return Days.DONT_MATTER;
+        }
+
+        public string GetCountryName(object row)
+        {
+            var rgx = new  Regex("[^a-zA-Z ]");
+            return rgx.Replace(row.ToString(), "");
         }
     }
 }

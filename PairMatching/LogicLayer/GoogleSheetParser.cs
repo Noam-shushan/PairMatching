@@ -7,17 +7,35 @@ using System.Threading.Tasks;
 
 namespace LogicLayer
 {
+    public class Table
+    {
+        public string Name { get; set; }
+        public IStudentDescriptor StudentDescriptor { get; set; }
+        public IList<IList<object>> TablaValues { get; set; } 
+    }
+
+
     public class GoogleSheetParser
     {
-        static IBL bl = BlFactory.GetBL();
-        static DataLayer.IDataLayer dal = DataLayer.DalFactory.GetDal("json");
-
-        static Dictionary<string, int> indexHebSheet = new Dictionary<string, int>();
-        static Dictionary<string, int> indexEngSheet = new Dictionary<string, int>();
+        private static readonly IBL bl = BlFactory.GetBL();
+        private static readonly DataLayer.IDataLayer dal = DataLayer.DalFactory.GetDal("json");
+        private static readonly Dictionary<string, int> indexHebSheet = new Dictionary<string, int>();
+        private static readonly Dictionary<string, int> indexEngSheet = new Dictionary<string, int>();
+        static List<Task<IList<IList<object>>>> tasks = new List<Task<IList<IList<object>>>>();
+        static GoogleSheetReader sheetReader = new GoogleSheetReader();
 
         static GoogleSheetParser()
         {
             setDict();
+        }
+
+        //TODO
+        void GetTable(IStudentDescriptor studentDescriptor, string name)
+        {
+            Table table = new Table { StudentDescriptor = studentDescriptor, Name = name };
+            tasks.Add(sheetReader.ReadEntriesAsync(studentDescriptor.SpreadsheetId,
+                studentDescriptor.Range));
+            var l = Task.WhenAll(tasks);
         }
 
 
@@ -28,7 +46,7 @@ namespace LogicLayer
         /// <returns></returns>
         public static DateTime UpdateDataInHebrew(DO.LastDateOfSheets lastUpdate)
         {
-            GoogleSheetReader sheetReader = new GoogleSheetReader();
+
             IStudentDescriptor studentDescriptor = new HebrewDescriptor();
 
             var googleSheetValue = sheetReader.ReadEntries(studentDescriptor.SpreadsheetId,
@@ -62,7 +80,7 @@ namespace LogicLayer
                         DesiredSkillLevel = studentDescriptor.GetSkillLevel(row[indexHebSheet["DesiredSkillLevel"]]),
                         LearningStyle = studentDescriptor.GetLearningStyle(row[indexHebSheet["LearningStyle"]]),
                         Gender = studentDescriptor.GetGender(row[indexHebSheet["Gender"]]),
-                        Country = "Israel",
+                        Country = studentDescriptor.GetCountryName(null),
                         PhoneNumber = row[indexHebSheet["PhoneNumber"]].ToString(),
                         Email = row[indexHebSheet["Email"]].ToString()
                     });
@@ -76,9 +94,9 @@ namespace LogicLayer
                         });
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    
+                    new Exception(ex.Message);
                 }
             }
 
@@ -116,29 +134,36 @@ namespace LogicLayer
             
             foreach (var row in table)
             {
-                int id = bl.AddStudent(new BO.Student
+                try
                 {
-                    Name = row[indexEngSheet["Name"]].ToString(),
-                    PrefferdTracks = studentDescriptor.GetPrefferdTracks(row[indexEngSheet["PrefferdTracks"]]),
-                    PrefferdGender = studentDescriptor.GetPrefferdGender(row[indexEngSheet["PrefferdGender"]]),
-                    DesiredEnglishLevel = studentDescriptor.GetEnglishLevel(row[indexEngSheet["DesiredEnglishLevel"]]),
-                    SkillLevel = studentDescriptor.GetSkillLevel(row[indexEngSheet["SkillLevel"]]),
-                    LearningStyle = studentDescriptor.GetLearningStyle(row[indexEngSheet["LearningStyle"]]),
-                    Gender = studentDescriptor.GetGender(row[indexEngSheet["Gender"]]),
-                    Country = row[indexEngSheet["Country"]].ToString(),
-                    UtcOffset = studentDescriptor.GetStudentOffset(row[indexEngSheet["UtcOffset"]]),
-                    PhoneNumber = row[indexEngSheet["PhoneNumber"]].ToString(),
-                    Email = row[indexEngSheet["Email"]].ToString()
-                });
-
-                for(int i = 2; i < 7; i++)
-                {
-                    dal.AddLearningTime(new DO.LearningTime
+                    int id = bl.AddStudent(new BO.Student
                     {
-                        Id = id,
-                        Day = studentDescriptor.GetDay(i),
-                        TimeInDay = studentDescriptor.GetTimesInDey(row[i])                      
+                        Name = row[indexEngSheet["Name"]].ToString(),
+                        PrefferdTracks = studentDescriptor.GetPrefferdTracks(row[indexEngSheet["PrefferdTracks"]]),
+                        PrefferdGender = studentDescriptor.GetPrefferdGender(row[indexEngSheet["PrefferdGender"]]),
+                        DesiredEnglishLevel = studentDescriptor.GetEnglishLevel(row[indexEngSheet["DesiredEnglishLevel"]]),
+                        SkillLevel = studentDescriptor.GetSkillLevel(row[indexEngSheet["SkillLevel"]]),
+                        LearningStyle = studentDescriptor.GetLearningStyle(row[indexEngSheet["LearningStyle"]]),
+                        Gender = studentDescriptor.GetGender(row[indexEngSheet["Gender"]]),
+                        Country = studentDescriptor.GetCountryName(row[indexEngSheet["Country"]]),
+                        UtcOffset = studentDescriptor.GetStudentOffset(row[indexEngSheet["UtcOffset"]]),
+                        PhoneNumber = row[indexEngSheet["PhoneNumber"]].ToString(),
+                        Email = row[indexEngSheet["Email"]].ToString()
                     });
+
+                    for (int i = 2; i < 7; i++)
+                    {
+                        dal.AddLearningTime(new DO.LearningTime
+                        {
+                            Id = id,
+                            Day = studentDescriptor.GetDay(i),
+                            TimeInDay = studentDescriptor.GetTimesInDey(row[i])
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
                 }
 
             }

@@ -61,11 +61,10 @@ namespace LogicLayer
                 && IsMatchingStudentsCritical(thisStudent, other);
         }
 
-        public bool IsMatchingStudentsNotCritical(BO.Student isrealStudent, BO.Student other)
+        private bool IsMatchingStudentsNotCritical(BO.Student israelStudent, BO.Student other)
         {
-            return isrealStudent.DesiredSkillLevel == other.SkillLevel
-                && isrealStudent.EnglishLevel == other.DesiredEnglishLevel
-                && isrealStudent.LearningStyle == other.LearningStyle;
+            return israelStudent.DesiredSkillLevel == other.SkillLevel
+                && israelStudent.LearningStyle == other.LearningStyle;
         }
 
         /// <summary>
@@ -74,17 +73,20 @@ namespace LogicLayer
         /// <param name="thisStudent"></param>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool IsMatchingStudentsCritical(BO.Student isrealStudent, BO.Student other)
-        {          
-            return isrealStudent.PrefferdTracks == other.PrefferdTracks
-                && isrealStudent.PrefferdGender == other.Gender
-                && IsMatchingHours(isrealStudent, other)
-                && IsMatchingDays(isrealStudent, other);
+        public bool IsMatchingStudentsCritical(BO.Student israelStudent, BO.Student other)
+        {
+            bool matchTime = IsMatchingHours(israelStudent, other);
+            return israelStudent.PrefferdTracks == other.PrefferdTracks
+                && israelStudent.EnglishLevel == other.DesiredEnglishLevel
+                && (israelStudent.PrefferdGender == other.PrefferdGender
+                || (israelStudent.PrefferdGender == other.Gender
+                && israelStudent.Gender == other.PrefferdGender))
+                && matchTime;
         }
 
-        private bool IsMatchingDays(BO.Student isrealStudent, BO.Student other)
+        private bool IsMatchingDays(BO.Student israelStudent, BO.Student other)
         {
-            foreach(var dayOfThis in isrealStudent.DesiredLearningTime)
+            foreach(var dayOfThis in israelStudent.DesiredLearningTime)
             {
                 foreach(var dayOfOther in other.DesiredLearningTime)
                 {
@@ -98,18 +100,22 @@ namespace LogicLayer
         }
 
 
-        private bool IsMatchingHours(BO.Student isrealStudent, BO.Student other)
+        private bool IsMatchingHours(BO.Student israelStudent, BO.Student other)
         {
             foreach(var dt in other.DesiredLearningTime)
             {
                 var diff = GetDifferenceUtc(other.UtcOffset);
                 foreach(var t in dt.TimeInDay)
                 {
-                    var equivalentOffset = GetStudentTimes(diff, t);
-                    var equivalentTimeInIsrael = GetTimesInDayByInterval(equivalentOffset);
-                        
-                    if(isrealStudent.DesiredLearningTime.Any(l => l.Day == dt.Day 
-                    && l.TimeInDay.Any(tid => tid == equivalentTimeInIsrael)))
+                    var equivalentIntervalInWord = GetStudentTimes(diff, t);
+                    var equivalentTimeInIsrael = GetTimesInDayByInterval(equivalentIntervalInWord);
+                    if(equivalentTimeInIsrael == DO.TimesInDay.DONT_MATTER)
+                    {
+                        continue;
+                    }    
+                    if(israelStudent.DesiredLearningTime.Any(l => l.Day == dt.Day 
+                    && l.TimeInDay.Any(tid => tid == equivalentTimeInIsrael
+                     || BoundryOfTimeInDay[tid].IsIn(equivalentIntervalInWord.Start))))
                     {
                         return true;
                     }
@@ -119,7 +125,7 @@ namespace LogicLayer
         }
 
         /// <summary>
-        /// get the time interval equivalent to the isreal local time to the TimeInDay enum 
+        /// get the time interval equivalent to the israel local time to the TimeInDay enum 
         /// </summary>
         /// <param name="studentDiff"></param>
         /// <param name="timesInDay"></param>
@@ -157,14 +163,14 @@ namespace LogicLayer
             {
                 return DO.TimesInDay.NIGHT;
             }
-            return default;
+            return DO.TimesInDay.DONT_MATTER;
         }
 
         /// <summary>
         /// return the diffrens bewteen the local time in israel 
         /// to the utc offset of somewhere in the word
         /// </summary>
-        /// <param name="offset"></param>
+        /// <param name="offset">utc offset somewhere in the word</param>
         /// <returns></returns>
         TimeSpan GetDifferenceUtc(TimeSpan offset)
         {
@@ -175,9 +181,15 @@ namespace LogicLayer
     internal class TimeInterval
     {
         static TimeSpan DELTA = TimeSpan.Parse("01:00");
+        static TimeSpan MIN_TIME_TO_LEARN = TimeSpan.Parse("02:00");
         
         internal TimeSpan Start { get; set; }
         internal TimeSpan End { get; set; }
+
+        internal bool IsIn(TimeSpan time)
+        {
+            return ((Start + time) - End) >= MIN_TIME_TO_LEARN;
+        }
 
         public static bool operator ==(TimeInterval left, TimeInterval right)
         {

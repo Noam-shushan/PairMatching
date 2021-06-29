@@ -15,3 +15,6 @@ C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Gui\obj\Debug\Gui.pdb
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Gui\obj\Debug\Gui.csproj.AssemblyReference.cache
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Gui\obj\Debug\App.baml
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\Gui\obj\Debug\Gui.csproj.CopyComplete
+C:\bin\Debug\Gui.exe.config
+C:\bin\Debug\Gui.exe
+C:\bin\Debug\Gui.pdb

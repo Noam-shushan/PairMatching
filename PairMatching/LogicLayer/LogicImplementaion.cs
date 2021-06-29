@@ -9,14 +9,18 @@ namespace LogicLayer
 {
     class LogicImplementaion : IBL
     {
-        IDataLayer dal = DalFactory.GetDal("json");
-        Matching match = new Matching();
+        readonly IDataLayer dal = DalFactory.GetDal("json");
+        readonly Matching match = new Matching();
 
         public static IBL Instance { get; } = new LogicImplementaion();
 
         public IEnumerable<BO.Student> StudentList { get; set; }  
 
-        LogicImplementaion() {}
+        LogicImplementaion() 
+        {
+            StudentList = GetAllStudents();
+            BuildStudents();
+        }
 
         public void UpdateData()
         {
@@ -27,10 +31,11 @@ namespace LogicLayer
                 {
                     lastDate = new DO.LastDateOfSheets();
                 }
-                //lastDate.EnglishSheets = GoogleSheetParser.UpdateDataInEnglish(lastDate);
+                lastDate.EnglishSheets = GoogleSheetParser.UpdateDataInEnglish(lastDate);
                 lastDate.HebrewSheets = GoogleSheetParser.UpdateDataInHebrew(lastDate);
                 dal.UpdateLastDateOfSheets(lastDate);
                 StudentList = GetAllStudents();
+                BuildStudents();
             }
             catch (Exception ex)
             {
@@ -38,15 +43,15 @@ namespace LogicLayer
             }
         }
 
-        public void Match(BO.Student fromIsreal, BO.Student fromWord)
+        public void Match(BO.Student fromIsreal, BO.Student fromWorld)
         {
             try
             {
-                fromIsreal.MatchTo = fromWord.Id;
-                fromWord.MatchTo = fromIsreal.Id;
+                fromIsreal.MatchTo = fromWorld.Id;
+                fromWorld.MatchTo = fromIsreal.Id;
                 
                 var isSt = fromIsreal.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
-                var wrSt = fromWord.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
+                var wrSt = fromWorld.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
                 
                 dal.UpdateStudent(isSt);
                 dal.UpdateStudent(wrSt);
@@ -54,7 +59,7 @@ namespace LogicLayer
                 dal.AddPair(new DO.Pair()
                 {
                     FirstStudent = fromIsreal.Id,
-                    SecondStudent = fromWord.Id,
+                    SecondStudent = fromWorld.Id,
                     IsDeleted = false
                 });
             }
@@ -66,7 +71,7 @@ namespace LogicLayer
 
         public int AddStudent(BO.Student student)
         {
-            int id = 0;
+            int id;
             try
             {
                 var studDO = student.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
@@ -84,25 +89,27 @@ namespace LogicLayer
             var result = new List<BO.Student>();
             if (student.Country == "Israel")
             {
-                var studList = dal.GetAllStudentsBy(s => s.Country != "Israel");
-                foreach (var studFromWord in studList)
+                var studList = from s in StudentList 
+                               where s.Country != "Israel"
+                               select s;
+                foreach (var studFromWorld in studList)
                 {
-                    var studFromWordBo = studFromWord.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
-                    if (func(student, studFromWordBo))
+                    if (func(student, studFromWorld))
                     {
-                        result.Add(studFromWordBo);
+                        result.Add(studFromWorld);
                     }
                 }
             }
             else
             {
-                var studList = dal.GetAllStudentsBy(s => s.Country == "Israel");
+                var studList = from s in StudentList
+                               where s.Country == "Israel"
+                               select s;
                 foreach (var studFromIsreal in studList)
                 {
-                    var studFromIsrealBo = studFromIsreal.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
-                    if (func(studFromIsrealBo, student))
+                    if (func(studFromIsreal, student))
                     {
-                        result.Add(studFromIsrealBo);
+                        result.Add(studFromIsreal);
                     }
                 }
             }
@@ -131,8 +138,8 @@ namespace LogicLayer
             {
                 var studDO = dal.GetStudent(id);
                 var studBO = studDO.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
-                
-                return BuildStudent(studBO);
+                studBO.DesiredLearningTime = dal.GetAllLearningTimesBy(l => l.Id == id);
+                return studBO;
             }
             catch (Exception ex)
             {
@@ -152,12 +159,15 @@ namespace LogicLayer
             }
         }
 
-        BO.Student BuildStudent(BO.Student student)
+        void BuildStudents()
         {
-            student.DesiredLearningTime = dal.GetAllLearningTimesBy(l => l.Id == student.Id);
+            StudentList.ToList().ForEach(BuildStudent);
+        }
+
+        void BuildStudent(BO.Student student)
+        {
             student.FirstMatchingStudents = GetMatchingStudents(student, match.IsFirstMatching);
             student.SecondeMatchingStudents = GetMatchingStudents(student, match.IsMatchingStudentsCritical);
-            return student;
         }
 
     }

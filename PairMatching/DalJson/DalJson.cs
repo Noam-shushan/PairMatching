@@ -80,24 +80,14 @@ namespace DalJson
 
         public IEnumerable<Student> GetAllStudents()
         {
-            var list = JsonTools.LoadListFromJsonFile<Student>(studentsPath);
-            if(list == null)
-            {
-                return null;
-            }
-            return from s in list
+            return from s in JsonTools.LoadListFromJsonFile<Student>(studentsPath)
                    where !s.IsDeleted
                    select s;
         }
 
         public IEnumerable<Student> GetAllStudentsBy(Predicate<Student> predicate)
         {
-            var list = JsonTools.LoadListFromJsonFile<Student>(studentsPath);
-            if (list == null)
-            {
-                return null;
-            }
-            return from s in list
+            return from s in JsonTools.LoadListFromJsonFile<Student>(studentsPath)
                    where !s.IsDeleted && predicate(s)
                    select s;
         }
@@ -123,7 +113,7 @@ namespace DalJson
         public void AddPair(Pair pair)
         {
             var pairList = JsonTools.LoadListFromJsonFile<Pair>(pairsPath);
-            var pTemp = pairList.FirstOrDefault(p => p.FirstStudent == pair.FirstStudent
+            var pTemp = pairList.Find(p => p.FirstStudent == pair.FirstStudent
                                                  && p.SecondStudent == pair.SecondStudent);
             if (pTemp != null && !pTemp.IsDeleted)
             {
@@ -137,7 +127,7 @@ namespace DalJson
         public Pair GetPair(int firstStudent, int secondStudent)
         {
             var pairList = JsonTools.LoadListFromJsonFile<Pair>(pairsPath);
-            var pTemp = pairList.FirstOrDefault(p => p.FirstStudent == firstStudent
+            var pTemp = pairList.Find(p => p.FirstStudent == firstStudent
                                                  && p.SecondStudent == secondStudent);
             if (pTemp != null && !pTemp.IsDeleted)
             {
@@ -149,7 +139,7 @@ namespace DalJson
         public void RemovePair(int firstStudent, int secondStudent)
         {
             var pairList = JsonTools.LoadListFromJsonFile<Pair>(pairsPath);
-            var pTemp = pairList.FirstOrDefault(p => p.FirstStudent == firstStudent
+            var pTemp = pairList.Find(p => p.FirstStudent == firstStudent
                                                  && p.SecondStudent == secondStudent);
             if (pTemp != null && !pTemp.IsDeleted)
             {
@@ -182,24 +172,13 @@ namespace DalJson
         #region LearningTime
         public IEnumerable<LearningTime> GetAllLearningTimes()
         {
-            var list = JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath);
-            if(list == null)
-            {
-                return null;
-            }
-            return from l in list 
-                   select l;
+            return JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath);
         }
 
         public IEnumerable<LearningTime> GetAllLearningTimesBy(Predicate<LearningTime> predicate)
         {
-            var list = JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath);
-            if (list == null)
-            {
-                return null;
-            }
-            return from l in list
-                   where predicate(l)
+            return from l in JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath)
+                   where predicate(l) 
                    select l;
         }
 
@@ -223,6 +202,7 @@ namespace DalJson
         }
         #endregion
 
+        #region Last update of the data tables
         public void UpdateLastDateOfSheets(LastDateOfSheets lastDateOfSheets)
         {
             JsonTools.SaveObjToJsonFile(lastDateOfSheets, lastDateOfSheetsPath);
@@ -231,6 +211,7 @@ namespace DalJson
         public LastDateOfSheets GetLastDateOfSheets()
         {
             return JsonTools.LoadObjFromJsonFile<LastDateOfSheets>(lastDateOfSheetsPath);
-        }
+        } 
+        #endregion
     }
 }
