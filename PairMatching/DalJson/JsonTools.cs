@@ -20,10 +20,18 @@ namespace DalJson
 
         public static void SaveListToJsonFile<T>(List<T> list, string filePath)
         {
-            using (StreamWriter file = File.CreateText(dir + filePath))
+            try
             {
-                JsonSerializer serializer = new JsonSerializer() { Formatting = Formatting.Indented };
-                serializer.Serialize(file, list);
+                using (StreamWriter file = File.CreateText(dir + filePath))
+                {
+                    JsonSerializer serializer = new JsonSerializer() { Formatting = Formatting.Indented };
+                    serializer.Serialize(file, list);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
             }
         }
 
@@ -69,10 +77,18 @@ namespace DalJson
 
         public static void SaveObjToJsonFile<T>(T obj, string filePath)
         {
-            using (StreamWriter file = File.CreateText(dir + filePath))
+            try
             {
-                JsonSerializer serializer = new JsonSerializer() { Formatting = Formatting.Indented };
-                serializer.Serialize(file, obj);
+                using (StreamWriter file = File.CreateText(dir + filePath))
+                {
+                    JsonSerializer serializer = new JsonSerializer() { Formatting = Formatting.Indented };
+                    serializer.Serialize(file, obj);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
             }
         }
     }

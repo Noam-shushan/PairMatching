@@ -1,8 +1,8 @@
+C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\bin\DalJson.dll.config
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\bin\DalJson.dll
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\bin\DalJson.pdb
+C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DalJson\obj\Debug\DalJson.csproj.AssemblyReference.cache
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DalJson\obj\Debug\DalJson.csproj.CoreCompileInputs.cache
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DalJson\obj\Debug\DalJson.csproj.CopyComplete
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DalJson\obj\Debug\DalJson.dll
 C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DalJson\obj\Debug\DalJson.pdb
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DalJson\obj\Debug\DalJson.csproj.AssemblyReference.cache
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\bin\DalJson.dll.config

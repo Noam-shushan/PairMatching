@@ -7,7 +7,7 @@ using DO;
 
 namespace BO
 {
-    public class Student
+    public class Student : IEquatable<Student>
     {
         /// <summary>
         /// the id number of the student
@@ -49,10 +49,33 @@ namespace BO
         /// </summary>
         public IEnumerable<LearningTime> DesiredLearningTime { get; set; }
 
+        public string DesiredLearningTimeShow
+        {
+            get
+            {
+                return string.Join("\n", from l in DesiredLearningTime
+                              let day = Dictionaries.DaysDict[l.Day] + " : "
+                              let time = string.Join(", ", from t in l.TimeInDay
+                                                          select Dictionaries.TimesInDayDict[t])
+                              select day + time);
+            }
+        }
+
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}
         /// </summary>
-        public PrefferdTracks PrefferdTracks { get; set; }
+        public IEnumerable<PrefferdTracks> PrefferdTracks { get; set; }
+
+        public string PrefferdTracksShow
+        {
+            get
+            {
+                return string.Join(", ", from p in PrefferdTracks 
+                                         select Dictionaries.PrefferdTracksDict[p]);
+            }
+        }
+
+        public bool IsSelected { get; set; }
 
         /// <summary>
         /// the prefferd gender to lern with
@@ -84,6 +107,32 @@ namespace BO
         /// </summary>
         public LearningStyles LearningStyle { get; set; }
 
+        public string LearningStyleShow
+        {
+            get => Dictionaries.LearningStylesDict[LearningStyle];
+        }
+
+        public string SkillLevelShow
+        {
+            get => Country != "Israel" ? Dictionaries.SkillLevelsDict[SkillLevel] : "";
+        }
+
+        public string EnglishLevelShow
+        {
+            get => Country == "Israel" ? Dictionaries.EnglishLevelsDict[EnglishLevel] : "";
+        }
+
+        public string DesiredEnglishLevelShow
+        {
+            get => Country != "Israel" ? Dictionaries.EnglishLevelsDict[DesiredEnglishLevel] : "";
+        }
+
+        public string DesiredSkillLevelShow
+        {
+            get => Country == "Israel" ? Dictionaries.SkillLevelsDict[DesiredSkillLevel] : "";
+        }
+
+
         /// <summary>
         /// the utc offset of the student
         /// </summary>
@@ -97,8 +146,31 @@ namespace BO
         public IEnumerable<Student> FirstMatchingStudents { get; set; }
 
         public IEnumerable<Student> SecondeMatchingStudents { get; set; }
+        
+        public IEnumerable<Student> MatchingStudents { get; set; }
 
+        public Dictionary<string, string> OpenQuestions { get; set; }
 
+        public override string ToString()
+        {
+            return $"Name: {Name}\n" +
+                $"Country: {Country}\n" +
+                $"Gender: {Gender}";
+        }
+
+        public override bool Equals(object obj) => Equals(obj as Student);
+
+        public override int GetHashCode() => (Id, Name).GetHashCode();
+
+        public bool Equals(Student other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            return Id == other.Id;
+        }
     }
 }
 

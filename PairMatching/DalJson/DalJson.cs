@@ -10,18 +10,42 @@ namespace DalJson
 {
     public class DalJson : IDataLayer
     {
+        private Counters _counters;
+
+        public Counters GetCounters()
+        {
+            return _counters;
+        }
+
+        void SetCounters()
+        {
+            var counter = JsonTools.LoadObjFromJsonFile<Counters>(countersPath);
+            if (counter == null)
+            {
+                _counters = Counters.Instance;
+            }
+            else
+            {
+                _counters = counter;
+            }
+        }
+
         #region Singleton
         public static IDataLayer Instance { get; } = new DalJson();
 
-        DalJson() { } 
+        DalJson() 
+        {
+            SetCounters();
+        }
         #endregion
 
         #region paths
-        const string studentsPath = @"studentListJson.json";
-        const string pairsPath = @"pairListJson.json";
-        const string countersPath = @"counters.json";
-        const string learningTimePath = @"learningTime.json";
-        const string lastDateOfSheetsPath = @"lastDateOfSheets.json";
+        private readonly string studentsPath = @"studentListJson.json";
+        private readonly string pairsPath = @"pairListJson.json";
+        private readonly string countersPath = @"counters.json";
+        private readonly string learningTimePath = @"learningTime.json";
+        private readonly string lastDateOfSheetsPath = @"lastDateOfSheets.json";
+        private readonly string openQuestionsPath = @"openQuestions.json";
         #endregion
 
         #region Student
@@ -36,17 +60,12 @@ namespace DalJson
                 throw new Exception($"student {student.Id} is exists");
             }
             
-            var counter = JsonTools.LoadObjFromJsonFile<Counters>(countersPath);
-            if (counter == null)
-            {
-                counter = Counters.Instance;
-            }
-            counter.IncStudentCounter();
-            student.Id = counter.StudentCounter;
+            _counters.IncStudentCounter();
+            student.Id = _counters.StudentCounter;
             studList.Add(student);
             
             JsonTools.SaveListToJsonFile(studList, studentsPath);
-            JsonTools.SaveObjToJsonFile(counter, countersPath);
+            JsonTools.SaveObjToJsonFile(_counters, countersPath);
             return student.Id;
         }
 
@@ -92,7 +111,7 @@ namespace DalJson
                    select s;
         }
 
-        public void UpdateStudent(DO.Student student)
+        public void UpdateStudent(Student student)
         {
             var studList = JsonTools.LoadListFromJsonFile<Student>(studentsPath);
             var stud = studList.FirstOrDefault(s => s.Id == student.Id);
@@ -202,6 +221,27 @@ namespace DalJson
         }
         #endregion
 
+        #region OpenQuestions
+        public IEnumerable<OpenQuestion> GetAllOpenQuestions()
+        {
+            return JsonTools.LoadListFromJsonFile<OpenQuestion>(openQuestionsPath);
+        }
+
+        public IEnumerable<OpenQuestion> GetAllOpenQuestionsBy(Predicate<OpenQuestion> predicate)
+        {
+            return from o in JsonTools.LoadListFromJsonFile<OpenQuestion>(openQuestionsPath)
+                   where predicate(o)
+                   select o;
+        }
+
+        public void AddOpenQuestions(OpenQuestion openQuestion)
+        {
+            var list = JsonTools.LoadListFromJsonFile<OpenQuestion>(openQuestionsPath);
+            list.Add(openQuestion);
+            JsonTools.SaveListToJsonFile(list, openQuestionsPath);
+        } 
+        #endregion
+
         #region Last update of the data tables
         public void UpdateLastDateOfSheets(LastDateOfSheets lastDateOfSheets)
         {
@@ -211,7 +251,7 @@ namespace DalJson
         public LastDateOfSheets GetLastDateOfSheets()
         {
             return JsonTools.LoadObjFromJsonFile<LastDateOfSheets>(lastDateOfSheetsPath);
-        } 
+        }
         #endregion
     }
 }

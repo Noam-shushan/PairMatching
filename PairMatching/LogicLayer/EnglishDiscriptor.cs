@@ -12,7 +12,7 @@ namespace LogicLayer
     {
         public string SpreadsheetId => "1s8JObwXhv9kCdAEX6e_m4SV6N0_RRRgmoeyoG1oR82c";
 
-        public string Range => "A2:Y";
+        public string Range => "A2:W";
 
         public string SheetName => "Shalhevet Regestration form תשפ\"א(תגובות)";
 
@@ -74,7 +74,7 @@ namespace LogicLayer
             return Genders.DONT_MATTER;
         }
 
-        public PrefferdTracks GetPrefferdTracks(object row)
+        private PrefferdTracks SwitchPrefferdTracks(string row)
         {
             switch (row.ToString())
             {
@@ -92,6 +92,19 @@ namespace LogicLayer
                     return PrefferdTracks.DONT_MATTER;
             }
             return PrefferdTracks.DONT_MATTER;
+        }
+
+        public List<PrefferdTracks> GetPrefferdTracks(object row)
+        {
+            var tracksInString = row.ToString()
+                .Replace(",", "")
+                .Split(' ');
+            var result = new List<PrefferdTracks>();
+            foreach (var s in tracksInString)
+            {
+                result.Add(SwitchPrefferdTracks(s));
+            }
+            return result;
         }
 
         public SkillLevels GetSkillLevel(object row)

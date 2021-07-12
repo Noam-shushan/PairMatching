@@ -14,12 +14,11 @@ namespace LogicLayer
 
         public static IBL Instance { get; } = new LogicImplementaion();
 
-        public IEnumerable<BO.Student> StudentList { get; set; }  
+        public IEnumerable<BO.Student> StudentList { get; set; }
 
-        LogicImplementaion() 
+        LogicImplementaion()
         {
-            StudentList = GetAllStudents();
-            BuildStudents();
+            update();
         }
 
         public void UpdateData()
@@ -34,13 +33,18 @@ namespace LogicLayer
                 lastDate.EnglishSheets = GoogleSheetParser.UpdateDataInEnglish(lastDate);
                 lastDate.HebrewSheets = GoogleSheetParser.UpdateDataInHebrew(lastDate);
                 dal.UpdateLastDateOfSheets(lastDate);
-                StudentList = GetAllStudents();
-                BuildStudents();
+                update();
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        private void update()
+        {
+            StudentList = GetAllStudents();
+            BuildStudents();
         }
 
         public void Match(BO.Student fromIsreal, BO.Student fromWorld)
@@ -50,11 +54,12 @@ namespace LogicLayer
                 fromIsreal.MatchTo = fromWorld.Id;
                 fromWorld.MatchTo = fromIsreal.Id;
                 
-                var isSt = fromIsreal.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
-                var wrSt = fromWorld.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
-                
-                dal.UpdateStudent(isSt);
-                dal.UpdateStudent(wrSt);
+                var fromIsrealDo = fromIsreal.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
+                fromIsrealDo.PrefferdTracks = fromIsreal.PrefferdTracks;
+                var fromWorldDo = fromWorld.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
+                fromWorldDo.PrefferdTracks = fromWorld.PrefferdTracks;
+                dal.UpdateStudent(fromIsrealDo);
+                dal.UpdateStudent(fromWorldDo);
                 
                 dal.AddPair(new DO.Pair()
                 {
@@ -62,6 +67,8 @@ namespace LogicLayer
                     SecondStudent = fromWorld.Id,
                     IsDeleted = false
                 });
+                // update the students from the data base
+                update();
             }
             catch (Exception ex)
             {
@@ -84,50 +91,17 @@ namespace LogicLayer
             return id;
         }
 
-        private IEnumerable<BO.Student> GetMatchingStudents(BO.Student student, Func<BO.Student, BO.Student, bool> func)
-        {
-            var result = new List<BO.Student>();
-            if (student.Country == "Israel")
-            {
-                var studList = from s in StudentList 
-                               where s.Country != "Israel"
-                               select s;
-                foreach (var studFromWorld in studList)
-                {
-                    if (func(student, studFromWorld))
-                    {
-                        result.Add(studFromWorld);
-                    }
-                }
-            }
-            else
-            {
-                var studList = from s in StudentList
-                               where s.Country == "Israel"
-                               select s;
-                foreach (var studFromIsreal in studList)
-                {
-                    if (func(studFromIsreal, student))
-                    {
-                        result.Add(studFromIsreal);
-                    }
-                }
-            }
-
-            return result;
-        }
-
         public IEnumerable<BO.Student> GetAllStudents()
         {
-            return from sDO in dal.GetAllStudents()
-                   let sBO = GetStudent(sDO.Id)
+            return from id in Enumerable.Range(1, dal.GetCounters().StudentCounter)
+                   let sBO = GetStudent(id)
                    select sBO;
         }
 
         public IEnumerable<BO.Student> GetAllStudentsBy(Predicate<BO.Student> predicate)
         {
-            return from sDO in dal.GetAllStudents()
-                   let sBO = GetStudent(sDO.Id)
+            return from id in Enumerable.Range(1, dal.GetCounters().StudentCounter)
+                   let sBO = GetStudent(id)
                    where predicate(sBO)
                    select sBO;
         }
@@ -138,7 +112,18 @@ namespace LogicLayer
             {
                 var studDO = dal.GetStudent(id);
                 var studBO = studDO.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
+               
+                studBO.PrefferdTracks = studDO.PrefferdTracks.Distinct();
+                
                 studBO.DesiredLearningTime = dal.GetAllLearningTimesBy(l => l.Id == id);
+
+                var openQuestions = dal.GetAllOpenQuestionsBy(o => o.Id == id);
+                studBO.OpenQuestions = new Dictionary<string, string>();
+                foreach(var o in openQuestions)
+                {
+                    studBO.OpenQuestions.Add(o.Question, o.Answer);
+                }
+
                 return studBO;
             }
             catch (Exception ex)
@@ -161,14 +146,62 @@ namespace LogicLayer
 
         void BuildStudents()
         {
-            StudentList.ToList().ForEach(BuildStudent);
+            var temp = new List<BO.Student>();
+            foreach(var s in StudentList)
+            {
+                temp.Add(BuildStudent(s));
+            }
+            StudentList = temp;
         }
 
-        void BuildStudent(BO.Student student)
+        BO.Student BuildStudent(BO.Student student)
         {
             student.FirstMatchingStudents = GetMatchingStudents(student, match.IsFirstMatching);
             student.SecondeMatchingStudents = GetMatchingStudents(student, match.IsMatchingStudentsCritical);
+            student.SecondeMatchingStudents = student.SecondeMatchingStudents.Except(student.FirstMatchingStudents);
+            student.SecondeMatchingStudents.Count();
+            return student;
         }
 
+        private IEnumerable<BO.Student> GetMatchingStudents(BO.Student student, Func<BO.Student, BO.Student, bool> func)
+        {
+            var result = new List<BO.Student>();
+            if (student.Country == "Israel")
+            {
+                var studList = from s in StudentList
+                               where s.Country != "Israel" && s.MatchTo == 0
+                               select s;
+                foreach (var studFromWorld in studList)
+                {
+                    if (func(student, studFromWorld))
+                    {
+                        result.Add(studFromWorld);
+                    }
+                }
+            }
+            else
+            {
+                var studList = from s in StudentList
+                               where s.Country == "Israel" && s.MatchTo == 0
+                               select s;
+                foreach (var studFromIsreal in studList)
+                {
+                    if (func(studFromIsreal, student))
+                    {
+                        result.Add(studFromIsreal);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public IEnumerable<Tuple<BO.Student, BO.Student>> GetAllPairs()
+        {
+            return from p in dal.GetAllPairs()
+                   let s1 = GetStudent(p.FirstStudent)
+                   let s2 = GetStudent(p.SecondStudent)
+                   select new Tuple<BO.Student, BO.Student>(s1, s2);
+        }
     }
 }

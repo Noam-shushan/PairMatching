@@ -47,7 +47,7 @@ namespace DO
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}
         /// </summary>
-        public PrefferdTracks PrefferdTracks { get; set; }
+        public IEnumerable<PrefferdTracks> PrefferdTracks { get; set; }
 
         /// <summary>
         /// the prefferd gender to lern with

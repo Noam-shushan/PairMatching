@@ -2,40 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 
 namespace LogicLayer
 {
-    public class Table
-    {
-        public string Name { get; set; }
-        public IStudentDescriptor StudentDescriptor { get; set; }
-        public IList<IList<object>> TablaValues { get; set; } 
-    }
-
-
     public class GoogleSheetParser
-    {
-        private static readonly IBL bl = BlFactory.GetBL();
+    {   
         private static readonly DataLayer.IDataLayer dal = DataLayer.DalFactory.GetDal("json");
+        
         private static readonly Dictionary<string, int> indexHebSheet = new Dictionary<string, int>();
+        
         private static readonly Dictionary<string, int> indexEngSheet = new Dictionary<string, int>();
-        static List<Task<IList<IList<object>>>> tasks = new List<Task<IList<IList<object>>>>();
-        static GoogleSheetReader sheetReader = new GoogleSheetReader();
+        
+        private static readonly GoogleSheetReader sheetReader = new GoogleSheetReader();
+        
+        private static readonly int TIME_COLUMN_START = 2;      
+        private static readonly int TIME_COLUMN_END = 7;
 
         static GoogleSheetParser()
         {
             setDict();
-        }
-
-        //TODO
-        void GetTable(IStudentDescriptor studentDescriptor, string name)
-        {
-            Table table = new Table { StudentDescriptor = studentDescriptor, Name = name };
-            tasks.Add(sheetReader.ReadEntriesAsync(studentDescriptor.SpreadsheetId,
-                studentDescriptor.Range));
-            var l = Task.WhenAll(tasks);
         }
 
 
@@ -66,12 +54,11 @@ namespace LogicLayer
                 return lastUpdate.HebrewSheets;
             }
 
-            List<BO.Student> studentsList = new List<BO.Student>();
             foreach (var row in table)
             {
                 try
                 {
-                    int id = bl.AddStudent(new BO.Student
+                    int id = dal.AddStudent(new DO.Student
                     {
                         Name = row[indexHebSheet["Name"]].ToString(),
                         PrefferdTracks = studentDescriptor.GetPrefferdTracks(row[indexHebSheet["PrefferdTracks"]]),
@@ -84,19 +71,12 @@ namespace LogicLayer
                         PhoneNumber = row[indexHebSheet["PhoneNumber"]].ToString(),
                         Email = row[indexHebSheet["Email"]].ToString()
                     });
-                    for (int i = 2; i < 7; i++)
-                    {
-                        dal.AddLearningTime(new DO.LearningTime
-                        {
-                            Id = id,
-                            Day = studentDescriptor.GetDay(i),
-                            TimeInDay = studentDescriptor.GetTimesInDey(row[i])
-                        });
-                    }
+                    addLearningTime(id, row, studentDescriptor);
+                    QandAheb(id, row);
                 }
                 catch (Exception ex)
                 {
-                    new Exception(ex.Message);
+                    throw new Exception(ex.Message);
                 }
             }
 
@@ -128,15 +108,12 @@ namespace LogicLayer
             {
                 return lastUpdate.EnglishSheets;
             }
-
-            List<DO.LearningTime> learningTimesList = new List<DO.LearningTime>();
-            List<BO.Student> studentsList = new List<BO.Student>();
             
-            foreach (var row in table)
+            foreach (IList<object> row in table)
             {
                 try
                 {
-                    int id = bl.AddStudent(new BO.Student
+                    int id = dal.AddStudent(new DO.Student
                     {
                         Name = row[indexEngSheet["Name"]].ToString(),
                         PrefferdTracks = studentDescriptor.GetPrefferdTracks(row[indexEngSheet["PrefferdTracks"]]),
@@ -150,16 +127,8 @@ namespace LogicLayer
                         PhoneNumber = row[indexEngSheet["PhoneNumber"]].ToString(),
                         Email = row[indexEngSheet["Email"]].ToString()
                     });
-
-                    for (int i = 2; i < 7; i++)
-                    {
-                        dal.AddLearningTime(new DO.LearningTime
-                        {
-                            Id = id,
-                            Day = studentDescriptor.GetDay(i),
-                            TimeInDay = studentDescriptor.GetTimesInDey(row[i])
-                        });
-                    }
+                    addLearningTime(id, row, studentDescriptor);
+                    QandAeng(id, row);
                 }
                 catch (Exception ex)
                 {
@@ -169,6 +138,132 @@ namespace LogicLayer
             }
 
             return DateTime.Parse(table.Last()[0].ToString());
+        }
+
+        private static void addLearningTime(int id, IList<object> row, IStudentDescriptor studentDescriptor)
+        {
+            for (int i = TIME_COLUMN_START; i < TIME_COLUMN_END; i++)
+            {
+                dal.AddLearningTime(new DO.LearningTime
+                {
+                    Id = id,
+                    Day = studentDescriptor.GetDay(i),
+                    TimeInDay = studentDescriptor.GetTimesInDey(row[i])
+                });
+            }
+        }
+
+        private static void QandAheb(int id, IList<object> row)
+        {
+            try
+            {
+                dal.AddOpenQuestions(new DO.OpenQuestion
+                {
+                    Id = id,
+                    Answer = SpliceText(row[indexHebSheet["Personal information"]].ToString()),
+                    Question = "Personal information"
+                });
+
+                dal.AddOpenQuestions(new DO.OpenQuestion
+                {
+                    Id = id,
+                    Answer = SpliceText(row[indexHebSheet["What are your hopes and expectations from this program"]].ToString()),
+                    Question = "What are your hopes and expectations from this program"
+                });
+
+                dal.AddOpenQuestions(new DO.OpenQuestion
+                {
+                    Id = id,
+                    Answer = SpliceText(row[indexHebSheet["Personality trates"]].ToString()),
+                    Question = "Personality trates"
+                });
+
+                dal.AddOpenQuestions(new DO.OpenQuestion
+                {
+                    Id = id,
+                    Answer = SpliceText(row[indexHebSheet["Who introduced you to this program"]].ToString()),
+                    Question = "Who introduced you to this program"
+                });
+
+                dal.AddOpenQuestions(new DO.OpenQuestion
+                {
+                    Id = id,
+                    Answer = SpliceText(row[indexHebSheet["Additional information"]].ToString()),
+                    Question = "Additional information"
+                });
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                // some rows dont have the same rage
+            }
+        }
+
+        private static void QandAeng(int id, IList<object> row)
+        {
+            try
+            {
+                dal.AddOpenQuestions(new DO.OpenQuestion
+                {
+                    Id = id,
+                    Answer = SpliceText(row[indexEngSheet["Personal information"]].ToString()),
+                    Question = "Personal information"
+                });
+
+                dal.AddOpenQuestions(new DO.OpenQuestion
+                {
+                    Id = id,
+                    Answer = SpliceText(row[indexEngSheet["What are your hopes and expectations from this program"]].ToString()),
+                    Question = "What are your hopes and expectations from this program"
+                });
+
+                dal.AddOpenQuestions(new DO.OpenQuestion
+                {
+                    Id = id,
+                    Answer = SpliceText(row[indexEngSheet["Personality trates"]].ToString()),
+                    Question = "Personality trates"
+                });
+
+                dal.AddOpenQuestions(new DO.OpenQuestion
+                {
+                    Id = id,
+                    Answer = SpliceText(row[indexEngSheet["Who introduced you to this program"]].ToString()),
+                    Question = "Who introduced you to this program"
+                });
+
+                dal.AddOpenQuestions(new DO.OpenQuestion
+                {
+                    Id = id,
+                    Answer = SpliceText(row[indexEngSheet["Additional information"]].ToString()),
+                    Question = "Additional information"
+                });
+
+                dal.AddOpenQuestions(new DO.OpenQuestion
+                {
+                    Id = id,
+                    Answer = SpliceText(row[indexEngSheet["Country and City of residence"]].ToString()),
+                    Question = "Country and City of residence"
+                });
+
+
+                dal.AddOpenQuestions(new DO.OpenQuestion
+                {
+                    Id = id,
+                    Answer = SpliceText(row[indexEngSheet["Anything else you would like to tell us"]].ToString()),
+                    Question = "Anything else you would like to tell us"
+                });
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                // some rows dont have the same rage
+            }
+        }
+
+        private static string SpliceText(string text)
+        {
+            return string.Join(Environment.NewLine, text.Split()
+                .Select((word, index) => new { word, index })
+                .GroupBy(x => x.index / 6)
+                .Select(grp => string.Join(" ", grp.Select(x => x.word))));
         }
 
         static void setDict()
@@ -182,6 +277,12 @@ namespace LogicLayer
             indexHebSheet.Add("Gender", 12);
             indexHebSheet.Add("PhoneNumber", 13);
             indexHebSheet.Add("Email", 14);
+            indexHebSheet.Add("Personal information", 15);
+            indexHebSheet.Add("What are your hopes and expectations from this program", 16);
+            indexHebSheet.Add("Personality trates", 17);
+            indexHebSheet.Add("Who introduced you to this program", 18);
+            indexHebSheet.Add("Additional information", 19);
+
 
             indexEngSheet.Add("Name", 1);
             indexEngSheet.Add("PrefferdTracks", 7);
@@ -194,6 +295,13 @@ namespace LogicLayer
             indexEngSheet.Add("UtcOffset", 13);
             indexEngSheet.Add("PhoneNumber", 14);
             indexEngSheet.Add("Email", 15);
+            indexEngSheet.Add("Country and City of residence", 16);
+            indexEngSheet.Add("Personal information", 17);
+            indexEngSheet.Add("Personality trates", 18);
+            indexEngSheet.Add("Additional information", 19);
+            indexEngSheet.Add("What are your hopes and expectations from this program", 19);
+            indexEngSheet.Add("Anything else you would like to tell us", 20);
+            indexEngSheet.Add("Who introduced you to this program", 21);
         }
     }
 }

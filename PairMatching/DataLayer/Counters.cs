@@ -12,7 +12,10 @@ namespace DataLayer
 
         public static Counters Instance { get; } = new Counters();
 
-        Counters() { }
+        Counters() 
+        {
+            
+        }
 
         public int StudentCounter
         {

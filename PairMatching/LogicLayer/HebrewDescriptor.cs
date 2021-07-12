@@ -9,7 +9,7 @@ namespace LogicLayer
 {
     class HebrewDescriptor : IStudentDescriptor
     {
-        public string Range { get => "A2:Y"; }
+        public string Range { get => "A2:Z"; }
 
         public string SpreadsheetId { get => "17gvL05Ar-0nCAKvLtAj_HUXDCmXs5L61qk_lkBSUIFo"; }
 
@@ -73,7 +73,7 @@ namespace LogicLayer
             return Genders.DONT_MATTER;
         }
 
-        public PrefferdTracks GetPrefferdTracks(object row)
+        private PrefferdTracks SwitchPrefferdTracks(string row)
         {
             switch (row.ToString())
             {
@@ -93,13 +93,27 @@ namespace LogicLayer
             return PrefferdTracks.DONT_MATTER;
         }
 
+        public List<PrefferdTracks> GetPrefferdTracks(object row)
+        {
+            var tracksInString = row.ToString()
+                .Replace(",", "")
+                .Split(' ');
+            var result = new List<PrefferdTracks>();
+            foreach (var s in tracksInString)
+            {
+                result.Add(SwitchPrefferdTracks(s));
+            }
+            return result;
+        }
+
+
         public SkillLevels GetSkillLevel(object row)
         {
             switch (row.ToString())
             {
                 case "טובה":
                     return SkillLevels.ADVANCED;
-                case "בינונית":
+                case "רמת שיחה (בינונית)":
                     return SkillLevels.MODERATE;
                 case "מתחיל":
                     return SkillLevels.BEGGINER;

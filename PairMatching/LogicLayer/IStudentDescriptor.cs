@@ -18,7 +18,7 @@ namespace LogicLayer
         SkillLevels GetSkillLevel(object row);
         EnglishLevels GetEnglishLevel(object row);
         Genders GetPrefferdGender(object row);
-        PrefferdTracks GetPrefferdTracks(object row);
+        List<PrefferdTracks> GetPrefferdTracks(object row);
         TimeSpan GetStudentOffset(object v);
         Days GetDay(int i);
         IEnumerable<TimesInDay> GetTimesInDey(object row);

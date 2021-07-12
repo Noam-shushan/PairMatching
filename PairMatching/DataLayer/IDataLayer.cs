@@ -8,6 +8,8 @@ namespace DataLayer
 {
     public interface IDataLayer
     {
+        Counters GetCounters();
+
         #region Student
         /// <summary>
         /// Get all the students from the data source
@@ -93,7 +95,17 @@ namespace DataLayer
         void RemovePair(int firstStudent, int secondStudent);
         #endregion
 
+        #region OpenQuestions
+        IEnumerable<DO.OpenQuestion> GetAllOpenQuestions();
+
+        IEnumerable<DO.OpenQuestion> GetAllOpenQuestionsBy(Predicate<DO.OpenQuestion> predicate);
+
+        void AddOpenQuestions(DO.OpenQuestion openQuestion);
+        #endregion
+
+        #region LastDateOfSheets
         void UpdateLastDateOfSheets(DO.LastDateOfSheets lastDateOfSheets);
-        DO.LastDateOfSheets GetLastDateOfSheets();
+        DO.LastDateOfSheets GetLastDateOfSheets(); 
+        #endregion
     }
 }

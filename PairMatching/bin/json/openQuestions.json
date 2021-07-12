@@ -1,0 +1,952 @@
+[
+  {
+    "Id": 1,
+    "Question": "Personal information",
+    "Answer": ""
+  },
+  {
+    "Id": 1,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": ""
+  },
+  {
+    "Id": 1,
+    "Question": "Personality trates",
+    "Answer": ""
+  },
+  {
+    "Id": 1,
+    "Question": "Who introduced you to this program",
+    "Answer": ""
+  },
+  {
+    "Id": 1,
+    "Question": "Additional information",
+    "Answer": ""
+  },
+  {
+    "Id": 1,
+    "Question": "Country and City of residence",
+    "Answer": ""
+  },
+  {
+    "Id": 1,
+    "Question": "Anything else you would like to tell us",
+    "Answer": ""
+  },
+  {
+    "Id": 2,
+    "Question": "Personal information",
+    "Answer": ""
+  },
+  {
+    "Id": 2,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": ""
+  },
+  {
+    "Id": 2,
+    "Question": "Personality trates",
+    "Answer": ""
+  },
+  {
+    "Id": 2,
+    "Question": "Who introduced you to this program",
+    "Answer": ""
+  },
+  {
+    "Id": 2,
+    "Question": "Additional information",
+    "Answer": ""
+  },
+  {
+    "Id": 2,
+    "Question": "Country and City of residence",
+    "Answer": ""
+  },
+  {
+    "Id": 2,
+    "Question": "Anything else you would like to tell us",
+    "Answer": ""
+  },
+  {
+    "Id": 3,
+    "Question": "Personal information",
+    "Answer": ""
+  },
+  {
+    "Id": 3,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": ""
+  },
+  {
+    "Id": 3,
+    "Question": "Personality trates",
+    "Answer": ""
+  },
+  {
+    "Id": 3,
+    "Question": "Who introduced you to this program",
+    "Answer": ""
+  },
+  {
+    "Id": 3,
+    "Question": "Additional information",
+    "Answer": ""
+  },
+  {
+    "Id": 3,
+    "Question": "Country and City of residence",
+    "Answer": ""
+  },
+  {
+    "Id": 3,
+    "Question": "Anything else you would like to tell us",
+    "Answer": ""
+  },
+  {
+    "Id": 4,
+    "Question": "Personal information",
+    "Answer": ""
+  },
+  {
+    "Id": 4,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": ""
+  },
+  {
+    "Id": 4,
+    "Question": "Personality trates",
+    "Answer": ""
+  },
+  {
+    "Id": 4,
+    "Question": "Who introduced you to this program",
+    "Answer": ""
+  },
+  {
+    "Id": 4,
+    "Question": "Additional information",
+    "Answer": ""
+  },
+  {
+    "Id": 4,
+    "Question": "Country and City of residence",
+    "Answer": ""
+  },
+  {
+    "Id": 4,
+    "Question": "Anything else you would like to tell us",
+    "Answer": ""
+  },
+  {
+    "Id": 5,
+    "Question": "Personal information",
+    "Answer": ""
+  },
+  {
+    "Id": 5,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": ""
+  },
+  {
+    "Id": 5,
+    "Question": "Personality trates",
+    "Answer": ""
+  },
+  {
+    "Id": 5,
+    "Question": "Who introduced you to this program",
+    "Answer": ""
+  },
+  {
+    "Id": 5,
+    "Question": "Additional information",
+    "Answer": ""
+  },
+  {
+    "Id": 5,
+    "Question": "Country and City of residence",
+    "Answer": ""
+  },
+  {
+    "Id": 5,
+    "Question": "Anything else you would like to tell us",
+    "Answer": ""
+  },
+  {
+    "Id": 6,
+    "Question": "Personal information",
+    "Answer": "בת 63.5. אמא למשפחה ברוכת ילדים.\r\nמורה בעבר. עכשיו בפנסיה. אוהבת את\r\nארץ ישראל מאוד. מטיילת הרבה. יוצרת\r\nאומנות בהרבה תחומים. אוהבת אנשים. מעבירה\r\nשיעורים לנשים. שמחה במה שה' הטוב\r\nנותן לנו בחסדו ובטובו בכל יום\r\nתמיד"
+  },
+  {
+    "Id": 6,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "הקשר עם מישהו מהתפוצות. אשמח ללמוד\r\nאיתה גם פרקי אבות/תפילה ובכלל מה\r\nשאוכל ממה שהיא תרצה"
+  },
+  {
+    "Id": 6,
+    "Question": "Personality trates",
+    "Answer": "אשה מאוד שמחה. אוהבת אנשים וילדים.\r\nאוהבת ללמוד וללמד. מציירת. מטיילת בחבורת\r\nנהגות ג'יפים בארץ. מתנדבת בכל מיני\r\nפורומים. אוהבת לארגן  פרוייקטים. שמחה\r\nבמשפחה הגדולה שברך אותנו ה'"
+  },
+  {
+    "Id": 6,
+    "Question": "Who introduced you to this program",
+    "Answer": "עבר בסטטוסים"
+  },
+  {
+    "Id": 6,
+    "Question": "Additional information",
+    "Answer": "אשמח גם לארח יהודים מחו'ל כשצריך.\r\nאנחנו גרים במירון וב'ה הבית גדול"
+  },
+  {
+    "Id": 7,
+    "Question": "Personal information",
+    "Answer": "39 לומד בכולל "
+  },
+  {
+    "Id": 7,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "זיכוי הרבים"
+  },
+  {
+    "Id": 7,
+    "Question": "Personality trates",
+    "Answer": "שמחה . לומד בזריזות ."
+  },
+  {
+    "Id": 7,
+    "Question": "Who introduced you to this program",
+    "Answer": "אלי אנג'ל"
+  },
+  {
+    "Id": 8,
+    "Question": "Personal information",
+    "Answer": "אני בן 20, חייל בצה\"ל. למדתי\r\nבישיבה תיכונית (שפע) ולאחר מכן למדתי\r\nשנה וחצי בישיבת הגוש במסגרת ההסדר.\r\n"
+  },
+  {
+    "Id": 8,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "מעניין ללמוד עם אנשים מארצות אחרות.\r\nמלבד זאת, יש לי קשר מסויים\r\nלתלמידי הרב עדין, והייתי רוצה להשתתף\r\nבדברים המאורגנים על ידיהם."
+  },
+  {
+    "Id": 8,
+    "Question": "Personality trates",
+    "Answer": "אני אוהב לחקור דברים לעומק ולדון\r\nבנושאים אקראיים. אני משתדל (בדרך כלל)\r\nלהיות סובלני כלפי אנשים שאני לא\r\nמסכים איתם - זה עוזר אם\r\nאני מצפה מראש לחוסר הסכמה לגבי\r\nהנושא. אני מאוד אוהב לקרוא ספרי\r\nפנטזיה ולדון על נושאים סמי-פילוסופיים אקראיים\r\n(לא פילוסופיה רצינית)."
+  },
+  {
+    "Id": 8,
+    "Question": "Who introduced you to this program",
+    "Answer": "טמיר פלנט"
+  },
+  {
+    "Id": 9,
+    "Question": "Personal information",
+    "Answer": "תקוע שיעור ד"
+  },
+  {
+    "Id": 9,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": ""
+  },
+  {
+    "Id": 9,
+    "Question": "Personality trates",
+    "Answer": ""
+  },
+  {
+    "Id": 9,
+    "Question": "Who introduced you to this program",
+    "Answer": "כינוס"
+  },
+  {
+    "Id": 10,
+    "Question": "Personal information",
+    "Answer": "חייל ברבנות הצבאית "
+  },
+  {
+    "Id": 10,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": ""
+  },
+  {
+    "Id": 10,
+    "Question": "Personality trates",
+    "Answer": "שמחה"
+  },
+  {
+    "Id": 10,
+    "Question": "Who introduced you to this program",
+    "Answer": "עתניאל"
+  },
+  {
+    "Id": 11,
+    "Question": "Personal information",
+    "Answer": ""
+  },
+  {
+    "Id": 11,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": ""
+  },
+  {
+    "Id": 11,
+    "Question": "Personality trates",
+    "Answer": ""
+  },
+  {
+    "Id": 11,
+    "Question": "Who introduced you to this program",
+    "Answer": "תקוע"
+  },
+  {
+    "Id": 12,
+    "Question": "Personal information",
+    "Answer": "בוגרת אולפנה, בני עקיבא וכו, בת\r\n20, אחרי שנת שירות לאומי באח\"י,\r\nלומדת השנה במדרשת נשמת  ןבעז\"ה\r\nמתכננת להשאר לשיעור ב שנה הבאה\r\n(:"
+  },
+  {
+    "Id": 12,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "ללמוד תורה חוצה יבשות, חיבור של\r\nהעם היהודי בכל העולם, ללמוד מאנשים\r\nשלא חיים בעולם שלי (:"
+  },
+  {
+    "Id": 12,
+    "Question": "Personality trates",
+    "Answer": "אוהבת ללמוד תורה בעיקר דרך חיבור\r\nלחיי המעשה, מציירת ומקשקשת בשעות הפנאי\r\nשלי, קוראת הרבה בעיקר בשבת, בחורה\r\nשמחה- כך אומרים (:  פרקטית\r\nעניינית, פחות רוחניקית וחסידית יותר בחורה\r\nשל קרקע ובמושגים שלנו- יותר רמבמיסטית\r\nכזה (:  מחוברת למה שקורה\r\nבעולם, בישראל וכו וכו  "
+  },
+  {
+    "Id": 12,
+    "Question": "Who introduced you to this program",
+    "Answer": "הודעה בווצאפ (:"
+  },
+  {
+    "Id": 12,
+    "Question": "Additional information",
+    "Answer": "בחורה באזור הגיל שלי זה יהיה\r\nנחמד "
+  },
+  {
+    "Id": 13,
+    "Question": "Personal information",
+    "Answer": "בת 31, עצמאית - מעניקה שירותי\r\nאוטומציה והתייעלות לעסקים, מתגוררת בירושלים, למדתי\r\nבבתי מדרש שונים בעבר"
+  },
+  {
+    "Id": 13,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "האמת שאני ממש רוצה לתרגל את\r\nהאנגלית שלי שהולכת ומחלידה ככל שאני\r\nלא משתמשת בה :) וגם אפשרות\r\nהחיבור עם מישהי מארץ אחרת סביב\r\nהתרבות היהודית, והלימוד בחברותא מושכים אותי."
+  },
+  {
+    "Id": 13,
+    "Question": "Personality trates",
+    "Answer": "אני אמא לשני ילדים קטנים, אוהבת\r\nללמוד תורה ובכלל אבל לצערי במסגרת\r\nהשגרה הנוכחית שלי מסגרת של בית\r\nמדרש היא תובענית מדי עבורי. אוהבת\r\nמוזיקה ותרבות, ספרים וכתיבה."
+  },
+  {
+    "Id": 13,
+    "Question": "Who introduced you to this program",
+    "Answer": "ראיתי פרסום בפייסבוק"
+  },
+  {
+    "Id": 14,
+    "Question": "Personal information",
+    "Answer": "מורה, תואר שני, דתי לאומי"
+  },
+  {
+    "Id": 14,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "קשר עם התפוצות"
+  },
+  {
+    "Id": 14,
+    "Question": "Personality trates",
+    "Answer": "אוהב תחומים שונים - מחשבת, תרבות\r\nכללית וכו'"
+  },
+  {
+    "Id": 14,
+    "Question": "Who introduced you to this program",
+    "Answer": "חבר בוגר מקו\"ח"
+  },
+  {
+    "Id": 15,
+    "Question": "Personal information",
+    "Answer": "גיל: 19, כרגע מסיימת מדרשה (מגדל\r\nעֹז), שנה הבאה עושה שירות לאומי\r\nבמעון לנשים מוכות, דתיה לאומית:) "
+  },
+  {
+    "Id": 15,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "אני רוצה להשקיע גם באספקט הלימודי\r\nבשנת השירות שלי שנה הבאה, להמשיך\r\nלהנות מהלימוד לאחר המדרשה. אני חושבת\r\nשהתכנית הזו ממש מקסימה ותקדם את\r\nהרצון שלי ללמוד לידי מעשה."
+  },
+  {
+    "Id": 15,
+    "Question": "Personality trates",
+    "Answer": "אני אוהבת לצחוק, לצפות בסרטים והצגות,\r\nלשמוע מוזיקה ולשיר, ללמוד ולהתפלסף ולהכיר\r\nאנשים חדשים:)"
+  },
+  {
+    "Id": 15,
+    "Question": "Who introduced you to this program",
+    "Answer": "דרך רעות ונתן (הסבירו על התכנית\r\nאצלנו במדרשה והתהלבתי:)"
+  },
+  {
+    "Id": 15,
+    "Question": "Additional information",
+    "Answer": "אמממ לא:)"
+  },
+  {
+    "Id": 16,
+    "Question": "Personal information",
+    "Answer": "שירות לאומי שנה הבאה , בת\r\n19, לומדת השנה בבית מדרש מגדל\r\nעז , מגדירה את עצמי כדתייה"
+  },
+  {
+    "Id": 16,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "ללמוד עם מישהי מעבר הים ,\r\nמישהי שאני לא מכירה "
+  },
+  {
+    "Id": 16,
+    "Question": "Personality trates",
+    "Answer": ", אוהבת ללמוד ולהעמיק ברעיונות של\r\nהלימוד, מציירת וסבלנית, "
+  },
+  {
+    "Id": 16,
+    "Question": "Who introduced you to this program",
+    "Answer": "רעות "
+  },
+  {
+    "Id": 16,
+    "Question": "Additional information",
+    "Answer": "אם יש אופציה ללימוד בימי שישי,\r\nאו לימוד כל שבועיים .. עדיף\r\n:) "
+  },
+  {
+    "Id": 17,
+    "Question": "Personal information",
+    "Answer": "ישיבה"
+  },
+  {
+    "Id": 17,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "להפיץ תורה ויהדות כמה שיותר"
+  },
+  {
+    "Id": 17,
+    "Question": "Personality trates",
+    "Answer": ""
+  },
+  {
+    "Id": 17,
+    "Question": "Who introduced you to this program",
+    "Answer": "אני מתחבר מאד להרב שטיינזלץ דרך\r\nספר התניא שלו לכן ימא שדרך\r\nהאתר של מרכז שטיינזלץ הגעתי"
+  },
+  {
+    "Id": 18,
+    "Question": "Personal information",
+    "Answer": "בן 46. נשוי + 4, דתי\r\nליברלי, תואר שני בחינוך כלכלה פילוסופיה\r\nמטפל במוסיקה ומחנך החינוך מיוחד"
+  },
+  {
+    "Id": 18,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "חיבור לאנשים"
+  },
+  {
+    "Id": 18,
+    "Question": "Personality trates",
+    "Answer": "אוהב מאד לקרוא לשמוע מוסיקה, לבשל.\r\nמאמין בלימוד מעמיק ורחב אופקים. מנסה\r\nלמצוא חיבור אישי ללימוד. פחות מתעניין\r\nבהלכה ויותר במשמעות"
+  },
+  {
+    "Id": 18,
+    "Question": "Who introduced you to this program",
+    "Answer": "מדיה"
+  },
+  {
+    "Id": 19,
+    "Question": "Personal information",
+    "Answer": "בן 35 בוגר עורך דין בוגר\r\nישיבת הסדר בוגר שליחות בארה״ב "
+  },
+  {
+    "Id": 19,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "ההיכרות והיחשפות לאחינו שבתפוצות "
+  },
+  {
+    "Id": 19,
+    "Question": "Personality trates",
+    "Answer": "אוהב מאוד ספורט ספרים פוליטיקה \r\nישראלי "
+  },
+  {
+    "Id": 19,
+    "Question": "Who introduced you to this program",
+    "Answer": "נחשפתי בפייסבוק אכן יוזמה מדהימה "
+  },
+  {
+    "Id": 19,
+    "Question": "Additional information",
+    "Answer": "מעדיף מישהו או מישהו רווקה (כמוני)\r\nאבל לא קריטי "
+  },
+  {
+    "Id": 20,
+    "Question": "Personal information",
+    "Answer": "בן 18 (כמעט 19), תלמיד בשיעור\r\nא בישיבת ירוחם. בן של עולים\r\nמארהב וברזיל."
+  },
+  {
+    "Id": 20,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "קשר עם יהדות התפוצות. בין אם\r\nזה עם יהודים מזרמים וקהילות אחרות\r\nשחשוב שיהיה קשר ביננו, ובין אם\r\nזה קשר עם עולם התורה בתפוצות\r\nשאין מספיק חיבור בינו לבין עולם\r\nהתורה בארץ. "
+  },
+  {
+    "Id": 20,
+    "Question": "Personality trates",
+    "Answer": "אני אוהב ללמוד, וחשוב לי הקשר\r\nבין העם בארץ לתפוצות. זה קשור\r\nלזה שאני בן של עולים וכל\r\nמשפחתי כמעט בחו\"ל. לא אוהב את\r\nהפילוג על גבול השנאה נגד הזרמים\r\nהיהודיים בחו\"ל. אני אוהב לטייל, והייתי\r\nחניך ומדריך בחוגי הסיירות של קק\"ל.\r\n"
+  },
+  {
+    "Id": 20,
+    "Question": "Who introduced you to this program",
+    "Answer": "נאמן אדג'אש, חבר לי מישיבת תקוע.\r\n"
+  },
+  {
+    "Id": 20,
+    "Question": "Additional information",
+    "Answer": "אני לומד בישיבה, אז הזמנים שכתבתי\r\nמצומצמים יחסית ונזילים. לדוגמא כתבתי \"לילה\"\r\nאבל יש לי העדפה לאחרי 23\r\nבגלל סדר ערב, או כתבתי צהריים\r\nאבל אני מעדיף לא ב5-7. אם\r\nיש צורך אז אסתדר, הכי טוב\r\nלי בכל אחר מימי השבוע מ19:00\r\nעד 20:10 בערך. בכל ימות השבוע\r\nחוץ משלישי 13:30 - 14:00 גם\r\nיכול להיות זמן פוטנציאלי, אבל עם\r\nעדיפות נמוכה יותר. אם צריך אז\r\nאני יכול גם בלילות בשעה 23:00,\r\nואם יש צורך גדול יותר אז\r\nאני מוכן לוותר על חלק מסדר\r\nערב. "
+  },
+  {
+    "Id": 21,
+    "Question": "Personal information",
+    "Answer": "בן 33..."
+  },
+  {
+    "Id": 21,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": ""
+  },
+  {
+    "Id": 21,
+    "Question": "Personality trates",
+    "Answer": ""
+  },
+  {
+    "Id": 21,
+    "Question": "Who introduced you to this program",
+    "Answer": "נתן"
+  },
+  {
+    "Id": 21,
+    "Question": "Additional information",
+    "Answer": "הלימוד אפשרי אחת לשבוע. לאחר 20\r\nשעון ישראל. יכולת שיחה בינונית+-. הבנה\r\nטובה. מעבר לפ\"ש אוכל ללמוד יחד\r\nגם מסכת אבות. מסיים לימודי תואר\r\nאז פנוי מספטמבר..."
+  },
+  {
+    "Id": 22,
+    "Question": "Personal information",
+    "Answer": "23, למדתי במדרשת בת חן חסידות\r\n"
+  },
+  {
+    "Id": 22,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "להכיר וללמוד עם יהודי/ה מהתפוצות"
+  },
+  {
+    "Id": 22,
+    "Question": "Personality trates",
+    "Answer": "מידות נקיות, תיקון המחשבות, לב, רצון,\r\nאמונה, נשיות ביהדות - כל אלה\r\nמעניינים. אוהבת פסיכולוגיה ובני אדם .\r\nגמישות מחשבתית. חוזרת בתשובה 4 שנים.\r\n"
+  },
+  {
+    "Id": 22,
+    "Question": "Who introduced you to this program",
+    "Answer": "פייס, ווצאפ"
+  },
+  {
+    "Id": 23,
+    "Question": "Personal information",
+    "Answer": "בן 61. דתלש. הסדר וישיבה תחכונית.\r\nלומד מידי פעם במגרות שונות"
+  },
+  {
+    "Id": 23,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "לימוד והעשרה"
+  },
+  {
+    "Id": 23,
+    "Question": "Personality trates",
+    "Answer": "אני איש טוב.."
+  },
+  {
+    "Id": 23,
+    "Question": "Who introduced you to this program",
+    "Answer": "פייסבוק"
+  },
+  {
+    "Id": 24,
+    "Question": "Personal information",
+    "Answer": "בן 24, לומד בישיבת עתניאל בשיעור\r\nו', ומסיים תואר ראשון בהוראה. ציוני\r\nדתי, אורתודוקסי. "
+  },
+  {
+    "Id": 24,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "היציאה מעצמי למען יהודים אחרים. "
+  },
+  {
+    "Id": 24,
+    "Question": "Personality trates",
+    "Answer": "בעל יכולות הוראתיות, אוהב ללמוד. עם\r\nהיכרות יחסית רחבה עם המתרחש מחוץ\r\nלכתלי בית המדרש, חובב סרטים, סדרות\r\nמוזיקה וכד'. "
+  },
+  {
+    "Id": 24,
+    "Question": "Who introduced you to this program",
+    "Answer": "נתן גזונדהייט. "
+  },
+  {
+    "Id": 24,
+    "Question": "Additional information",
+    "Answer": "תודה על היוזמה! "
+  },
+  {
+    "Id": 25,
+    "Question": "Personal information",
+    "Answer": "בן 18, לומד בישיבת עתניאל, למדתי\r\nבישיבה תיכונית שעלי תורה, דתי לאומי\r\n"
+  },
+  {
+    "Id": 25,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "עליתי בגיל מוקדם מאוסטרליה לארץ, אז\r\nב\"ה זכיתי להכריר את הקהילה וההשתוקקות\r\nליהדות ולארץ ישראל וכו... ואם אני\r\nיכול להיות חלק מהחיבור הזה אני\r\nממש אשמח!  בנוסף ללימוד אני\r\nרואה ערך עצום בחיבור חברי עמוק\r\nשנרקם ע\"י הלימוד בין יהודיים ישראליים\r\nליהודי התפוצות, לצמצם את ההבדלים ולהכיר\r\nבדרכי החיים השונים שלנו."
+  },
+  {
+    "Id": 25,
+    "Question": "Personality trates",
+    "Answer": "אני יחסית חברותי, זורם ואוהב ורוצה\r\nללמוד. רוצה מאוד להכיר אנשים\\ תרבויות\\\r\nסגנון לימוד שונים... רואה את החשיבות\r\nהעצומה בחיבור בין יהדות א\"י לשאר\r\nיהודי העולם! "
+  },
+  {
+    "Id": 25,
+    "Question": "Who introduced you to this program",
+    "Answer": "דרך ישיבת עתניאל"
+  },
+  {
+    "Id": 26,
+    "Question": "Personal information",
+    "Answer": "בת 20 אכשיו סיימץי שנת מדרשה\r\nבמבית המדרש מגדל עוז והולכת ללמוד\r\nבאוניברסיטה."
+  },
+  {
+    "Id": 26,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "להכיר עוד אנשים מכך העולם שיש\r\nלהם תשוקה לתורה"
+  },
+  {
+    "Id": 26,
+    "Question": "Personality trates",
+    "Answer": "אני ממש אוהבת ללמוד ובמיוחד תורה\r\nאוהבת ספורט ואשמח להכיר עוד אנשים\r\nשאוהבים את הץורה כמוני"
+  },
+  {
+    "Id": 26,
+    "Question": "Who introduced you to this program",
+    "Answer": "רעות ממגדל עוז"
+  },
+  {
+    "Id": 26,
+    "Question": "Additional information",
+    "Answer": "אני יכולה להתחיב רק ל-3 חודשים\r\nכרגע"
+  },
+  {
+    "Id": 27,
+    "Question": "Personal information",
+    "Answer": "בת 36 , אמא לילדים מקסימים.\r\nבדרך לתואר שני."
+  },
+  {
+    "Id": 27,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "החיבור בין האנשים.  הזדמנות טובה\r\nלהכיר וללמוד"
+  },
+  {
+    "Id": 27,
+    "Question": "Personality trates",
+    "Answer": "לנגן, לעסוק ביצירה , ואוהבת ליזום\r\nדברים קהילתיים מעניינים"
+  },
+  {
+    "Id": 27,
+    "Question": "Who introduced you to this program",
+    "Answer": "פייסבוק של ישיבת תקוע"
+  },
+  {
+    "Id": 28,
+    "Question": "Personal information",
+    "Answer": "בת 20 בת שרות שנה א\r\nבכפר שיקומי לומדת במדרשה גדלתי בתורני,משתייכת\r\nלמגזר הדתי לאומי"
+  },
+  {
+    "Id": 28,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "רטצה להעמיק לימוד בנוסף למה שלומדת\r\nבמדרשה רוצה לחבר בין יהודי התפוצות\r\nולחזק את היהודים בחול"
+  },
+  {
+    "Id": 28,
+    "Question": "Personality trates",
+    "Answer": "אני אוהבת ללמוד , פילוספויה ותורת\r\nהשם, חשוב לי ערכיים ציונים והשקפה\r\nכללית ופרטית על עם ישראל אהבת\r\nהשם אהבת התורה העם הארץ והחיים\r\nאני אוהבת לטייל להכיר אנשים לבשל\r\nולנקות וללמוד"
+  },
+  {
+    "Id": 28,
+    "Question": "Who introduced you to this program",
+    "Answer": "אינסטגרם"
+  },
+  {
+    "Id": 29,
+    "Question": "Personal information",
+    "Answer": "בן 23, נשוי, ישיבת עתניאל"
+  },
+  {
+    "Id": 29,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "לקשר יהודים לתורה ולארץ ישראל, לתרום\r\nלזהות היהודית ולהזדהות עם ישראל בארה''ב,\r\nלהכיר אנשים ותרבות שונה."
+  },
+  {
+    "Id": 29,
+    "Question": "Personality trates",
+    "Answer": "אני מתעניין בפילוספיה, חסידות, ספרות, טכנולוגיה\r\nותכנות."
+  },
+  {
+    "Id": 29,
+    "Question": "Who introduced you to this program",
+    "Answer": "שיחה בישיבת עתניאל."
+  },
+  {
+    "Id": 30,
+    "Question": "Personal information",
+    "Answer": "63 \"פנסיונר\" לומד בבוקר בכולל גמלאים\r\nבעופרה, 8 שנים לימוד ישיבתי בצעירותי,\r\nיזם בתחומי טכנולוגיה אח\"כ. יליד ארה\"ב,\r\nעליה בגיל 10"
+  },
+  {
+    "Id": 30,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "האמת כבר די הרבה זמן אני\r\nחושב על זה שצריך להיות תוכנית\r\nכזאת. "
+  },
+  {
+    "Id": 30,
+    "Question": "Personality trates",
+    "Answer": "אוהב מאוד ללמוד כמעט הכל, חותר\r\nלאמת, רוצה לראות את עם ישראל\r\nבבית. זו התחלה טובה"
+  },
+  {
+    "Id": 30,
+    "Question": "Who introduced you to this program",
+    "Answer": "כנראה קראתי כתבה באיזה אתר אינטרנט"
+  },
+  {
+    "Id": 30,
+    "Question": "Additional information",
+    "Answer": "מוכן ללמוד עם כל גיל"
+  },
+  {
+    "Id": 31,
+    "Question": "Personal information",
+    "Answer": "תלמיד בישיבת ההסדר אורות שאול שיעור\r\nב"
+  },
+  {
+    "Id": 31,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "ללמוד ולהכיר יהודים מהתפוצות"
+  },
+  {
+    "Id": 31,
+    "Question": "Personality trates",
+    "Answer": ""
+  },
+  {
+    "Id": 31,
+    "Question": "Who introduced you to this program",
+    "Answer": "הפירסום בקבוצות וואצאפ"
+  },
+  {
+    "Id": 32,
+    "Question": "Personal information",
+    "Answer": "בת 21 סטודנטית לפיזיקה, אחרי שנה\r\nבמגדל עוז"
+  },
+  {
+    "Id": 32,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "עשיתי תקופה קצרה שליחות בקנדה, אמא\r\nשלי עשתה עלייה והקשר עם יהדות\r\nהתפוצות חשוב לי. מאמינה מאוד בקשר\r\nדרך לימוד משותף."
+  },
+  {
+    "Id": 32,
+    "Question": "Personality trates",
+    "Answer": ""
+  },
+  {
+    "Id": 32,
+    "Question": "Who introduced you to this program",
+    "Answer": "פרסום בקבוצה של המדרשה"
+  },
+  {
+    "Id": 33,
+    "Question": "Personal information",
+    "Answer": "בן 33, מלמד לשון במסגרת תיכונית\r\nובמסגרת אקסטרנית, למדתי בישיבה תיכונית ובישיבה\r\nגבוהה, דתי לאומי"
+  },
+  {
+    "Id": 33,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "התוכנית משמעותית בעיניי, החבור בין יהודים\r\nמישראל וממדינות אחרות דרך לימוד מתמשך"
+  },
+  {
+    "Id": 33,
+    "Question": "Personality trates",
+    "Answer": "היסטוריה, שפה, עם ישראל"
+  },
+  {
+    "Id": 33,
+    "Question": "Who introduced you to this program",
+    "Answer": "קבוצת הווצאפ של ישיבת תקוע"
+  },
+  {
+    "Id": 33,
+    "Question": "Additional information",
+    "Answer": "כרגע אני עדיין לא יודע באילו\r\nזמנים אהיה פנוי ללימוד"
+  },
+  {
+    "Id": 34,
+    "Question": "Personal information",
+    "Answer": "גיל 19. לומד בישיבת הסדר שיעור\r\nא'"
+  },
+  {
+    "Id": 34,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "להכיר יותר את התפוצות, ללמוד עם\r\nאנשים מרחבי העולם"
+  },
+  {
+    "Id": 34,
+    "Question": "Personality trates",
+    "Answer": "ערכים: ארץ ישראל, סובלנות, שימור המסורת\r\nתחביבים: לקרוא (בעיקר פנטזיה, מד\"ב, סיפורי\r\nמסעות, וספרים ישנים), מלאכת יד, אמנות\r\nתחומי עניין: היסטוריה, מדע, שפות"
+  },
+  {
+    "Id": 34,
+    "Question": "Who introduced you to this program",
+    "Answer": "הוואטצאפ של הישיבה"
+  },
+  {
+    "Id": 35,
+    "Question": "Personal information",
+    "Answer": "בת 18.6, סיימתי שנת מדרשה לאחר\r\nלימודי באולפנה, כעת ממשיכה לשנה ב׳\r\nבמדרשה (מתת לינדנבאום) ולאחר מכן מתגייסת,\r\nגרה בקטמון ירושלים. ידע והתעניינות בפסיכולוגיה,\r\nהיסטוריה תרבות וכו."
+  },
+  {
+    "Id": 35,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "ללמוד תורה. וללמוד עם וממישהו שחי\r\nבמקום אחר, לדבר לשמוע מישהו שחי\r\nבעולם חיים שונים משלי על פי\r\nערכים לעיתים אחרים ודגשים אחרים. לפתוח\r\nאת המחשבה שלי, ללמוד ממנו ולהכיר\r\nלו (או לה) את מה שכאן.\r\nופשוט כי זה מעניין:)"
+  },
+  {
+    "Id": 35,
+    "Question": "Personality trates",
+    "Answer": "אמונה, נעימות, עדינות, נחרצות, ידע. ראש\r\nפתוח ללמוד עוד, לחשוב אחרת, לגלות\r\nעוד. חברותיות, אהבת תורה. תחומי הפסיכולוגיה,\r\nהיסטוריה, אמנות, מדע. בעקרון אשמח לכל\r\nסוג של חברותא, אבל אם אפשר\r\nשתיהיה באיזור הגיל שלי."
+  },
+  {
+    "Id": 35,
+    "Question": "Who introduced you to this program",
+    "Answer": "פייסבוק:)"
+  },
+  {
+    "Id": 35,
+    "Question": "Additional information",
+    "Answer": "אשמח שזו תיהיה מישהי באיזור הגיל\r\nשלי (18,19,20)"
+  },
+  {
+    "Id": 36,
+    "Question": "Personal information",
+    "Answer": "בן 36, מתאם מחקר רפואי בהדסה\r\nעין כרם, בוגר ישיבת הסדר, דתי\r\nלאומי פמיניסט"
+  },
+  {
+    "Id": 36,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": ""
+  },
+  {
+    "Id": 36,
+    "Question": "Personality trates",
+    "Answer": ""
+  },
+  {
+    "Id": 36,
+    "Question": "Who introduced you to this program",
+    "Answer": "קבוצת ווצאפ של קבילה"
+  },
+  {
+    "Id": 37,
+    "Question": "Personal information",
+    "Answer": "אני בת 32, גננת ולמדתי במדרשה."
+  },
+  {
+    "Id": 37,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "חיזוק הקשר בין ישראל ליהדות התפוצות."
+  },
+  {
+    "Id": 37,
+    "Question": "Personality trates",
+    "Answer": "אוהבת לטייל ולרכב על אופניים."
+  },
+  {
+    "Id": 37,
+    "Question": "Who introduced you to this program",
+    "Answer": "פרסום."
+  },
+  {
+    "Id": 37,
+    "Question": "Additional information",
+    "Answer": "בימים שלישי ורביעי כנראה לא אהיה\r\nפנויה, סימנתי כי היה הכרח לסמן\r\nזמינות בכל יום."
+  },
+  {
+    "Id": 38,
+    "Question": "Personal information",
+    "Answer": "42,פסיכולוגית חינוכית, תואר שני בבן גוריון,\r\nמה זאת אומרת השתייכות חברתית?!"
+  },
+  {
+    "Id": 38,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "להכיר מישהי וללמוד דברים חדשים"
+  },
+  {
+    "Id": 38,
+    "Question": "Personality trates",
+    "Answer": "בשעות הפנאי אוהבת לשמוע שיעורים במכון\r\nמאיר בנושאי אמונה, לתרגל יוגה לצייר\r\nולשיר. ערכים: יושרה, משפחתיות, צניעות, מימוש\r\nעצמי, אהבת הבריות, הכרת הטוב"
+  },
+  {
+    "Id": 38,
+    "Question": "Who introduced you to this program",
+    "Answer": "שלחו לי קישור"
+  },
+  {
+    "Id": 38,
+    "Question": "Additional information",
+    "Answer": "רעיון יפה "
+  },
+  {
+    "Id": 39,
+    "Question": "Personal information",
+    "Answer": "בן 37, רב של שתי קהילות\r\n(מגן דיוויד וגבעת המבתר), מטפל בתורה,\r\nמנכל עמותה לתיקון עולם"
+  },
+  {
+    "Id": 39,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "לפגוש יהודיה חדשה/ יהודי חדש"
+  },
+  {
+    "Id": 39,
+    "Question": "Personality trates",
+    "Answer": "יראת שמיים, תורה חיים כיף ושמחה\r\n"
+  },
+  {
+    "Id": 39,
+    "Question": "Who introduced you to this program",
+    "Answer": "פייסבוק"
+  },
+  {
+    "Id": 39,
+    "Question": "Additional information",
+    "Answer": "יש לי הסמכה לרבנות מ7 רבנים\r\nגדולים"
+  },
+  {
+    "Id": 40,
+    "Question": "Personal information",
+    "Answer": "בת 71 ,למדתי שנים אחדות גמרא\r\nבמתן,עוסקת בייעוץ קריירה"
+  },
+  {
+    "Id": 40,
+    "Question": "What are your hopes and expectations from this program",
+    "Answer": "ההזדמנות ללמוד תורה בחברותא,המפגש עם אנשים\r\nחדשים"
+  },
+  {
+    "Id": 40,
+    "Question": "Personality trates",
+    "Answer": "אוהבת ללמוד.נהנית משיחה טובה,קוראת  פרוזה\r\nוספרי עיון בהגות יהודית ופסיכולוגיה"
+  },
+  {
+    "Id": 40,
+    "Question": "Who introduced you to this program",
+    "Answer": "פורסם בישוב שלנו"
+  }
+]

@@ -23,7 +23,7 @@ namespace LogicLayer
                 DO.TimesInDay.MORNING, 
                 new TimeInterval
                 {
-                    Start = TimeSpan.Parse("5:00"),
+                    Start = TimeSpan.Parse("05:00"),
                     End = TimeSpan.Parse("12:00")
                 });
             BoundryOfTimeInDay.Add(
@@ -45,7 +45,7 @@ namespace LogicLayer
                 new TimeInterval
                 {
                     Start = TimeSpan.Parse("21:00"),
-                    End = TimeSpan.Parse("2:00")
+                    End = TimeSpan.Parse("02:00")
                 });
         }
 
@@ -62,9 +62,12 @@ namespace LogicLayer
         }
 
         private bool IsMatchingStudentsNotCritical(BO.Student israelStudent, BO.Student other)
-        {
-            return israelStudent.DesiredSkillLevel == other.SkillLevel
-                && israelStudent.LearningStyle == other.LearningStyle;
+        {            
+            return (israelStudent.DesiredSkillLevel == other.SkillLevel
+                || israelStudent.DesiredSkillLevel == DO.SkillLevels.DONT_MATTER)
+                && (israelStudent.LearningStyle == other.LearningStyle
+                || (israelStudent.LearningStyle == DO.LearningStyles.DONT_MATTER 
+                     && other.LearningStyle == DO.LearningStyles.DONT_MATTER));
         }
 
         /// <summary>
@@ -76,46 +79,53 @@ namespace LogicLayer
         public bool IsMatchingStudentsCritical(BO.Student israelStudent, BO.Student other)
         {
             bool matchTime = IsMatchingHours(israelStudent, other);
-            return israelStudent.PrefferdTracks == other.PrefferdTracks
-                && israelStudent.EnglishLevel == other.DesiredEnglishLevel
-                && (israelStudent.PrefferdGender == other.PrefferdGender
-                || (israelStudent.PrefferdGender == other.Gender
-                && israelStudent.Gender == other.PrefferdGender))
+            
+            bool matchEnglishLevel = other.DesiredEnglishLevel == DO.EnglishLevels.DONT_MATTER 
+                                    || other.DesiredEnglishLevel == israelStudent.EnglishLevel;
+            
+            bool matchGender = israelStudent.PrefferdGender == other.PrefferdGender
+                               || (israelStudent.PrefferdGender == other.Gender
+                                    && israelStudent.Gender == other.PrefferdGender);
+            
+            bool matchTrack = israelStudent.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER)
+                              || other.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER) ?
+                              true : israelStudent.PrefferdTracks
+                              .Select(p => p)
+                              .Intersect(other.PrefferdTracks)
+                              .Any();
+ 
+            return matchTrack
+                && matchEnglishLevel
+                && matchGender
                 && matchTime;
-        }
-
-        private bool IsMatchingDays(BO.Student israelStudent, BO.Student other)
-        {
-            foreach(var dayOfThis in israelStudent.DesiredLearningTime)
-            {
-                foreach(var dayOfOther in other.DesiredLearningTime)
-                {
-                    if(dayOfThis.Day == dayOfOther.Day)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
         }
 
 
         private bool IsMatchingHours(BO.Student israelStudent, BO.Student other)
         {
-            foreach(var dt in other.DesiredLearningTime)
+            var diff = GetDifferenceUtc(other.UtcOffset);
+            foreach (var dt in other.DesiredLearningTime)
             {
-                var diff = GetDifferenceUtc(other.UtcOffset);
                 foreach(var t in dt.TimeInDay)
                 {
-                    var equivalentIntervalInWord = GetStudentTimes(diff, t);
-                    var equivalentTimeInIsrael = GetTimesInDayByInterval(equivalentIntervalInWord);
-                    if(equivalentTimeInIsrael == DO.TimesInDay.DONT_MATTER)
+                    var equivalentIntervalInWorld = GetStudentTimes(diff, t);
+                    var equivalentTimeInIsrael = GetTimesInDayByInterval(equivalentIntervalInWorld);
+                    
+                    if (israelStudent.DesiredLearningTime
+                        .Any(l => l.Day == dt.Day
+                            && l.TimeInDay
+                                .Any(tid => BoundryOfTimeInDay[tid].IsIn(equivalentIntervalInWorld.Start))))
+                    {
+                        return true;
+                    }
+                    if (equivalentTimeInIsrael == DO.TimesInDay.DONT_MATTER)
                     {
                         continue;
                     }    
-                    if(israelStudent.DesiredLearningTime.Any(l => l.Day == dt.Day 
-                    && l.TimeInDay.Any(tid => tid == equivalentTimeInIsrael
-                     || BoundryOfTimeInDay[tid].IsIn(equivalentIntervalInWord.Start))))
+                    if(israelStudent.DesiredLearningTime
+                        .Any(l => l.Day == dt.Day 
+                            && l.TimeInDay
+                                .Any(tid => tid == equivalentTimeInIsrael)))
                     {
                         return true;
                     }
@@ -180,15 +190,40 @@ namespace LogicLayer
 
     internal class TimeInterval
     {
-        static TimeSpan DELTA = TimeSpan.Parse("01:00");
-        static TimeSpan MIN_TIME_TO_LEARN = TimeSpan.Parse("02:00");
-        
-        internal TimeSpan Start { get; set; }
-        internal TimeSpan End { get; set; }
+        private static TimeSpan DELTA = TimeSpan.Parse("01:00");
+        private static TimeSpan MIN_TIME_TO_LEARN = TimeSpan.Parse("02:00");
+
+        private TimeSpan _start;
+        private TimeSpan _end;
+
+        internal TimeSpan Start
+        { 
+            get => _start;
+            set 
+            {
+                _start = Raound(value);
+            }
+        }
+        internal TimeSpan End
+        { 
+            get => _end;
+            set
+            {
+                _end = Raound(value);
+            } 
+        }
+
+
+        private TimeSpan Raound(TimeSpan t)
+        {
+            if (t < TimeSpan.Zero)
+                return TimeSpan.FromHours(24 + t.Hours);
+            return t;
+        }
 
         internal bool IsIn(TimeSpan time)
         {
-            return ((Start + time) - End) >= MIN_TIME_TO_LEARN;
+            return time <= End + MIN_TIME_TO_LEARN && time >= Start;
         }
 
         public static bool operator ==(TimeInterval left, TimeInterval right)

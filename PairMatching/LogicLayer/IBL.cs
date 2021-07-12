@@ -56,5 +56,7 @@ namespace LogicLayer
         /// <param name="fromIsreal"></param>
         /// <param name="fromWord"></param>
         void Match(BO.Student fromIsreal, BO.Student fromWord);
+
+        IEnumerable<Tuple<BO.Student, BO.Student>> GetAllPairs();
     }
 }
