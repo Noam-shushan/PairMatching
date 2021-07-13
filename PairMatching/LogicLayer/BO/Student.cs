@@ -44,6 +44,8 @@ namespace BO
         /// </summary>
         public Genders Gender { get; set; }
 
+        public string GenderShow { get => Dictionaries.GendersDict[Gender]; }
+
         /// <summary>
         /// Desired learning time and day
         /// </summary>
@@ -81,6 +83,8 @@ namespace BO
         /// the prefferd gender to lern with
         /// </summary>
         public Genders PrefferdGender { get; set; }
+
+        public string PrefferdGenderShow { get => Dictionaries.GendersDict[PrefferdGender]; }
 
         /// <summary>
         ///  Desired level of english from the other pair

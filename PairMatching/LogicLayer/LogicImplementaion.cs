@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,14 +15,14 @@ namespace LogicLayer
 
         public static IBL Instance { get; } = new LogicImplementaion();
 
-        public IEnumerable<BO.Student> StudentList { get; set; }
+        public ObservableCollection<BO.Student> StudentList { get; set; } = new ObservableCollection<BO.Student>();
 
         LogicImplementaion()
         {
-            update();
+            
         }
 
-        public void UpdateData()
+        public async Task UpdateData()
         {
             try
             {
@@ -30,10 +31,11 @@ namespace LogicLayer
                 {
                     lastDate = new DO.LastDateOfSheets();
                 }
-                lastDate.EnglishSheets = GoogleSheetParser.UpdateDataInEnglish(lastDate);
-                lastDate.HebrewSheets = GoogleSheetParser.UpdateDataInHebrew(lastDate);
+                GoogleSheetParser parser = new GoogleSheetParser();
+                lastDate.EnglishSheets = parser.UpdateDataInEnglish(lastDate);
+                lastDate.HebrewSheets = parser.UpdateDataInHebrew(lastDate);
                 dal.UpdateLastDateOfSheets(lastDate);
-                update();
+                await Update();
             }
             catch (Exception ex)
             {
@@ -41,13 +43,16 @@ namespace LogicLayer
             }
         }
 
-        private void update()
+        public async Task Update()
         {
-            StudentList = GetAllStudents();
-            BuildStudents();
+            await Task.Run(() =>
+            {
+                StudentList = new ObservableCollection<BO.Student>(GetAllStudents());
+                BuildStudents();
+            });
         }
 
-        public void Match(BO.Student fromIsreal, BO.Student fromWorld)
+        public async Task Match(BO.Student fromIsreal, BO.Student fromWorld)
         {
             try
             {
@@ -68,7 +73,7 @@ namespace LogicLayer
                     IsDeleted = false
                 });
                 // update the students from the data base
-                update();
+                await Update();
             }
             catch (Exception ex)
             {
@@ -151,7 +156,7 @@ namespace LogicLayer
             {
                 temp.Add(BuildStudent(s));
             }
-            StudentList = temp;
+            StudentList = new ObservableCollection<BO.Student>(temp);
         }
 
         BO.Student BuildStudent(BO.Student student)

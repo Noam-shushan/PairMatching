@@ -22,47 +22,42 @@ namespace Gui
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static IBL bl; 
-        ObservableCollection<BO.Student> StudentsList;
-        ObservableCollection<Tuple<BO.Student, BO.Student>> PairList;
-
+        private static readonly IBL bl = BlFactory.GetBL();
 
         public MainWindow()
         {
             InitializeComponent();
-            try
-            {
-                bl = BlFactory.GetBL();
-                StudentsList = new ObservableCollection<BO.Student>(bl.StudentList);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
-            }
         }
 
-        private void allStudentBtn_Click(object sender, RoutedEventArgs e)
+        private async void allStudentBtn_Click(object sender, RoutedEventArgs e)
         {
-            lvStudents.ItemsSource = StudentsList;
-            lvStudents.Items.Refresh();
+            if (bl.StudentList == null || bl.StudentList.Count() == 0)
+            {
+                await bl.Update();
+            }
+            lvStudents.ItemsSource = bl.StudentList;
             allPairsGrig.Visibility = Visibility.Collapsed;
             allStudentGrig.Visibility = Visibility.Visible;
         }
 
         private void allPairsBtn_Click(object sender, RoutedEventArgs e)
         {
-            PairList = new ObservableCollection<Tuple<BO.Student, BO.Student>>(bl.GetAllPairs());
-            lvPairs.ItemsSource = PairList;
+            lvPairs.ItemsSource = new ObservableCollection<Tuple<BO.Student, BO.Student>>(bl.GetAllPairs()); ;
             allStudentGrig.Visibility = Visibility.Collapsed;
             spStudent.Visibility = Visibility.Collapsed;
             lbOpenQuestions.Visibility = Visibility.Collapsed;
             allPairsGrig.Visibility = Visibility.Visible;
         }
 
-        private void allStudentWithoutPairBtn_Click(object sender, RoutedEventArgs e)
+        private async void allStudentWithoutPairBtn_Click(object sender, RoutedEventArgs e)
         {
-            lvStudents.ItemsSource = new ObservableCollection<BO.Student>(from s in bl.StudentList where s.MatchTo == 0 select s); ;
-            lvStudents.Items.Refresh();
+            if (bl.StudentList == null || bl.StudentList.Count() == 0)
+            {
+                await bl.Update();             
+            }
+            lvStudents.ItemsSource = new ObservableCollection <BO.Student>(from s in bl.StudentList
+                                                                           where s.MatchTo == 0
+                                                                           select s);
             allPairsGrig.Visibility = Visibility.Collapsed;
             allStudentGrig.Visibility = Visibility.Visible;
         }
@@ -73,19 +68,20 @@ namespace Gui
             spStudent.Visibility = Visibility.Collapsed;
             lbOpenQuestions.Visibility = Visibility.Collapsed;
             allPairsGrig.Visibility = Visibility.Collapsed;
+            cbUpdateForEnable.IsChecked = false;
             try
             {
                 pbUpdate.Visibility = Visibility.Visible;
                 await Task.Run(() => bl.UpdateData());
-                StudentsList = new ObservableCollection<BO.Student>(bl.StudentList);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
+                MessageBox.Show(ex.Message);
             }
             finally
             {
                 pbUpdate.Visibility = Visibility.Collapsed;
+                cbUpdateForEnable.IsChecked = true;
             }
         }
 
@@ -98,7 +94,7 @@ namespace Gui
             lbOpenQuestions.Visibility = Visibility.Visible;
         }
 
-        private void matchBtn_Click(object sender, RoutedEventArgs e)
+        private async void matchBtn_Click(object sender, RoutedEventArgs e)
         {
             var selectedStudent = lvStudents.SelectedItem as BO.Student;
             var firstSelectedMatch = cbFirstMatching.SelectedItem as BO.Student;
@@ -114,7 +110,7 @@ namespace Gui
                 if (MessageBox.Show($"בטוח שברצונך להתאים את {selectedStudent.Name} ל- {firstSelectedMatch.Name}?",
                        "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    bl.Match(selectedStudent, firstSelectedMatch);
+                    await bl.Match(selectedStudent, firstSelectedMatch);
                 }
                 return;
             }
@@ -123,15 +119,15 @@ namespace Gui
                 if (MessageBox.Show($"בטוח שברצונך להתאים את {selectedStudent.Name} ל- {secondSelectedMatch.Name}?",
                        "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    bl.Match(selectedStudent, secondSelectedMatch);
+                    await bl.Match(selectedStudent, secondSelectedMatch);
                 }
                 return;
             }
         }
 
-        private void manualMatchBtn_Click(object sender, RoutedEventArgs e)
+        private async void manualMatchBtn_Click(object sender, RoutedEventArgs e)
         {
-            var selectedList = StudentsList.Where(s => s.IsSelected);
+            var selectedList = bl.StudentList.Where(s => s.IsSelected);
             if(selectedList.Count() != 2)
             {
                 MessageBox.Show("בחר 2 תלמידים מהרשימה על מנת לבצע התאמה", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -142,8 +138,34 @@ namespace Gui
             if (MessageBox.Show($"בטוח שברצונך להתאים את {first.Name} ל- {second.Name}?",
                         "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                bl.Match(first, second);
+                await bl.Match(first, second);
             }
+        }
+
+        private async void allStudentFromWorldBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (bl.StudentList == null || bl.StudentList.Count() == 0)
+            {
+                await bl.Update();
+            }
+            lvStudents.ItemsSource = new ObservableCollection<BO.Student>(from s in bl.StudentList
+                                                                          where s.Country != "Israel"
+                                                                          select s);
+            allPairsGrig.Visibility = Visibility.Collapsed;
+            allStudentGrig.Visibility = Visibility.Visible;
+        }
+
+        private async void allStudentFromIsraelBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (bl.StudentList == null || bl.StudentList.Count() == 0)
+            {
+                await bl.Update();
+            }
+            lvStudents.ItemsSource = new ObservableCollection<BO.Student>(from s in bl.StudentList
+                                                                          where s.Country == "Israel"
+                                                                          select s);
+            allPairsGrig.Visibility = Visibility.Collapsed;
+            allStudentGrig.Visibility = Visibility.Visible;
         }
     }
 }

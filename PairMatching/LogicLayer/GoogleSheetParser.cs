@@ -12,18 +12,62 @@ namespace LogicLayer
     {   
         private static readonly DataLayer.IDataLayer dal = DataLayer.DalFactory.GetDal("json");
         
-        private static readonly Dictionary<string, int> indexHebSheet = new Dictionary<string, int>();
+        private static readonly Dictionary<string, int> indexHebSheet = new Dictionary<string, int>()
+        {
+            {"Name", 1 },
+            {"PrefferdTracks", 7},
+            {"PrefferdGender", 8},
+            {"EnglishLevel", 9},
+            {"DesiredSkillLevel", 10},
+            {"LearningStyle", 11},
+            {"Gender", 12},
+            {"PhoneNumber", 13},
+            {"Email", 14},
+            {"Personal information", 15},
+            {"What are your hopes and expectations from this program", 16},
+            {"Personality trates", 17},
+            {"Who introduced you to this program", 18},
+            {"Additional information", 19}
+        };
+
+        private static readonly Dictionary<string, int> indexEngSheet = 
+            new Dictionary<string, int>()
+            {
+                {"Name", 1 },
+                {"PrefferdTracks", 7},
+                {"PrefferdGender", 8},
+                {"DesiredEnglishLevel", 9},
+                {"SkillLevel", 10},
+                {"LearningStyle", 11},
+                {"Gender", 12},
+                {"Country", 13},
+                {"UtcOffset", 13},
+                {"PhoneNumber", 14},
+                {"Email", 15},
+                {"Country and City of residence", 16},
+                {"Personal information", 17},
+                {"Personality trates", 18},
+                {"Additional information", 19},
+                {"What are your hopes and expectations from this program", 20},
+                {"Anything else you would like to tell us", 21},
+                {"Who introduced you to this program", 22}
+            };
         
-        private static readonly Dictionary<string, int> indexEngSheet = new Dictionary<string, int>();
-        
-        private static readonly GoogleSheetReader sheetReader = new GoogleSheetReader();
+        private readonly GoogleSheetReader sheetReader;
         
         private static readonly int TIME_COLUMN_START = 2;      
         private static readonly int TIME_COLUMN_END = 7;
 
-        static GoogleSheetParser()
+        public GoogleSheetParser()
         {
-            setDict();
+            try
+            {
+                sheetReader = new GoogleSheetReader();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
 
@@ -32,7 +76,7 @@ namespace LogicLayer
         /// </summary>
         /// <param name="lastUpdate"></param>
         /// <returns></returns>
-        public static DateTime UpdateDataInHebrew(DO.LastDateOfSheets lastUpdate)
+        public DateTime UpdateDataInHebrew(DO.LastDateOfSheets lastUpdate)
         {
 
             IStudentDescriptor studentDescriptor = new HebrewDescriptor();
@@ -88,7 +132,7 @@ namespace LogicLayer
         /// </summary>
         /// <param name="lastUpdate"></param>
         /// <returns></returns>
-        public static DateTime UpdateDataInEnglish(DO.LastDateOfSheets lastUpdate)
+        public DateTime UpdateDataInEnglish(DO.LastDateOfSheets lastUpdate)
         {
             GoogleSheetReader sheetReader = new GoogleSheetReader();
             IStudentDescriptor studentDescriptor = new EnglishDiscriptor();
@@ -264,44 +308,6 @@ namespace LogicLayer
                 .Select((word, index) => new { word, index })
                 .GroupBy(x => x.index / 6)
                 .Select(grp => string.Join(" ", grp.Select(x => x.word))));
-        }
-
-        static void setDict()
-        {
-            indexHebSheet.Add("Name", 1);
-            indexHebSheet.Add("PrefferdTracks", 7);
-            indexHebSheet.Add("PrefferdGender", 8);
-            indexHebSheet.Add("EnglishLevel", 9);
-            indexHebSheet.Add("DesiredSkillLevel", 10);
-            indexHebSheet.Add("LearningStyle", 11);
-            indexHebSheet.Add("Gender", 12);
-            indexHebSheet.Add("PhoneNumber", 13);
-            indexHebSheet.Add("Email", 14);
-            indexHebSheet.Add("Personal information", 15);
-            indexHebSheet.Add("What are your hopes and expectations from this program", 16);
-            indexHebSheet.Add("Personality trates", 17);
-            indexHebSheet.Add("Who introduced you to this program", 18);
-            indexHebSheet.Add("Additional information", 19);
-
-
-            indexEngSheet.Add("Name", 1);
-            indexEngSheet.Add("PrefferdTracks", 7);
-            indexEngSheet.Add("PrefferdGender", 8);
-            indexEngSheet.Add("DesiredEnglishLevel", 9);
-            indexEngSheet.Add("SkillLevel", 10);
-            indexEngSheet.Add("LearningStyle", 11);
-            indexEngSheet.Add("Gender", 12);
-            indexEngSheet.Add("Country", 13);
-            indexEngSheet.Add("UtcOffset", 13);
-            indexEngSheet.Add("PhoneNumber", 14);
-            indexEngSheet.Add("Email", 15);
-            indexEngSheet.Add("Country and City of residence", 16);
-            indexEngSheet.Add("Personal information", 17);
-            indexEngSheet.Add("Personality trates", 18);
-            indexEngSheet.Add("Additional information", 19);
-            indexEngSheet.Add("What are your hopes and expectations from this program", 19);
-            indexEngSheet.Add("Anything else you would like to tell us", 20);
-            indexEngSheet.Add("Who introduced you to this program", 21);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,20 +44,22 @@ namespace LogicLayer
         /// <summary>
         /// Update all the data from the google sheets
         /// </summary>
-        void UpdateData();
+        Task UpdateData();
 
         /// <summary>
         /// the students list
         /// </summary>
-        IEnumerable<BO.Student> StudentList { get; set; }
+        ObservableCollection<BO.Student> StudentList { get; set; }
 
         /// <summary>
         /// making the match between the tow students
         /// </summary>
         /// <param name="fromIsreal"></param>
         /// <param name="fromWord"></param>
-        void Match(BO.Student fromIsreal, BO.Student fromWord);
+        Task Match(BO.Student fromIsreal, BO.Student fromWord);
 
         IEnumerable<Tuple<BO.Student, BO.Student>> GetAllPairs();
+
+        Task Update();
     }
 }

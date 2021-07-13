@@ -57,8 +57,6 @@ namespace LogicLayer
         {
             var request = Service.Spreadsheets.Values.Get(spreadsheetId, range);
 
-            //var response = await Task.Run(() => request.Execute());
-
             var response = await request.ExecuteAsync();
 
             var values = response.Values;

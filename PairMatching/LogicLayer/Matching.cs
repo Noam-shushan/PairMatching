@@ -8,46 +8,34 @@ namespace LogicLayer
 {
     public class Matching
     {
-
-        static Dictionary<DO.TimesInDay, TimeInterval> BoundryOfTimeInDay =
-            new Dictionary<DO.TimesInDay, TimeInterval>();
-
-        static Matching()
-        {
-            SetBoundrysOfTimeInDay();
-        }
-        
-        static void SetBoundrysOfTimeInDay()
-        {
-            BoundryOfTimeInDay.Add(
-                DO.TimesInDay.MORNING, 
+        private static readonly Dictionary<DO.TimesInDay, TimeInterval> BoundryOfTimeInDay =
+            new Dictionary<DO.TimesInDay, TimeInterval>()
+            {
+                {DO.TimesInDay.MORNING,
                 new TimeInterval
                 {
                     Start = TimeSpan.Parse("05:00"),
                     End = TimeSpan.Parse("12:00")
-                });
-            BoundryOfTimeInDay.Add(
-                DO.TimesInDay.NOON,
+                }},
+                {DO.TimesInDay.NOON,
                 new TimeInterval
                 {
                     Start = TimeSpan.Parse("12:00"),
                     End = TimeSpan.Parse("18:00")
-                });
-            BoundryOfTimeInDay.Add(
-                DO.TimesInDay.EVENING,
+                }},
+                {DO.TimesInDay.EVENING,
                 new TimeInterval
                 {
                     Start = TimeSpan.Parse("18:00"),
                     End = TimeSpan.Parse("21:00")
-                });
-            BoundryOfTimeInDay.Add(
-                DO.TimesInDay.NIGHT,
+                }},
+                {DO.TimesInDay.NIGHT,
                 new TimeInterval
                 {
                     Start = TimeSpan.Parse("21:00"),
                     End = TimeSpan.Parse("02:00")
-                });
-        }
+                }}
+            };
 
         /// <summary>
         /// Cheack if tow student is a match from first degree 
@@ -63,11 +51,11 @@ namespace LogicLayer
 
         private bool IsMatchingStudentsNotCritical(BO.Student israelStudent, BO.Student other)
         {            
-            return (israelStudent.DesiredSkillLevel == other.SkillLevel
+            return (israelStudent.DesiredSkillLevel <= other.SkillLevel
                 || israelStudent.DesiredSkillLevel == DO.SkillLevels.DONT_MATTER)
                 && (israelStudent.LearningStyle == other.LearningStyle
-                || (israelStudent.LearningStyle == DO.LearningStyles.DONT_MATTER 
-                     && other.LearningStyle == DO.LearningStyles.DONT_MATTER));
+                || israelStudent.LearningStyle == DO.LearningStyles.DONT_MATTER 
+                     || other.LearningStyle == DO.LearningStyles.DONT_MATTER);
         }
 
         /// <summary>
@@ -77,32 +65,31 @@ namespace LogicLayer
         /// <param name="other"></param>
         /// <returns></returns>
         public bool IsMatchingStudentsCritical(BO.Student israelStudent, BO.Student other)
-        {
-            bool matchTime = IsMatchingHours(israelStudent, other);
-            
+        {   
             bool matchEnglishLevel = other.DesiredEnglishLevel == DO.EnglishLevels.DONT_MATTER 
-                                    || other.DesiredEnglishLevel == israelStudent.EnglishLevel;
+                                    || other.DesiredEnglishLevel <= israelStudent.EnglishLevel;
             
             bool matchGender = israelStudent.PrefferdGender == other.PrefferdGender
                                || (israelStudent.PrefferdGender == other.Gender
                                     && israelStudent.Gender == other.PrefferdGender);
             
             bool matchTrack = israelStudent.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER)
-                              || other.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER) ?
-                              true : israelStudent.PrefferdTracks
-                              .Select(p => p)
-                              .Intersect(other.PrefferdTracks)
-                              .Any();
+                              || other.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER) 
+                              || israelStudent.PrefferdTracks
+                                  .Select(p => p)
+                                  .Intersect(other.PrefferdTracks)
+                                  .Any();
  
             return matchTrack
                 && matchEnglishLevel
                 && matchGender
-                && matchTime;
+                && IsMatchingHours(israelStudent, other);
         }
 
 
         private bool IsMatchingHours(BO.Student israelStudent, BO.Student other)
         {
+            // get the difference utc time between the student in israel and student from the world
             var diff = GetDifferenceUtc(other.UtcOffset);
             foreach (var dt in other.DesiredLearningTime)
             {
@@ -262,7 +249,7 @@ namespace LogicLayer
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return (Start, End).GetHashCode();
         }
     }
 }

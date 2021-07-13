@@ -65,5 +65,13 @@ namespace BO
             {DO.TimesInDay.NIGHT, "לילה" },
         };
 
+        internal static Dictionary<DO.Genders, string> GendersDict =
+            new Dictionary<DO.Genders, string>()
+            {
+                {DO.Genders.MALE, "גבר"},
+                {DO.Genders.FMALE, "אישה" },
+                {DO.Genders.DONT_MATTER, "לא משנה לי" }
+            };
+
     }
 }

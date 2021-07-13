@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="Pair Matching.exe" version="1.0.0.5" publicKeyToken="29be507a6606b832" language="neutral" processorArchitecture="msil" type="win32" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="Pair Matching" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="Pair Matching.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!--
+          UAC Manifest Options
+          If you want to change the Windows User Account Control level replace the
+          requestedExecutionLevel node with one of the following.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+         If you want to utilize File and Registry Virtualization for backward
+         compatibility then delete the requestedExecutionLevel node.
+    -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DalFactory.dll" size="4096">
+      <assemblyIdentity name="DalFactory" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>5vrKhR8by0aKJQkmIlWu4mFpXZZI+ks+CTjDMHoUR7U=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DalJson.dll" size="12288">
+      <assemblyIdentity name="DalJson" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>0/grYdBgzlmN55eScBDoQ+YMS0Kmsg3F5pa6GDYLDg0=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DataLayer.dll" size="12288">
+      <assemblyIdentity name="DataLayer" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>Gsp8xG8ww1JoNzl4m6Z02d2RNcwN7KYkVCK57qzSRus=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Google.Apis.dll" size="80896">
+      <assemblyIdentity name="Google.Apis" version="1.51.0.0" publicKeyToken="4B01FA6E34DB77AB" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>0yGTkw7Qp4kJOg8u2zQVRjEQHuy3MHgYoqvxZ3oLUoQ=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Google.Apis.Auth.dll" size="143360">
+      <assemblyIdentity name="Google.Apis.Auth" version="1.51.0.0" publicKeyToken="4B01FA6E34DB77AB" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>YJrd23zV0EQTeVipn7CmoWnQ1YZ30zbfkvlbef72O/8=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Google.Apis.Core.dll" size="76800">
+      <assemblyIdentity name="Google.Apis.Core" version="1.51.0.0" publicKeyToken="4B01FA6E34DB77AB" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>BwYC4NQ6t/XPuBBdfeIrP6o+HPCxmXcM2Q1MnCPUE30=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Google.Apis.Sheets.v4.dll" size="221184">
+      <assemblyIdentity name="Google.Apis.Sheets.v4" version="1.51.0.2338" publicKeyToken="4B01FA6E34DB77AB" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>p5aSnH4qocMAeoSDWRv2AlQW/VrhmJzL/xl5QXzr8X0=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="LogicLayer.dll" size="46592">
+      <assemblyIdentity name="LogicLayer" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>MluwP9/SRSfi8oiKKm1Y9f8/dla/WJNTdtNcKUjqUM8=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MaterialDesignColors.dll" size="302080">
+      <assemblyIdentity name="MaterialDesignColors" version="2.0.1.2556" publicKeyToken="DF2A72020BD7962A" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>kxAeGXmnab/9WR6L5fpCqOPYeqG1nlin0aQNJxHBsCg=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MaterialDesignThemes.Wpf.dll" size="8195584">
+      <assemblyIdentity name="MaterialDesignThemes.Wpf" version="4.1.0.2556" publicKeyToken="DF2A72020BD7962A" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>JtrXjae/sk0gRvOqhvb+d5hE+zaBuq7soIQE9Kuf2/A=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Newtonsoft.Json.dll" size="701992">
+      <assemblyIdentity name="Newtonsoft.Json" version="13.0.0.0" publicKeyToken="30AD4FE6B2A6AEED" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>tiSUnfiw46YVP9+3MKfG9JkLZZLuDZIuF4hDPSdmEPM=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Pair Matching.exe" size="29656">
+      <assemblyIdentity name="Pair Matching" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>tcABR0/0S9Y004fgqIznzo4SP05phUjoWAbeiDKUKLk=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="client_secret.json" size="425">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>orXOeIA+at9iFglVwmzJAzPu/D3JJnNWmFy1ew6QJ+8=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Google.Apis.Auth.OAuth2.Responses.TokenResponse-user" size="474">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>yYXHvWMMcTyS2LmaSa+ibakT9S1KTwh9cqIJq0W+nHE=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Pair Matching.exe.config" size="542">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>rEVqtJLOKiRdiDLPL3p73O+9533hQWAnpvjWi3hi6cI=</dsig:DigestValue>
+    </hash>
+  </file>
+<publisherIdentity name="CN=DESKTOP-CJ7M9M6\noam" issuerKeyHash="16223dd33f03e74802b9d09da8bdbe06a1ebc05a" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>Bu+Zfsu3BTG3OLb6Aw/FrCWpGVM+tvSTtQopkrH9sHY=</DigestValue></Reference></SignedInfo><SignatureValue>AjkvmkcTvcw4AnsZHTAyt7AB5rBu0BF7Gmv9JLdLLzI52ZKA1OpBG1K7vM58Xxj7IHHbBJP86ApX3jwLjda0PP8nNuaVrl/nu7C2iUN4oDnVwhgF8qg8OfIXCTud8j6kPKfhpQYhRUEUgjWkNR5dpXtsXkbajx8CHQwPzMDWW14=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>r5ZxEFPMn7dWve5EAaMhbG2p36SNX/h3EELOlZiRcIN0x7BVpr1M+KuAAiy3n3kQiO+jXc9Apdk1TJVOfdpf3zwQUGg6yJIimVmiRuMfKP3gc6e3UkNCOKAeCfhN+WdQeKgyd3eXlCQo53bc0CWr0kC0X/KaCPOjrNqtSpYFcAk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="76b0fdb192290ab593f4b63e5319a925acc50f03fab638b73105b7cb7e99ef06" Description="" Url=""><as:assemblyIdentity name="Pair Matching.exe" version="1.0.0.5" publicKeyToken="29be507a6606b832" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=DESKTOP-CJ7M9M6\noam</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>k6oa5UIEHVt9yzKLntombeYzrp3Ks7vPtVRpLo2zx/w=</DigestValue></Reference></SignedInfo><SignatureValue>PRTWrVbrPBBP6DPHtEBF72j34QJNXwrAGiBtMbbb3gk1S/4BnMsMRpbGBo8SWfdMwwTyolMQ8UQGDGXoMGeIu71tqz+jDKR2w4qpjhapxPY6+1ZqgVR0UbCzJGSgXvG8K87O4xG7fUagFdNEyKggosduui3GSYUriDqyKTY3Fsg=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>r5ZxEFPMn7dWve5EAaMhbG2p36SNX/h3EELOlZiRcIN0x7BVpr1M+KuAAiy3n3kQiO+jXc9Apdk1TJVOfdpf3zwQUGg6yJIimVmiRuMfKP3gc6e3UkNCOKAeCfhN+WdQeKgyd3eXlCQo53bc0CWr0kC0X/KaCPOjrNqtSpYFcAk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB6TCCAVKgAwIBAgIQfBr+XXSnGbpNuciP5D0OBTANBgkqhkiG9w0BAQsFADAzMTEwLwYDVQQDHigARABFAFMASwBUAE8AUAAtAEMASgA3AE0AOQBNADYAXABuAG8AYQBtMB4XDTIxMDcxMjE1MzYwNFoXDTIyMDcxMjIxMzYwNFowMzExMC8GA1UEAx4oAEQARQBTAEsAVABPAFAALQBDAEoANwBNADkATQA2AFwAbgBvAGEAbTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAr5ZxEFPMn7dWve5EAaMhbG2p36SNX/h3EELOlZiRcIN0x7BVpr1M+KuAAiy3n3kQiO+jXc9Apdk1TJVOfdpf3zwQUGg6yJIimVmiRuMfKP3gc6e3UkNCOKAeCfhN+WdQeKgyd3eXlCQo53bc0CWr0kC0X/KaCPOjrNqtSpYFcAkCAwEAATANBgkqhkiG9w0BAQsFAAOBgQB2mBSm40PBTDcnnOT6MS+O5XhrxmrjEADVp0L9BlzyX/7vzapSMSNxqlJcuR3vLQLzlb379IlgpH9cMmMTvB5/amUHp/jkuh7bV/VbjculQ4YO48isiULZ2ppG/yFBxONWo14PeWhGyUPrtqPKQghcD48cyCoTK8hOCis0f2a4Yw==</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>

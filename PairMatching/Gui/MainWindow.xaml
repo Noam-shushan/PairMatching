@@ -15,7 +15,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         FontSize="15"
-        Title="MainWindow" Height="800" Width="1200">
+        Title="שלהבת" Height="800" Width="1200">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>
@@ -31,30 +31,47 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-
+        <CheckBox Visibility="Hidden" x:Name="cbUpdateForEnable" IsChecked="True"/>
         <StackPanel Grid.Column="4" Grid.Row="1" Margin="10,20,0,0">
             <Button 
                 x:Name="updateBtn"
                 Margin="0,0,0,20"
                 Content="עדכן נתונים"
-                Click="updateBtn_Click"
+                Click="updateBtn_Click"               
             />
             <Button 
-            x:Name="allStudentBtn"
-            Content="הצג את כל התלמידים"
-            Click="allStudentBtn_Click"
-            Margin="0,0,0,20"
+                x:Name="allStudentBtn"
+                Content="הצג את כל התלמידים"
+                Click="allStudentBtn_Click"
+                IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
+                Margin="0,0,0,20"
             />
             <Button
                 x:Name="allPairsBtn"
                 Content="הצג את כל החברותות"
-                Click="allPairsBtn_Click" 
+                Click="allPairsBtn_Click"
+                IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
                 Margin="0,0,0,20"
             />
             <Button 
                 x:Name="allStudentWithoutPairBtn"
                 Content="הצג תלמידים ללא חברותא"
                 Click="allStudentWithoutPairBtn_Click"
+                IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
+                Margin="0,0,0,20"
+            />
+            <Button 
+                x:Name="allStudentFromWorldBtn"
+                Content="הצג תלמידים מהעולם"
+                Click="allStudentFromWorldBtn_Click"
+                IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
+                Margin="0,0,0,20"
+            />
+            <Button 
+                x:Name="allStudentFromIsraelBtn"
+                Content="הצג תלמידים מישראל"
+                Click="allStudentFromIsraelBtn_Click"
+                IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
                 Margin="0,0,0,20"
             />
         </StackPanel>
@@ -69,7 +86,7 @@
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
-                            <GridViewColumn Header="שם" 
+                            <GridViewColumn Header="תלמידים" 
                                             DisplayMemberBinding="{Binding Path=Name}"/>
                             <GridViewColumn>
                                 <GridViewColumn.CellTemplate>
@@ -88,8 +105,7 @@
             <ListView 
                 x:Name="lvPairs"
                 Height="800"
-                ItemsSource="{Binding}"
-                >
+                ItemsSource="{Binding}">
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
@@ -125,11 +141,11 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
                 <TextBlock Text="מגדר: "/>
-                <TextBlock Text="{Binding Path=Gender}"/>
+                <TextBlock Text="{Binding Path=GenderShow}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
                 <TextBlock Text="מגדר מועדף: "/>
-                <TextBlock Text="{Binding Path=PrefferdGender}"/>
+                <TextBlock Text="{Binding Path=PrefferdGenderShow}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
                 <TextBlock Text="רמת אנגלית: "/>
