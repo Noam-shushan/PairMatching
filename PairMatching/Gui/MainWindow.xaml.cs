@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using LogicLayer;
+using BO;
 
 namespace Gui
 {
@@ -33,7 +34,7 @@ namespace Gui
         {
             if (bl.StudentList == null || bl.StudentList.Count() == 0)
             {
-                await bl.Update();
+                await bl.UpdateAsync();
             }
             lvStudents.ItemsSource = bl.StudentList;
             allPairsGrig.Visibility = Visibility.Collapsed;
@@ -42,7 +43,7 @@ namespace Gui
 
         private void allPairsBtn_Click(object sender, RoutedEventArgs e)
         {
-            lvPairs.ItemsSource = new ObservableCollection<Tuple<BO.Student, BO.Student>>(bl.GetAllPairs()); ;
+            lvPairs.ItemsSource = new ObservableCollection<Tuple<Student, Student>>(bl.GetAllPairs()); ;
             allStudentGrig.Visibility = Visibility.Collapsed;
             spStudent.Visibility = Visibility.Collapsed;
             lbOpenQuestions.Visibility = Visibility.Collapsed;
@@ -53,11 +54,11 @@ namespace Gui
         {
             if (bl.StudentList == null || bl.StudentList.Count() == 0)
             {
-                await bl.Update();             
+                await bl.UpdateAsync();
             }
-            lvStudents.ItemsSource = new ObservableCollection <BO.Student>(from s in bl.StudentList
-                                                                           where s.MatchTo == 0
-                                                                           select s);
+            lvStudents.ItemsSource = new ObservableCollection <Student>(from s in bl.StudentList
+                                                                        where s.MatchTo == 0
+                                                                        select s);
             allPairsGrig.Visibility = Visibility.Collapsed;
             allStudentGrig.Visibility = Visibility.Visible;
         }
@@ -72,7 +73,7 @@ namespace Gui
             try
             {
                 pbUpdate.Visibility = Visibility.Visible;
-                await Task.Run(() => bl.UpdateData());
+                await Task.Run(() => bl.UpdateDataAsync());
             }
             catch (Exception ex)
             {
@@ -87,7 +88,11 @@ namespace Gui
 
         private void lvStudents_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedStudent = lvStudents.SelectedItem as BO.Student;
+            var selectedStudent = lvStudents.SelectedItem as Student;
+            if(selectedStudent == null)
+            {
+                return;
+            }
             spStudent.DataContext = selectedStudent;
             lbOpenQuestions.DataContext = selectedStudent;
             spStudent.Visibility = Visibility.Visible;
@@ -96,9 +101,9 @@ namespace Gui
 
         private async void matchBtn_Click(object sender, RoutedEventArgs e)
         {
-            var selectedStudent = lvStudents.SelectedItem as BO.Student;
-            var firstSelectedMatch = cbFirstMatching.SelectedItem as BO.Student;
-            var secondSelectedMatch = cbSecondeMatching.SelectedItem as BO.Student;
+            var selectedStudent = lvStudents.SelectedItem as Student;
+            var firstSelectedMatch = cbFirstMatching.SelectedItem as SuggestStudent;
+            var secondSelectedMatch = cbSecondeMatching.SelectedItem as SuggestStudent;
             if (firstSelectedMatch == null && secondSelectedMatch == null)
             {
                 MessageBox.Show("בחר תלמיד ממהצעות על מנת להתאים", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -107,19 +112,21 @@ namespace Gui
             if(firstSelectedMatch != null)
             {
 
-                if (MessageBox.Show($"בטוח שברצונך להתאים את {selectedStudent.Name} ל- {firstSelectedMatch.Name}?",
+                if (MessageBox.Show($"בטוח שברצונך להתאים את {selectedStudent.Name} ל- {firstSelectedMatch.SuggestStudentName}?",
                        "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    await bl.Match(selectedStudent, firstSelectedMatch);
+                    var first = bl.StudentList.FirstOrDefault(s => s.Id == firstSelectedMatch.SuggestStudentId);
+                    await bl.MatchAsync(selectedStudent, first);
                 }
                 return;
             }
             if (secondSelectedMatch != null)
             {
-                if (MessageBox.Show($"בטוח שברצונך להתאים את {selectedStudent.Name} ל- {secondSelectedMatch.Name}?",
+                if (MessageBox.Show($"בטוח שברצונך להתאים את {selectedStudent.Name} ל- {secondSelectedMatch.SuggestStudentName}?",
                        "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    await bl.Match(selectedStudent, secondSelectedMatch);
+                    var seconde = bl.StudentList.FirstOrDefault(s => s.Id == secondSelectedMatch.SuggestStudentId);
+                    await bl.MatchAsync(selectedStudent, seconde);
                 }
                 return;
             }
@@ -138,7 +145,7 @@ namespace Gui
             if (MessageBox.Show($"בטוח שברצונך להתאים את {first.Name} ל- {second.Name}?",
                         "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                await bl.Match(first, second);
+                await bl.MatchAsync(first, second);
             }
         }
 
@@ -146,11 +153,11 @@ namespace Gui
         {
             if (bl.StudentList == null || bl.StudentList.Count() == 0)
             {
-                await bl.Update();
+                await bl.UpdateAsync();
             }
-            lvStudents.ItemsSource = new ObservableCollection<BO.Student>(from s in bl.StudentList
-                                                                          where s.Country != "Israel"
-                                                                          select s);
+            lvStudents.ItemsSource = new ObservableCollection<Student>(from s in bl.StudentList
+                                                                        where s.Country != "Israel"
+                                                                        select s);
             allPairsGrig.Visibility = Visibility.Collapsed;
             allStudentGrig.Visibility = Visibility.Visible;
         }
@@ -159,11 +166,11 @@ namespace Gui
         {
             if (bl.StudentList == null || bl.StudentList.Count() == 0)
             {
-                await bl.Update();
+                await bl.UpdateAsync();
             }
-            lvStudents.ItemsSource = new ObservableCollection<BO.Student>(from s in bl.StudentList
-                                                                          where s.Country == "Israel"
-                                                                          select s);
+            lvStudents.ItemsSource = new ObservableCollection<Student>(from s in bl.StudentList
+                                                                        where s.Country == "Israel"
+                                                                        select s);
             allPairsGrig.Visibility = Visibility.Collapsed;
             allStudentGrig.Visibility = Visibility.Visible;
         }

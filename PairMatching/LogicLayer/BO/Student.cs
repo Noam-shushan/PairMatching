@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DO;
+using LogicLayer;
 
 namespace BO
 {
@@ -55,12 +56,20 @@ namespace BO
         {
             get
             {
+                var diff = Country != "Israel" ? $"\nהפרש זמן מישראל: {ReverseString(Matching.GetDifferenceUtc(UtcOffset).Hours.ToString())}" : "";
                 return string.Join("\n", from l in DesiredLearningTime
                               let day = Dictionaries.DaysDict[l.Day] + " : "
                               let time = string.Join(", ", from t in l.TimeInDay
                                                           select Dictionaries.TimesInDayDict[t])
-                              select day + time);
+                              select day + time) + diff;
             }
+        }
+
+        string ReverseString(string s)
+        {
+            char[] array = s.ToCharArray();
+            Array.Reverse(array);
+            return new string(array);
         }
 
         /// <summary>
@@ -147,11 +156,9 @@ namespace BO
         /// </summary>
         public int MatchTo { get; set; }
 
-        public IEnumerable<Student> FirstMatchingStudents { get; set; }
+        public IEnumerable<SuggestStudent> FirstSuggestStudents { get; set; }
 
-        public IEnumerable<Student> SecondeMatchingStudents { get; set; }
-        
-        public IEnumerable<Student> MatchingStudents { get; set; }
+        public IEnumerable<SuggestStudent> SecondeSuggestStudents { get; set; }
 
         public Dictionary<string, string> OpenQuestions { get; set; }
 

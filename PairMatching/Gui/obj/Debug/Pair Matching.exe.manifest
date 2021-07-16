@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="Pair Matching.exe" version="1.0.0.5" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
+  <asmv1:assemblyIdentity name="Pair Matching.exe" version="1.0.0.7" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
   <application />
   <entryPoint>
     <assemblyIdentity name="Pair Matching" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
@@ -61,19 +61,19 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>0/grYdBgzlmN55eScBDoQ+YMS0Kmsg3F5pa6GDYLDg0=</dsig:DigestValue>
+        <dsig:DigestValue>Yz6gMGOtHEWkR4KxUxHScOxNOA1jMrnKuQzsqv+zmwA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DataLayer.dll" size="12288">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DataLayer.dll" size="11776">
       <assemblyIdentity name="DataLayer" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Gsp8xG8ww1JoNzl4m6Z02d2RNcwN7KYkVCK57qzSRus=</dsig:DigestValue>
+        <dsig:DigestValue>QrmOZf5UY2t5fIYTy6L0jPj3Q19W8L9pLRLJdHSt4T0=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -126,14 +126,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="LogicLayer.dll" size="46592">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="LogicLayer.dll" size="51200">
       <assemblyIdentity name="LogicLayer" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>MluwP9/SRSfi8oiKKm1Y9f8/dla/WJNTdtNcKUjqUM8=</dsig:DigestValue>
+        <dsig:DigestValue>UsINlyFHBDMUFNTnK0jq/dvhzIHxEk+0ULwIWSASLRs=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -174,14 +174,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Pair Matching.exe" size="29656">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Pair Matching.exe" size="30680">
       <assemblyIdentity name="Pair Matching" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>tcABR0/0S9Y004fgqIznzo4SP05phUjoWAbeiDKUKLk=</dsig:DigestValue>
+        <dsig:DigestValue>DkPpUZxgz8UKJAb7FJ4G8uOYZmYnIS0TVaACtaHP4Qo=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

@@ -37,6 +37,9 @@ namespace LogicLayer
                 }}
             };
 
+        public List<Tuple<DO.LearningTime, DO.LearningTime>> MatchingHoursList { get; } =
+            new List<Tuple<DO.LearningTime, DO.LearningTime>>();
+
         /// <summary>
         /// Cheack if tow student is a match from first degree 
         /// </summary>
@@ -50,7 +53,7 @@ namespace LogicLayer
         }
 
         private bool IsMatchingStudentsNotCritical(BO.Student israelStudent, BO.Student other)
-        {            
+        {
             return (israelStudent.DesiredSkillLevel <= other.SkillLevel
                 || israelStudent.DesiredSkillLevel == DO.SkillLevels.DONT_MATTER)
                 && (israelStudent.LearningStyle == other.LearningStyle
@@ -65,7 +68,7 @@ namespace LogicLayer
         /// <param name="other"></param>
         /// <returns></returns>
         public bool IsMatchingStudentsCritical(BO.Student israelStudent, BO.Student other)
-        {   
+        {
             bool matchEnglishLevel = other.DesiredEnglishLevel == DO.EnglishLevels.DONT_MATTER 
                                     || other.DesiredEnglishLevel <= israelStudent.EnglishLevel;
             
@@ -89,8 +92,11 @@ namespace LogicLayer
 
         private bool IsMatchingHours(BO.Student israelStudent, BO.Student other)
         {
+            bool found = false;
+            
             // get the difference utc time between the student in israel and student from the world
             var diff = GetDifferenceUtc(other.UtcOffset);
+            
             foreach (var dt in other.DesiredLearningTime)
             {
                 foreach(var t in dt.TimeInDay)
@@ -98,27 +104,114 @@ namespace LogicLayer
                     var equivalentIntervalInWorld = GetStudentTimes(diff, t);
                     var equivalentTimeInIsrael = GetTimesInDayByInterval(equivalentIntervalInWorld);
                     
-                    if (israelStudent.DesiredLearningTime
-                        .Any(l => l.Day == dt.Day
-                            && l.TimeInDay
-                                .Any(tid => BoundryOfTimeInDay[tid].IsIn(equivalentIntervalInWorld.Start))))
+                    if(FindMatcinHouers(israelStudent, dt,t, 
+                        equivalentIntervalInWorld, equivalentTimeInIsrael, diff))
                     {
-                        return true;
+                        found = true;
+                    }
+                }
+            }
+            return found;
+        }
+
+        private bool FindMatcinHouers(BO.Student israeliStudent, DO.LearningTime learningTimeFromWorld,
+            DO.TimesInDay timesInDayFromWorld, TimeInterval equivalentIntevalFromWorld, 
+            DO.TimesInDay equivalentTimeInIsrael, TimeSpan diff)
+        {
+            bool found = false;
+            var ltToAddFromWorld = new DO.LearningTime
+            {
+                Id = learningTimeFromWorld.Id,
+                Day = learningTimeFromWorld.Day,
+                TimeInDay = new List<DO.TimesInDay> { timesInDayFromWorld }
+            };
+            foreach (var lt in israeliStudent.DesiredLearningTime)
+            {
+                // if there is more then one day before or after between the tow students
+                // there is no point to continue cheacking for matches 
+                if (Math.Abs(lt.Day - learningTimeFromWorld.Day) > 1)
+                {
+                    continue;
+                }
+                foreach(var t in lt.TimeInDay)
+                {
+                    if(lt.Day == learningTimeFromWorld.Day 
+                        && BoundryOfTimeInDay[t].IsIn(equivalentIntevalFromWorld.Start))
+                    {
+                        AddToMatchingHouersList(ltToAddFromWorld, new DO.LearningTime 
+                        {
+                            Id = lt.Id,
+                            Day = lt.Day,
+                            TimeInDay = new List<DO.TimesInDay> { t } 
+                        });
+                        found = true;
+                        continue;
+                    }
+                    if (diff < TimeSpan.Zero)
+                    {
+                        if ((lt.Day - learningTimeFromWorld.Day) == 1 &&
+                            (BoundryOfTimeInDay[t].IsIn(equivalentIntevalFromWorld.Start)
+                            || (t == equivalentTimeInIsrael && equivalentTimeInIsrael != DO.TimesInDay.DONT_MATTER)))
+                        {
+                            AddToMatchingHouersList(ltToAddFromWorld, new DO.LearningTime
+                            {
+                                Id = lt.Id,
+                                Day = lt.Day,
+                                TimeInDay = new List<DO.TimesInDay> { t }
+                            });
+                            found = true;
+                            continue;
+                        }
+                    }
+                    if (diff > TimeSpan.Zero)
+                    {
+                        if ((learningTimeFromWorld.Day - lt.Day) == 1 &&
+                            (BoundryOfTimeInDay[t].IsIn(equivalentIntevalFromWorld.Start)
+                            || (t == equivalentTimeInIsrael && equivalentTimeInIsrael != DO.TimesInDay.DONT_MATTER)))
+                        {
+                            AddToMatchingHouersList(ltToAddFromWorld, new DO.LearningTime
+                            {
+                                Id = lt.Id,
+                                Day = lt.Day,
+                                TimeInDay = new List<DO.TimesInDay> { t }
+                            });
+                            found = true;
+                            continue;
+                        }
                     }
                     if (equivalentTimeInIsrael == DO.TimesInDay.DONT_MATTER)
                     {
                         continue;
-                    }    
-                    if(israelStudent.DesiredLearningTime
-                        .Any(l => l.Day == dt.Day 
-                            && l.TimeInDay
-                                .Any(tid => tid == equivalentTimeInIsrael)))
+                    }
+                    if (lt.Day == learningTimeFromWorld.Day 
+                        && t == equivalentTimeInIsrael)
                     {
-                        return true;
+                        AddToMatchingHouersList(ltToAddFromWorld, new DO.LearningTime
+                        {
+                            Id = lt.Id,
+                            Day = lt.Day,
+                            TimeInDay = new List<DO.TimesInDay> { t }
+                        });
+                        found = true;
+                        continue;
                     }
                 }
             }
-            return false;
+
+            return found;
+        }
+
+        private void AddToMatchingHouersList(DO.LearningTime first, DO.LearningTime second)
+        {
+/*            if(!(from m in MatchingHoursList
+                where m.Item1.Equals(first)
+               select m.Item1).Any() && 
+               !(from m in MatchingHoursList
+                 where m.Item2.Equals(second)
+                 select m.Item2).Any())*/
+            {
+                MatchingHoursList.Add(new Tuple<DO.LearningTime, DO.LearningTime>(first, second));
+            }
         }
 
         /// <summary>
@@ -169,7 +262,7 @@ namespace LogicLayer
         /// </summary>
         /// <param name="offset">utc offset somewhere in the word</param>
         /// <returns></returns>
-        TimeSpan GetDifferenceUtc(TimeSpan offset)
+        public static TimeSpan GetDifferenceUtc(TimeSpan offset)
         {
             return offset - TimeZoneInfo.Local.BaseUtcOffset;
         }
@@ -210,7 +303,7 @@ namespace LogicLayer
 
         internal bool IsIn(TimeSpan time)
         {
-            return time <= End + MIN_TIME_TO_LEARN && time >= Start;
+            return time + MIN_TIME_TO_LEARN <= End && time >= Start;
         }
 
         public static bool operator ==(TimeInterval left, TimeInterval right)

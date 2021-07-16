@@ -45,7 +45,6 @@
     <Compile Include="DO\Enums.cs" />
     <Compile Include="DO\LastUpdateOfSheets.cs" />
     <Compile Include="DO\LearningTime.cs" />
-    <Compile Include="DO\TheOpenQuestions.cs" />
     <Compile Include="DO\Pair.cs" />
     <Compile Include="DO\OpenQuestion.cs" />
     <Compile Include="DO\Student.cs" />

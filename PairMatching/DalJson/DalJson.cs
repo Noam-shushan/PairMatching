@@ -33,7 +33,7 @@ namespace DalJson
         #region Singleton
         public static IDataLayer Instance { get; } = new DalJson();
 
-        DalJson() 
+        private DalJson() 
         {
             SetCounters();
         }

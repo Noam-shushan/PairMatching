@@ -178,7 +178,7 @@ namespace LogicLayer
         public string GetCountryName(object row)
         {
             var rgx = new  Regex("[^a-zA-Z ]");
-            return rgx.Replace(row.ToString(), "");
+            return rgx.Replace(row.ToString(), "").Trim();
         }
     }
 }

@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="BlFactory.cs" />
     <Compile Include="BO\Dictionaries.cs" />
+    <Compile Include="BO\SuggestStudent.cs" />
     <Compile Include="BO\Student.cs" />
     <Compile Include="CopyTools.cs" />
     <Compile Include="EnglishDiscriptor.cs" />

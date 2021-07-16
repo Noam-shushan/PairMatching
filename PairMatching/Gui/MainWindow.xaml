@@ -129,7 +129,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
                 <TextBlock Text="אימייל:  "/>
-                <TextBlock Text="{Binding Path=Email}"/>
+                <TextBox Text="{Binding Path=Email}" IsReadOnly="True"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
                 <TextBlock Text="ארץ: " />
@@ -175,7 +175,7 @@
                     materialDesign:ColorZoneAssist.Mode="Inverted"
                     materialDesign:HintAssist.Hint="התאמה ראשונה"
                     MinWidth="128"
-                    ItemsSource="{Binding Path=FirstMatchingStudents}"
+                    ItemsSource="{Binding Path=FirstSuggestStudents}"
                     Margin="5"/>
             <ComboBox
                     x:Name="cbSecondeMatching"
@@ -184,7 +184,7 @@
                     materialDesign:TextFieldAssist.UnderlineBrush="{DynamicResource SecondaryHueMidBrush}"
                     materialDesign:ColorZoneAssist.Mode="Inverted"
                     materialDesign:HintAssist.Hint="התאמה שנייה"
-                    ItemsSource="{Binding Path=SecondeMatchingStudents}"
+                    ItemsSource="{Binding Path=SecondeSuggestStudents}"
                     Margin="5"/>
             <Button 
                 x:Name="matchBtn"

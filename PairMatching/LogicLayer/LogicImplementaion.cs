@@ -8,34 +8,55 @@ using DataLayer;
 
 namespace LogicLayer
 {
-    class LogicImplementaion : IBL
+    /// <summary>
+    /// Logic implemention of the logic layer main inteface
+    /// </summary>
+    internal class LogicImplementaion : IBL
     {
-        readonly IDataLayer dal = DalFactory.GetDal("json");
-        readonly Matching match = new Matching();
+        // tha singelton of the data layer 
+        private readonly IDataLayer dal = DalFactory.GetDal("json");
 
+        /// <summary>
+        /// maching object to cheack all the condition to make a match
+        /// </summary>
+        public Matching Matcher { get; } = new Matching();
+
+        /// <summary>
+        /// the students list that keep all the data of the students
+        /// </summary>
+        public ObservableCollection<BO.Student> StudentList { get; set; } = 
+            new ObservableCollection<BO.Student>();
+
+
+        #region Singelton referens of the logic layer
         public static IBL Instance { get; } = new LogicImplementaion();
 
-        public ObservableCollection<BO.Student> StudentList { get; set; } = new ObservableCollection<BO.Student>();
+        private LogicImplementaion() { }
+        #endregion
 
-        LogicImplementaion()
-        {
-            
-        }
-
-        public async Task UpdateData()
+        /// <summary>
+        /// Update all the data from the google sheets
+        /// </summary>
+        public async Task UpdateDataAsync()
         {
             try
             {
+                // get the last date of the update of the sheets to read from there
                 var lastDate = dal.GetLastDateOfSheets();
                 if(lastDate == null)
                 {
                     lastDate = new DO.LastDateOfSheets();
                 }
+                // create parser for the spradsheets
                 GoogleSheetParser parser = new GoogleSheetParser();
+                // read the english sheet
                 lastDate.EnglishSheets = parser.UpdateDataInEnglish(lastDate);
+                // read the hebrew sheet
                 lastDate.HebrewSheets = parser.UpdateDataInHebrew(lastDate);
+                // update the last date of updating of the sheets
                 dal.UpdateLastDateOfSheets(lastDate);
-                await Update();
+                // update my StudentList with the new students and the new matching
+                await UpdateAsync();
             }
             catch (Exception ex)
             {
@@ -43,24 +64,33 @@ namespace LogicLayer
             }
         }
 
-        public async Task Update()
-        {
+        /// <summary>
+        /// Update the data from the data base
+        /// </summary>
+        public async Task UpdateAsync()
+        {           
             await Task.Run(() =>
             {
+                Matcher.MatchingHoursList.Clear();
                 StudentList = new ObservableCollection<BO.Student>(GetAllStudents());
                 BuildStudents();
             });
         }
 
-        public async Task Match(BO.Student fromIsreal, BO.Student fromWorld)
+        /// <summary>
+        /// making the match between the tow students
+        /// </summary>
+        /// <param name="fromIsrael">student from israel</param>
+        /// <param name="fromWorld">student from the world</param>
+        public async Task MatchAsync(BO.Student fromIsrael, BO.Student fromWorld)
         {
             try
             {
-                fromIsreal.MatchTo = fromWorld.Id;
-                fromWorld.MatchTo = fromIsreal.Id;
+                fromIsrael.MatchTo = fromWorld.Id;
+                fromWorld.MatchTo = fromIsrael.Id;
                 
-                var fromIsrealDo = fromIsreal.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
-                fromIsrealDo.PrefferdTracks = fromIsreal.PrefferdTracks;
+                var fromIsrealDo = fromIsrael.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
+                fromIsrealDo.PrefferdTracks = fromIsrael.PrefferdTracks;
                 var fromWorldDo = fromWorld.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
                 fromWorldDo.PrefferdTracks = fromWorld.PrefferdTracks;
                 dal.UpdateStudent(fromIsrealDo);
@@ -68,12 +98,13 @@ namespace LogicLayer
                 
                 dal.AddPair(new DO.Pair()
                 {
-                    FirstStudent = fromIsreal.Id,
+                    FirstStudent = fromIsrael.Id,
                     SecondStudent = fromWorld.Id,
                     IsDeleted = false
                 });
                 // update the students from the data base
-                await Update();
+                // after making one match we need to calculate evereting agien
+                await UpdateAsync();
             }
             catch (Exception ex)
             {
@@ -115,14 +146,22 @@ namespace LogicLayer
         {
             try
             {
+                // get the student from the data base
                 var studDO = dal.GetStudent(id);
-                var studBO = studDO.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
-               
+                
+                // copy the propertis to BO student
+                var studBO = studDO.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;            
+                
+                // copy the enumrable
                 studBO.PrefferdTracks = studDO.PrefferdTracks.Distinct();
                 
+                // get the learning time of the student from the data base
                 studBO.DesiredLearningTime = dal.GetAllLearningTimesBy(l => l.Id == id);
-
+                
+                // get the open question and answers of the student from the data base
                 var openQuestions = dal.GetAllOpenQuestionsBy(o => o.Id == id);
+                
+                // create a dictionary of the open Q&A for the student 
                 studBO.OpenQuestions = new Dictionary<string, string>();
                 foreach(var o in openQuestions)
                 {
@@ -152,6 +191,7 @@ namespace LogicLayer
         void BuildStudents()
         {
             var temp = new List<BO.Student>();
+            // find matcing student for each one
             foreach(var s in StudentList)
             {
                 temp.Add(BuildStudent(s));
@@ -161,16 +201,21 @@ namespace LogicLayer
 
         BO.Student BuildStudent(BO.Student student)
         {
-            student.FirstMatchingStudents = GetMatchingStudents(student, match.IsFirstMatching);
-            student.SecondeMatchingStudents = GetMatchingStudents(student, match.IsMatchingStudentsCritical);
-            student.SecondeMatchingStudents = student.SecondeMatchingStudents.Except(student.FirstMatchingStudents);
-            student.SecondeMatchingStudents.Count();
+            // find matching students from first degry to this one
+            student.FirstSuggestStudents = GetMatchingStudents(student, Matcher.IsFirstMatching);
+            
+            // find matching students from second degry to this one
+            student.SecondeSuggestStudents = GetMatchingStudents(student, Matcher.IsMatchingStudentsCritical);
+            
+            // remove the duplacit matching
+            student.SecondeSuggestStudents = student.SecondeSuggestStudents.Except(student.FirstSuggestStudents);
+            
             return student;
         }
 
-        private IEnumerable<BO.Student> GetMatchingStudents(BO.Student student, Func<BO.Student, BO.Student, bool> func)
+        private IEnumerable<BO.SuggestStudent> GetMatchingStudents(BO.Student student, Func<BO.Student, BO.Student, bool> func)
         {
-            var result = new List<BO.Student>();
+            var result = new List<BO.SuggestStudent>();
             if (student.Country == "Israel")
             {
                 var studList = from s in StudentList
@@ -180,7 +225,24 @@ namespace LogicLayer
                 {
                     if (func(student, studFromWorld))
                     {
-                        result.Add(studFromWorld);
+                        var matchingLearningTime = from m in Matcher.MatchingHoursList
+                                                    where m.Item1.Id == studFromWorld.Id
+                                                    && m.Item2.Id == student.Id
+                                                    group m.Item1.TimeInDay.First() by m.Item1.Day into times
+                                                    select new DO.LearningTime
+                                                    {
+                                                        Day = times.Key,
+                                                        TimeInDay = times.Distinct()
+                                                    };
+                        var mat = new BO.SuggestStudent
+                        {
+                            ThisStudentId = student.Id,
+                            SuggestStudentId = studFromWorld.Id,
+                            SuggestStudenCountry = studFromWorld.Country,
+                            SuggestStudentName = studFromWorld.Name,
+                            MatchingLearningTime = matchingLearningTime
+                        };
+                        result.Add(mat);
                     }
                 }
             }
@@ -193,7 +255,24 @@ namespace LogicLayer
                 {
                     if (func(studFromIsreal, student))
                     {
-                        result.Add(studFromIsreal);
+                        var matchingLearningTime = from m in Matcher.MatchingHoursList
+                                                   where m.Item1.Id == student.Id
+                                                   && m.Item2.Id == studFromIsreal.Id
+                                                   group m.Item2.TimeInDay.First() by m.Item2.Day into times
+                                                   select new DO.LearningTime
+                                                   {
+                                                       Day = times.Key,
+                                                       TimeInDay = times.Distinct()
+                                                   };
+                        var mat = new BO.SuggestStudent
+                        {
+                            ThisStudentId = student.Id,
+                            SuggestStudentId = studFromIsreal.Id,
+                            SuggestStudenCountry = studFromIsreal.Country,
+                            SuggestStudentName = studFromIsreal.Name,
+                            MatchingLearningTime = matchingLearningTime
+                        };
+                        result.Add(mat);
                     }
                 }
             }
@@ -201,6 +280,10 @@ namespace LogicLayer
             return result;
         }
 
+        /// <summary>
+        /// Get all pairs from the data base
+        /// </summary>
+        /// <returns>list of all pairs in a tuple of tow students</returns>
         public IEnumerable<Tuple<BO.Student, BO.Student>> GetAllPairs()
         {
             return from p in dal.GetAllPairs()

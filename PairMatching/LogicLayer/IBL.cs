@@ -44,22 +44,29 @@ namespace LogicLayer
         /// <summary>
         /// Update all the data from the google sheets
         /// </summary>
-        Task UpdateData();
+        Task UpdateDataAsync();
 
         /// <summary>
-        /// the students list
+        /// the students list which wiil use in the Gui layer
         /// </summary>
         ObservableCollection<BO.Student> StudentList { get; set; }
 
         /// <summary>
         /// making the match between the tow students
         /// </summary>
-        /// <param name="fromIsreal"></param>
-        /// <param name="fromWord"></param>
-        Task Match(BO.Student fromIsreal, BO.Student fromWord);
+        /// <param name="fromIsrael">student from israel</param>
+        /// <param name="fromWorld">student from the world</param>
+        Task MatchAsync(BO.Student fromIsrael, BO.Student fromWorld);
 
+        /// <summary>
+        /// Get all pairs from the data base
+        /// </summary>
+        /// <returns>list of all pairs in a tuple of tow students</returns>
         IEnumerable<Tuple<BO.Student, BO.Student>> GetAllPairs();
 
-        Task Update();
+        /// <summary>
+        /// Update the data from the data base
+        /// </summary>
+        Task UpdateAsync();
     }
 }
