@@ -5,4 +5,6 @@ The software is divided into 3 layers:
 The data layer is to saved and read the data from json files.
 A logic layer for all the calculations and the matching, and for reading of the data from the forms.
 And display layer in WPF.
-![image](https://user-images.githubusercontent.com/40955004/125470238-5bfa07a4-162b-4e1e-9f86-c35801d26578.png)
+![image](https://user-images.githubusercontent.com/40955004/126455413-690693ea-1f12-4a22-a078-83d6a34424c2.png)
+
+
