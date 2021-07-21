@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using DO;
 using LogicLayer;
 
@@ -46,6 +47,8 @@ namespace BO
         public Genders Gender { get; set; }
 
         public string GenderShow { get => Dictionaries.GendersDict[Gender]; }
+
+        public bool IsMatch { get => MatchTo != 0; }
 
         /// <summary>
         /// Desired learning time and day

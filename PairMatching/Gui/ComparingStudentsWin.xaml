@@ -1,0 +1,297 @@
+﻿<Window x:Class="Gui.ComparingStudentsWin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Gui"
+        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        WindowState="Maximized"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        FontSize="15"
+        Title="ComparingStudentsWin" Height="800" Width="1200">
+    <Grid FlowDirection="RightToLeft">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="10"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="10"/>
+        </Grid.RowDefinitions>
+        <GroupBox Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Header="תלמיד מישראל" Margin="0,0,5,0" BorderBrush="BlueViolet">
+        <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" x:Name="spStudentFromIsreal">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="שם:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=Name}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="טלפון:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=PhoneNumber}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="אימייל:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBox Text="{Binding Path=Email}" IsReadOnly="True"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="ארץ: " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=Country}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="תחום לימוד מועדף:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=PrefferdTracksShow}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="מגדר:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=GenderShow}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="מגדר מועדף:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=PrefferdGenderShow}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="רמת אנגלית:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=EnglishLevelShow}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="רמת לימוד רצויה:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=DesiredSkillLevelShow}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="סגנון לימוד:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=LearningStyleShow}"/>
+                </StackPanel>
+            </StackPanel>
+            <ListBox VerticalAlignment="Top" x:Name="lbOpenQuestions" Width="400" Height="700">
+                <Border
+                    Background="{DynamicResource MaterialDesignBackground}">
+                    <GroupBox
+                            Header="זמני לימוד אפשריים"
+                            Style="{DynamicResource MaterialDesignGroupBox}"
+                            Margin="5,0,0,5"
+                            Width="390"
+                            Height="auto"
+                            UseLayoutRounding="True" RenderTransformOrigin="0.5,0.5">
+                        <TextBlock Text="{Binding DesiredLearningTimeShow}"/>
+                    </GroupBox>
+                </Border>
+                <Border
+                    Background="{DynamicResource MaterialDesignBackground}">
+                    <GroupBox
+                            Header="פרטים ביוגרפיים"
+                            Style="{DynamicResource MaterialDesignGroupBox}"
+                            Margin="5,0,0,5"
+                            Width="390"
+                            Height="auto"
+                            UseLayoutRounding="True" RenderTransformOrigin="0.5,0.5">
+                        <TextBlock Text="{Binding OpenQuestions[Personal information]}"/>
+                    </GroupBox>
+                </Border>
+                <Border
+                    Background="{DynamicResource MaterialDesignBackground}">
+                    <GroupBox
+                        Header="תכונות אישיות, ערכים חשובים בשבילך, תחביבים"
+                        Style="{DynamicResource MaterialDesignGroupBox}"
+                        Margin="5,0,0,5"
+                        Width="390"
+                        Height="auto"
+                        UseLayoutRounding="True">
+                        <TextBlock Text="{Binding OpenQuestions[Personality trates]}"/>
+                    </GroupBox>
+                </Border>
+                <Border
+                    Background="{DynamicResource MaterialDesignBackground}">
+                    <GroupBox
+                        Header="מה מעניין אותך בהצטרפות לשלהבת?"
+                        Style="{DynamicResource MaterialDesignGroupBox}"
+                        Margin="5,0,0,5"
+                        Width="390"
+                        Height="auto"
+                        UseLayoutRounding="True">
+                        <TextBlock Text="{Binding OpenQuestions[What are your hopes and expectations from this program]}"/>
+                    </GroupBox>
+                </Border>
+                <Border
+                    Background="{DynamicResource MaterialDesignBackground}">
+                    <GroupBox
+                        Header="דברים נוספים שהיית רוצה שנדע?"
+                        Style="{DynamicResource MaterialDesignGroupBox}"
+                        Margin="5,0,0,5"
+                        Width="390"
+                        Height="auto"
+                        UseLayoutRounding="True">
+                        <TextBlock Text="{Binding OpenQuestions[Additional information]}"/>
+                    </GroupBox>
+                </Border>
+                <Border
+                    Background="{DynamicResource MaterialDesignBackground}">
+                    <GroupBox
+                        Header="דרך מי (או דרך מה) הגעת לתכנית?"
+                        Style="{DynamicResource MaterialDesignGroupBox}"
+                        Margin="5,0,0,5"
+                        Width="390"
+                        Height="auto"
+                        UseLayoutRounding="True">
+                        <TextBlock Text="{Binding OpenQuestions[Who introduced you to this program]}"/>
+                    </GroupBox>
+                </Border>
+                <Border
+                    Background="{DynamicResource MaterialDesignBackground}">
+                    <GroupBox
+                        Header="Country and City of residence"
+                        Style="{DynamicResource MaterialDesignGroupBox}"
+                        Margin="5,0,0,5"
+                        Width="390"
+                        Height="auto"
+                        UseLayoutRounding="True">
+                        <TextBlock Text="{Binding OpenQuestions[Country and City of residence]}"/>
+                    </GroupBox>
+                </Border>
+            </ListBox>
+        </StackPanel>
+        </GroupBox>
+        <GroupBox Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" Header="תלמיד מהתפוצות" BorderBrush="BlueViolet">
+            <StackPanel Orientation="Horizontal" x:Name="spStudentFromWorld" FlowDirection="RightToLeft">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="שם:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=Name}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="טלפון:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=PhoneNumber}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="אימייל:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBox Text="{Binding Path=Email}" IsReadOnly="True"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="ארץ: " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=Country}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="תחום לימוד מועדף:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=PrefferdTracksShow}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="מגדר:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=GenderShow}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="מגדר מועדף:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=PrefferdGenderShow}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="רמת אנגלית רצויה:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=DesiredEnglishLevelShow}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="רמת לימוד:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=SkillLevelShow}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="סגנון לימוד:  " FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding Path=LearningStyleShow}"/>
+                </StackPanel>
+            </StackPanel>
+            <ListBox VerticalAlignment="Top" x:Name="lbOpenQuestionsFromWorld" Width="400" Height="700">
+                <Border
+                    Background="{DynamicResource MaterialDesignBackground}">
+                    <GroupBox
+                            Header="זמני לימוד אפשריים"
+                            Style="{DynamicResource MaterialDesignGroupBox}"
+                            Margin="5,0,0,5"
+                            Width="390"
+                            Height="auto"
+                            UseLayoutRounding="True" RenderTransformOrigin="0.5,0.5">
+                        <TextBlock Text="{Binding DesiredLearningTimeShow}"/>
+                    </GroupBox>
+                </Border>
+                <Border
+                    Background="{DynamicResource MaterialDesignBackground}">
+                    <GroupBox
+                            Header="פרטים ביוגרפיים"
+                            Style="{DynamicResource MaterialDesignGroupBox}"
+                            Margin="5,0,0,5"
+                            Width="390"
+                            Height="auto"
+                            UseLayoutRounding="True" RenderTransformOrigin="0.5,0.5">
+                        <TextBlock Text="{Binding OpenQuestions[Personal information]}"/>
+                    </GroupBox>
+                </Border>
+                <Border
+                    Background="{DynamicResource MaterialDesignBackground}">
+                    <GroupBox
+                        Header="תכונות אישיות, ערכים חשובים בשבילך, תחביבים"
+                        Style="{DynamicResource MaterialDesignGroupBox}"
+                        Margin="5,0,0,5"
+                        Width="390"
+                        Height="auto"
+                        UseLayoutRounding="True">
+                        <TextBlock Text="{Binding OpenQuestions[Personality trates]}"/>
+                    </GroupBox>
+                </Border>
+                <Border
+                    Background="{DynamicResource MaterialDesignBackground}">
+                    <GroupBox
+                        Header="מה מעניין אותך בהצטרפות לשלהבת?"
+                        Style="{DynamicResource MaterialDesignGroupBox}"
+                        Margin="5,0,0,5"
+                        Width="390"
+                        Height="auto"
+                        UseLayoutRounding="True">
+                        <TextBlock Text="{Binding OpenQuestions[What are your hopes and expectations from this program]}"/>
+                    </GroupBox>
+                </Border>
+                <Border
+                    Background="{DynamicResource MaterialDesignBackground}">
+                    <GroupBox
+                        Header="דברים נוספים שהיית רוצה שנדע?"
+                        Style="{DynamicResource MaterialDesignGroupBox}"
+                        Margin="5,0,0,5"
+                        Width="390"
+                        Height="auto"
+                        UseLayoutRounding="True">
+                        <TextBlock Text="{Binding OpenQuestions[Additional information]}"/>
+                    </GroupBox>
+                </Border>
+                <Border
+                    Background="{DynamicResource MaterialDesignBackground}">
+                    <GroupBox
+                        Header="דרך מי (או דרך מה) הגעת לתכנית?"
+                        Style="{DynamicResource MaterialDesignGroupBox}"
+                        Margin="5,0,0,5"
+                        Width="390"
+                        Height="auto"
+                        UseLayoutRounding="True">
+                        <TextBlock Text="{Binding OpenQuestions[Who introduced you to this program]}"/>
+                    </GroupBox>
+                </Border>
+                <Border
+                    Background="{DynamicResource MaterialDesignBackground}">
+                    <GroupBox
+                        Header="Country and City of residence"
+                        Style="{DynamicResource MaterialDesignGroupBox}"
+                        Margin="5,0,0,5"
+                        Width="390"
+                        Height="auto"
+                        UseLayoutRounding="True">
+                        <TextBlock Text="{Binding OpenQuestions[Country and City of residence]}"/>
+                    </GroupBox>
+                </Border>
+            </ListBox>
+        </StackPanel>
+        </GroupBox>
+    </Grid>
+</Window>

@@ -61,19 +61,19 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Yz6gMGOtHEWkR4KxUxHScOxNOA1jMrnKuQzsqv+zmwA=</dsig:DigestValue>
+        <dsig:DigestValue>LRsiUvZ41UpHwDLk2vAchQWgnVnHgVPCHquyKePmE3s=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DataLayer.dll" size="11776">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DataLayer.dll" size="12288">
       <assemblyIdentity name="DataLayer" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>QrmOZf5UY2t5fIYTy6L0jPj3Q19W8L9pLRLJdHSt4T0=</dsig:DigestValue>
+        <dsig:DigestValue>ePSGkTuKl+cfk/wbUDRhfFvhgv2rTpwxwXPiYCVaGL4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -126,14 +126,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="LogicLayer.dll" size="51200">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="LogicLayer.dll" size="56320">
       <assemblyIdentity name="LogicLayer" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>UsINlyFHBDMUFNTnK0jq/dvhzIHxEk+0ULwIWSASLRs=</dsig:DigestValue>
+        <dsig:DigestValue>0z5eYkHmJQJltg2H4mxkOLXTkgp5k0mE3j1iEViPREE=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -174,14 +174,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Pair Matching.exe" size="30680">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Pair Matching.exe" size="57816">
       <assemblyIdentity name="Pair Matching" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>DkPpUZxgz8UKJAb7FJ4G8uOYZmYnIS0TVaACtaHP4Qo=</dsig:DigestValue>
+        <dsig:DigestValue>CHu8qF2V15nmfWJabxcJUjPudWgQ5kqVNPfsVo0QM1k=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

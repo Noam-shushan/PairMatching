@@ -68,5 +68,9 @@ namespace LogicLayer
         /// Update the data from the data base
         /// </summary>
         Task UpdateAsync();
+
+        IEnumerable<BO.Pair> GetAllPair();
+
+        Task RemovePairAsync(BO.Pair pair);
     }
 }

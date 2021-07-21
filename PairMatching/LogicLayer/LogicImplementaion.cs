@@ -106,9 +106,13 @@ namespace LogicLayer
                 // after making one match we need to calculate evereting agien
                 await UpdateAsync();
             }
-            catch (Exception ex)
+            catch (DO.BadPairException)
             {
-                throw new Exception(ex.Message);
+                throw new BO.BadPairException(" החברותא כבר קיימת ", fromIsrael.Name, fromWorld.Name);
+            }
+            catch (Exception ex2)
+            {
+                throw new Exception(ex2.Message);
             }
         }
 
@@ -291,5 +295,61 @@ namespace LogicLayer
                    let s2 = GetStudent(p.SecondStudent)
                    select new Tuple<BO.Student, BO.Student>(s1, s2);
         }
+
+        /// <summary>
+        /// Get all pairs from the data base
+        /// </summary>
+        /// <returns>list of all pairs in a tuple of tow students</returns>
+        public IEnumerable<BO.Pair> GetAllPair()
+        {
+            return from p in dal.GetAllPairs()
+                   let pt = GetPrefferdTrackOfPair(p)
+                   select new BO.Pair 
+                   {
+                       FirstStudent = GetSimpleStudent(p.FirstStudent),
+                       SecondStudent = GetSimpleStudent(p.SecondStudent),
+                       PrefferdTracks = pt
+                   };
+        }
+
+        private IEnumerable<DO.PrefferdTracks> GetPrefferdTrackOfPair(DO.Pair p)
+        {
+            var firstStudDO = dal.GetStudent(p.FirstStudent);
+            var secondeStudDO = dal.GetStudent(p.SecondStudent);
+            return firstStudDO.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER) ?
+                secondeStudDO.PrefferdTracks : firstStudDO.PrefferdTracks;
+        }
+
+        private BO.SimpleStudent GetSimpleStudent(int id)
+        {
+            var studDO = dal.GetStudent(id);
+            var simpleStudent = studDO.CopyPropertiesToNew(typeof(BO.SimpleStudent)) as BO.SimpleStudent;
+            return simpleStudent;
+        }
+
+
+        public async Task RemovePairAsync(BO.Pair pair)
+        {
+            try
+            {
+                var firstStudDO = dal.GetStudent(pair.FirstStudent.Id);
+                var secondeStudDO = dal.GetStudent(pair.SecondStudent.Id);
+                firstStudDO.MatchTo = 0;
+                secondeStudDO.MatchTo = 0;
+                dal.UpdateStudent(firstStudDO);
+                dal.UpdateStudent(secondeStudDO);
+                dal.RemovePair(pair.FirstStudent.Id, pair.SecondStudent.Id);
+                await UpdateAsync();
+            }
+            catch (DO.BadPairException)
+            {
+                throw new BO.BadPairException("חברותא לא קיימת", pair.FirstStudent.Name, pair.SecondStudent.Name);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 }

@@ -136,7 +136,7 @@ namespace DalJson
                                                  && p.SecondStudent == pair.SecondStudent);
             if (pTemp != null && !pTemp.IsDeleted)
             {
-                throw new Exception("the pair is olredy exist");
+                throw new BadPairException("the pair is exist", pTemp.FirstStudent, pTemp.SecondStudent);
             }
 
             pairList.Add(pair);
@@ -152,7 +152,8 @@ namespace DalJson
             {
                 return pTemp;
             }
-            throw new Exception("the pair not found");
+            throw new BadPairException("the pair is not found", pTemp != null ? pTemp.FirstStudent : 0, 
+                pTemp != null ? pTemp.SecondStudent : 0);
         }
 
         public void RemovePair(int firstStudent, int secondStudent)
@@ -170,7 +171,8 @@ namespace DalJson
                 return;
             }
 
-            throw new Exception("the pair not found");
+            throw new BadPairException("the pair is not found", pTemp != null ? pTemp.FirstStudent : 0,
+                        pTemp != null ? pTemp.SecondStudent : 0);
         }
 
         public IEnumerable<Pair> GetAllPairs()

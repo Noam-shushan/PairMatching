@@ -166,7 +166,7 @@ namespace LogicLayer
                         SkillLevel = studentDescriptor.GetSkillLevel(row[indexEngSheet["SkillLevel"]]),
                         LearningStyle = studentDescriptor.GetLearningStyle(row[indexEngSheet["LearningStyle"]]),
                         Gender = studentDescriptor.GetGender(row[indexEngSheet["Gender"]]),
-                        Country = studentDescriptor.GetCountryName(row[indexEngSheet["Country"]]),
+                        Country = SpliceText(studentDescriptor.GetCountryName(row[indexEngSheet["Country"]]), 3),
                         UtcOffset = studentDescriptor.GetStudentOffset(row[indexEngSheet["UtcOffset"]]),
                         PhoneNumber = row[indexEngSheet["PhoneNumber"]].ToString(),
                         Email = row[indexEngSheet["Email"]].ToString()
@@ -302,11 +302,11 @@ namespace LogicLayer
             }
         }
 
-        private static string SpliceText(string text)
+        private static string SpliceText(string text, int n = 8)
         {
             return string.Join(Environment.NewLine, text.Split()
                 .Select((word, index) => new { word, index })
-                .GroupBy(x => x.index / 6)
+                .GroupBy(x => x.index / n)
                 .Select(grp => string.Join(" ", grp.Select(x => x.word))));
         }
     }

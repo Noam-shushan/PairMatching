@@ -32,7 +32,7 @@
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
         <CheckBox Visibility="Hidden" x:Name="cbUpdateForEnable" IsChecked="True"/>
-        <StackPanel Grid.Column="4" Grid.Row="1" Margin="10,20,0,0">
+        <StackPanel Grid.Column="4" Grid.Row="1" Margin="10,20,0,0" Grid.RowSpan="2">
             <Button 
                 x:Name="updateBtn"
                 Margin="0,0,0,20"
@@ -74,6 +74,47 @@
                 IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
                 Margin="0,0,0,20"
             />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button
+                    x:Name="searchBtn"
+                    Click="searchBtn_Click"
+                    Style="{DynamicResource MaterialDesignToolButton}">
+                            <materialDesign:PackIcon
+                    Kind="Search"
+                    IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
+                    Opacity=".56" />
+                </Button>
+                <TextBox
+                    Grid.Column="1"
+                    Margin="8 0 0 0"
+                    x:Name="tbSearch"
+                    FlowDirection="RightToLeft"
+                    materialDesign:HintAssist.Hint="חיפוש"
+                    materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                    BorderThickness="0"
+                    MinWidth="200"
+                    PreviewMouseDown="tbSearch_PreviewMouseDown"
+                    KeyDown="tbSearch_KeyDown"
+                    IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
+                    VerticalAlignment="Center"/>
+            </Grid>
+            <StackPanel x:Name="spBtnForMatch" Visibility="Collapsed" Margin="0,50,0,0">
+                <Button 
+                x:Name="matchBtn"
+                Margin="0,10,0,10"
+                Content="בצע התאמה מההצעות"
+                Background="#88d6c6"
+                Click="matchBtn_Click"/>
+                <Button 
+                x:Name="manualMatchBtn"
+                Content="בצע התאמה ידנית"
+                Background="#88d6c6"
+                Click="manualMatchBtn_Click"/>
+            </StackPanel>
         </StackPanel>
 
         <Grid x:Name="allStudentGrig" 
@@ -83,6 +124,15 @@
                 Height="800"
                 ItemsSource="{Binding}"
                 SelectionChanged="lvStudents_SelectionChanged">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MaterialDesignGridViewItem}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsMatch}" Value="True">
+                                <Setter Property="Background" Value="#bee1cf"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
@@ -91,7 +141,7 @@
                             <GridViewColumn>
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox x:Name="checkBoxManualMatch" IsChecked="{Binding Path=IsSelected, Mode=TwoWay}"/>
+                                        <CheckBox IsChecked="{Binding Path=IsSelected, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -102,108 +152,207 @@
         </Grid>
         <Grid x:Name="allPairsGrig" 
               Visibility="Collapsed" Grid.Column="3" Grid.Row="1" Grid.RowSpan="2">
-            <ListView 
+            <StackPanel>
+                <ListView 
                 x:Name="lvPairs"
-                Height="800"
+                FlowDirection="RightToLeft"
+                Height="500"
+                MouseDoubleClick="lvPairs_MouseDoubleClick"
                 ItemsSource="{Binding}">
-                <ListView.View>
-                    <GridView>
-                        <GridView.Columns>
-                            <GridViewColumn Header="חברותא א" 
-                                            DisplayMemberBinding="{Binding Path=Item1}"/>
-                            <GridViewColumn Header="חברותא ב" 
-                                            DisplayMemberBinding="{Binding Path=Item2}"/>
-                        </GridView.Columns>
-                    </GridView>
-                </ListView.View>
-            </ListView>
+                    <ListView.Resources>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                        <local:OrdinalConverter x:Key="OrdinalConverter" />
+                        <DataTemplate x:Key="OrdinalColumnDataTemplate">
+                            <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem},
+                    Converter={StaticResource ResourceKey=OrdinalConverter}}" HorizontalAlignment="Right" />
+                        </DataTemplate>
+                    </ListView.Resources>
+                    <ListView.View>
+                        <GridView>
+                            <GridView.Columns>
+                                <GridViewColumn 
+                                    Header="#" 
+                                    CellTemplate="{StaticResource ResourceKey=OrdinalColumnDataTemplate}" 
+                                    Width="30"/>
+                                <GridViewColumn>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding Path=IsSelected, Mode=TwoWay}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="חברותא א" Width="260">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="5">
+                                                    <TextBlock Text="שם:  " FontWeight="Bold" TextDecorations="Underline"/>
+                                                    <TextBlock Text="{Binding Path=FirstStudent.Name}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="5">
+                                                    <TextBlock Text="מייל:  " FontWeight="Bold" TextDecorations="Underline"/>
+                                                    <TextBlock Text="{Binding Path=FirstStudent.Email}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="5">
+                                                    <TextBlock Text="טלפון:  " FontWeight="Bold" TextDecorations="Underline"/>
+                                                    <TextBlock Text="{Binding Path=FirstStudent.PhoneNumber}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="חברותא ב" Width="260">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="5">
+                                                    <TextBlock Text="שם:  " FontWeight="Bold" TextDecorations="Underline"/>
+                                                    <TextBlock Text="{Binding Path=SecondStudent.Name}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="5">
+                                                    <TextBlock Text="מייל:  " FontWeight="Bold" TextDecorations="Underline"/>
+                                                    <TextBlock Text="{Binding Path=SecondStudent.Email}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="5">
+                                                    <TextBlock Text="טלפון:  " FontWeight="Bold" TextDecorations="Underline"/>
+                                                    <TextBlock Text="{Binding Path=SecondStudent.PhoneNumber}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="מסלול לימוד"
+                                                DisplayMemberBinding="{Binding Path=PrefferdTracksShow}"/>
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <Button 
+                    x:Name="removePairBtn"
+                    Width="150"
+                    Margin="10"
+                    Content="מחק חברותא"
+                    Click="removePairBtn_Click"/>
+            </StackPanel>
         </Grid>
         <StackPanel Visibility="Collapsed" FlowDirection="RightToLeft" x:Name="spStudent" Grid.Column="2" Grid.Row="1" Grid.RowSpan="2">
             <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="שם:  "/>
+                <TextBlock Text="שם:  " FontWeight="Bold" TextDecorations="Underline"/>
                 <TextBlock Text="{Binding Path=Name}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="טלפון:  "/>
+                <TextBlock Text="טלפון:  " FontWeight="Bold" TextDecorations="Underline"/>
                 <TextBlock Text="{Binding Path=PhoneNumber}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="אימייל:  "/>
+                <TextBlock Text="אימייל:  " FontWeight="Bold" TextDecorations="Underline"/>
                 <TextBox Text="{Binding Path=Email}" IsReadOnly="True"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="ארץ: " />
+                <TextBlock Text="ארץ: " FontWeight="Bold" TextDecorations="Underline"/>
                 <TextBlock Text="{Binding Path=Country}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="תחום לימוד מועדף: "/>
+                <TextBlock Text="תחום לימוד מועדף:  " FontWeight="Bold" TextDecorations="Underline"/>
                 <TextBlock Text="{Binding Path=PrefferdTracksShow}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="מגדר: "/>
+                <TextBlock Text="מגדר:  " FontWeight="Bold" TextDecorations="Underline"/>
                 <TextBlock Text="{Binding Path=GenderShow}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="מגדר מועדף: "/>
+                <TextBlock Text="מגדר מועדף:  " FontWeight="Bold" TextDecorations="Underline"/>
                 <TextBlock Text="{Binding Path=PrefferdGenderShow}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="רמת אנגלית: "/>
+                <TextBlock Text="רמת אנגלית:  " FontWeight="Bold" TextDecorations="Underline"/>
                 <TextBlock Text="{Binding Path=EnglishLevelShow}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="רמת אנגלית רצויה: "/>
+                <TextBlock Text="רמת אנגלית רצויה:  " FontWeight="Bold" TextDecorations="Underline"/>
                 <TextBlock Text="{Binding Path=DesiredEnglishLevelShow}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="רמת לימוד: "/>
+                <TextBlock Text="רמת לימוד:  " FontWeight="Bold" TextDecorations="Underline"/>
                 <TextBlock Text="{Binding Path=SkillLevelShow}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="רמת לימוד רצויה: "/>
+                <TextBlock Text="רמת לימוד רצויה:  " FontWeight="Bold" TextDecorations="Underline"/>
                 <TextBlock Text="{Binding Path=DesiredSkillLevelShow}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="סגנון לימוד: "/>
+                <TextBlock Text="סגנון לימוד:  " FontWeight="Bold" TextDecorations="Underline"/>
                 <TextBlock Text="{Binding Path=LearningStyleShow}"/>
             </StackPanel>
-            <ComboBox 
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        x:Name="compFirstMatchBtn"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        HorizontalAlignment="Left"
+                        Content="השווה"
+                        Click="compFirstMatchBtn_Click"/>
+                    <Button
+                        x:Name="clearCBFirstMatchBtn"
+                        Content="Clear"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        HorizontalAlignment="Right"
+                        Grid.Column="1" 
+                        Click="clearCBFirstMatchBtn_Click"/>
+                </Grid>
+                <ComboBox
                     x:Name="cbFirstMatching"
-                    Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                    materialDesign:TextFieldAssist.HasClearButton="True"
-                    materialDesign:TextFieldAssist.UnderlineBrush="{DynamicResource SecondaryHueMidBrush}"
-                    materialDesign:ColorZoneAssist.Mode="Inverted"
+                    Style="{StaticResource MaterialDesignFilledComboBox}"
                     materialDesign:HintAssist.Hint="התאמה ראשונה"
-                    MinWidth="128"
                     ItemsSource="{Binding Path=FirstSuggestStudents}"
-                    Margin="5"/>
-            <ComboBox
+                    Margin="0,0,0,5"                    
+                    Width="256">
+                </ComboBox>
+            </StackPanel>
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        x:Name="compSecondeMatchBtn"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        HorizontalAlignment="Left"
+                        Content="השווה"
+                        Click="compSecondeMatchBtn_Click"/>
+                    <Button
+                        x:Name="clearCBSecondeMatchBtn"
+                        Content="Clear"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        HorizontalAlignment="Right"
+                        Grid.Column="1" 
+                        Click="clearCBSecondeMatchBtn_Click"/>
+                </Grid>
+                <ComboBox
                     x:Name="cbSecondeMatching"
-                    Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                    materialDesign:TextFieldAssist.HasClearButton="True"
-                    materialDesign:TextFieldAssist.UnderlineBrush="{DynamicResource SecondaryHueMidBrush}"
-                    materialDesign:ColorZoneAssist.Mode="Inverted"
+                    Style="{StaticResource MaterialDesignFilledComboBox}"
                     materialDesign:HintAssist.Hint="התאמה שנייה"
                     ItemsSource="{Binding Path=SecondeSuggestStudents}"
-                    Margin="5"/>
-            <Button 
-                x:Name="matchBtn"
-                Margin="0,10,0,10"
-                Content="בצע התאמה מההצעות"
-                Click="matchBtn_Click"/>
-            <Button 
-                x:Name="manualMatchBtn"
-                Content="בצע התאמה ידנית"
-                Click="manualMatchBtn_Click"/>
+                    Margin="0,0,0,5"
+                    Width="256">
+                </ComboBox>
+            </StackPanel>
         </StackPanel>
-        <ListBox Visibility="Collapsed" VerticalAlignment="Top" x:Name="lbOpenQuestions" Width="450" Height="500" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" FlowDirection="RightToLeft">
+        <ListBox Visibility="Collapsed" VerticalAlignment="Top" x:Name="lbOpenQuestions" Width="490" Height="700" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" FlowDirection="RightToLeft">
             <Border
                 Background="{DynamicResource MaterialDesignBackground}">
                 <GroupBox
                         Header="זמני לימוד אפשריים"
                         Style="{DynamicResource MaterialDesignGroupBox}"
-                        Margin="10"
-                        Width="400"
+                        Margin="5,0,0,5"
+                        Width="480"
                         Height="auto"
                         UseLayoutRounding="True" RenderTransformOrigin="0.5,0.5">
                     <TextBlock Text="{Binding DesiredLearningTimeShow}"/>
@@ -214,8 +363,8 @@
                 <GroupBox
                         Header="פרטים ביוגרפיים"
                         Style="{DynamicResource MaterialDesignGroupBox}"
-                        Margin="10"
-                        Width="400"
+                        Margin="5,0,0,5"
+                        Width="480"
                         Height="auto"
                         UseLayoutRounding="True" RenderTransformOrigin="0.5,0.5">
                     <TextBlock Text="{Binding OpenQuestions[Personal information]}"/>
@@ -224,12 +373,12 @@
             <Border
                 Background="{DynamicResource MaterialDesignBackground}">
                 <GroupBox
-                        Header="תכונות אישיות, ערכים חשובים בשבילך, תחביבים"
-                        Style="{DynamicResource MaterialDesignGroupBox}"
-                        Margin="10"
-                        Height="auto"
-                        Width="400"
-                        UseLayoutRounding="True">
+                    Header="תכונות אישיות, ערכים חשובים בשבילך, תחביבים"
+                    Style="{DynamicResource MaterialDesignGroupBox}"
+                    Margin="5,0,0,5"
+                    Width="480"
+                    Height="auto"
+                    UseLayoutRounding="True">
                     <TextBlock Text="{Binding OpenQuestions[Personality trates]}"/>
                 </GroupBox>
             </Border>
@@ -238,8 +387,8 @@
                 <GroupBox
                     Header="מה מעניין אותך בהצטרפות לשלהבת?"
                     Style="{DynamicResource MaterialDesignGroupBox}"
-                    Margin="10"
-                    Width="400"
+                    Margin="5,0,0,5"
+                    Width="480"
                     Height="auto"
                     UseLayoutRounding="True">
                     <TextBlock Text="{Binding OpenQuestions[What are your hopes and expectations from this program]}"/>
@@ -250,8 +399,8 @@
                 <GroupBox
                     Header="דברים נוספים שהיית רוצה שנדע?"
                     Style="{DynamicResource MaterialDesignGroupBox}"
-                    Margin="10"
-                    Width="400"
+                    Margin="5,0,0,5"
+                    Width="480"
                     Height="auto"
                     UseLayoutRounding="True">
                     <TextBlock Text="{Binding OpenQuestions[Additional information]}"/>
@@ -262,8 +411,8 @@
                 <GroupBox
                     Header="דרך מי (או דרך מה) הגעת לתכנית?"
                     Style="{DynamicResource MaterialDesignGroupBox}"
-                    Margin="10"
-                    Width="400"
+                    Margin="5,0,0,5"
+                    Width="480"
                     Height="auto"
                     UseLayoutRounding="True">
                     <TextBlock Text="{Binding OpenQuestions[Who introduced you to this program]}"/>
@@ -274,8 +423,8 @@
                 <GroupBox
                     Header="Country and City of residence"
                     Style="{DynamicResource MaterialDesignGroupBox}"
-                    Margin="10"
-                    Width="400"
+                    Margin="5,0,0,5"
+                    Width="480"
                     Height="auto"
                     UseLayoutRounding="True">
                     <TextBlock Text="{Binding OpenQuestions[Country and City of residence]}"/>

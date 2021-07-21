@@ -64,9 +64,9 @@ namespace LogicLayer
         /// <summary>
         /// Cheack if the students have the critical condition to be a match
         /// </summary>
-        /// <param name="thisStudent"></param>
+        /// <param name="israelStudent">student from israel</param>
         /// <param name="other"></param>
-        /// <returns></returns>
+        /// <returns>true is there is a match in the critical desires of the tow students</returns>
         public bool IsMatchingStudentsCritical(BO.Student israelStudent, BO.Student other)
         {
             bool matchEnglishLevel = other.DesiredEnglishLevel == DO.EnglishLevels.DONT_MATTER 
@@ -89,7 +89,12 @@ namespace LogicLayer
                 && IsMatchingHours(israelStudent, other);
         }
 
-
+        /// <summary>
+        /// ceack for equivalent houers between the tow students
+        /// </summary>
+        /// <param name="israelStudent">student from israel</param>
+        /// <param name="other">student from the world</param>
+        /// <returns></returns>
         private bool IsMatchingHours(BO.Student israelStudent, BO.Student other)
         {
             bool found = false;

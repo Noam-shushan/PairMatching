@@ -52,6 +52,7 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -63,7 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlFactory.cs" />
+    <Compile Include="BO\BlExceptions.cs" />
     <Compile Include="BO\Dictionaries.cs" />
+    <Compile Include="BO\Pair.cs" />
     <Compile Include="BO\SuggestStudent.cs" />
     <Compile Include="BO\Student.cs" />
     <Compile Include="CopyTools.cs" />
