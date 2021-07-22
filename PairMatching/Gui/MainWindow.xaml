@@ -15,6 +15,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         FontSize="15"
+        Loaded="Window_Loaded"
         Title="שלהבת" Height="800" Width="1200">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -79,6 +80,10 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
                 <Button
                     x:Name="searchBtn"
                     Click="searchBtn_Click"
@@ -95,12 +100,12 @@
                     FlowDirection="RightToLeft"
                     materialDesign:HintAssist.Hint="חיפוש"
                     materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
-                    BorderThickness="0"
                     MinWidth="200"
-                    PreviewMouseDown="tbSearch_PreviewMouseDown"
+                    BorderBrush="#28a7e7"
                     KeyDown="tbSearch_KeyDown"
                     IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
                     VerticalAlignment="Center"/>
+                <TextBlock x:Name="tbIsThereResultOfSearcing" Grid.Row="1" Grid.Column="1"/>
             </Grid>
             <StackPanel x:Name="spBtnForMatch" Visibility="Collapsed" Margin="0,50,0,0">
                 <Button 

@@ -19,30 +19,6 @@ using System.Globalization;
 
 namespace Gui
 {
-    public class OrdinalConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-
-            ListViewItem lvi = value as ListViewItem;
-            int ordinal = 0;
-
-            if (lvi != null)
-            {
-                ListView lv = ItemsControl.ItemsControlFromItemContainer(lvi) as ListView;
-                ordinal = lv.ItemContainerGenerator.IndexFromContainer(lvi) + 1;
-            }
-
-            return ordinal;
-
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            // This converter does not provide conversion back from ordinal position to list view item
-            throw new InvalidOperationException();
-        }
-    }
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -52,30 +28,35 @@ namespace Gui
 
         private ObservableCollection<Pair> pairsList;
 
-        bool isStudentWitoutPairUi;
+        private bool isStudentWitoutPairUi;
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private async void allStudentBtn_Click(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            await bl.UpdateAsync();
+            await Task.Run(() => pairsList = new ObservableCollection<Pair>(bl.GetAllPairs()));
+        }
+
+        private void allStudentBtn_Click(object sender, RoutedEventArgs e)
         {
             isStudentWitoutPairUi = false;
-            if (bl.StudentList.Count() == 0)
-            {
-                await bl.UpdateAsync();
-            }
             lvStudents.ItemsSource = bl.StudentList;
+            
             allPairsGrig.Visibility = Visibility.Collapsed;
+            tbIsThereResultOfSearcing.Text = string.Empty;
             allStudentGrig.Visibility = Visibility.Visible;
         }
 
         private void allPairsBtn_Click(object sender, RoutedEventArgs e)
         {
-            pairsList = new ObservableCollection<Pair>(bl.GetAllPair());
             lvPairs.ItemsSource = pairsList;
+            
             allStudentGrig.Visibility = Visibility.Collapsed;
+            tbIsThereResultOfSearcing.Text = string.Empty;
             spStudent.Visibility = Visibility.Collapsed;
             spBtnForMatch.Visibility = Visibility.Collapsed;
             lbOpenQuestions.Visibility = Visibility.Collapsed;
@@ -106,7 +87,7 @@ namespace Gui
                             await bl.RemovePairAsync(p);
                         }
                         RefreshMyPairView();
-                        RefreshMyView();
+                        RefreshMyStudentsView();
                     }
                 }
                 else
@@ -115,7 +96,7 @@ namespace Gui
                     {
                         await bl.RemovePairAsync(selectedPairs.First());
                         RefreshMyPairView();
-                        RefreshMyView();
+                        RefreshMyStudentsView();
                     }
                 }
             }
@@ -125,17 +106,13 @@ namespace Gui
             }
         }
 
-        private async void allStudentWithoutPairBtn_Click(object sender, RoutedEventArgs e)
+        private void allStudentWithoutPairBtn_Click(object sender, RoutedEventArgs e)
         {
             isStudentWitoutPairUi = true;
-            if (bl.StudentList.Count() == 0)
-            {
-                await bl.UpdateAsync();
-            }
-            lvStudents.ItemsSource = new ObservableCollection<Student>(from s in bl.StudentList
-                                                                        where s.MatchTo == 0
-                                                                        select s);
+            lvStudents.ItemsSource = new ObservableCollection<Student>(bl.GetAllStudentsBy(s => s.MatchTo == 0));
+            
             allPairsGrig.Visibility = Visibility.Collapsed;
+            tbIsThereResultOfSearcing.Text = string.Empty;
             allStudentGrig.Visibility = Visibility.Visible;
         }
 
@@ -147,6 +124,7 @@ namespace Gui
             allPairsGrig.Visibility = Visibility.Collapsed;
             spBtnForMatch.Visibility = Visibility.Collapsed;
             cbUpdateForEnable.IsChecked = false;
+            tbIsThereResultOfSearcing.Text = string.Empty;
             try
             {
                 pbUpdate.Visibility = Visibility.Visible;
@@ -195,9 +173,10 @@ namespace Gui
 
                     if (MessageBoxConfirmation($"בטוח שברצונך להתאים את {selectedStudent.Name} ל- {firstSelectedMatch.SuggestStudentName}?"))
                     {
-                        var first = bl.StudentList.FirstOrDefault(s => s.Id == firstSelectedMatch.SuggestStudentId);
+                        var first = bl.GetStudent(firstSelectedMatch.SuggestStudentId);
                         await bl.MatchAsync(selectedStudent, first);
-                        RefreshMyView();
+                        RefreshMyStudentsView();
+                        RefreshMyPairView();
                     }
                     return;
                 }
@@ -205,9 +184,10 @@ namespace Gui
                 {
                     if (MessageBoxConfirmation($"בטוח שברצונך להתאים את {selectedStudent.Name} ל- {secondSelectedMatch.SuggestStudentName}?"))
                     {
-                        var seconde = bl.StudentList.FirstOrDefault(s => s.Id == secondSelectedMatch.SuggestStudentId);
+                        var seconde = bl.GetStudent(secondSelectedMatch.SuggestStudentId);
                         await bl.MatchAsync(selectedStudent, seconde);
-                        RefreshMyView();
+                        RefreshMyStudentsView();
+                        RefreshMyPairView();
                     }
                     return;
                 }
@@ -220,7 +200,7 @@ namespace Gui
 
         private async void manualMatchBtn_Click(object sender, RoutedEventArgs e)
         {
-            var selectedList = bl.StudentList.Where(s => s.IsSelected);
+            var selectedList = bl.GetAllStudentsBy(s => s.IsSelected);
             if(selectedList.Count() != 2)
             {
                 MessageBoxWarning("בחר 2 תלמידים מהרשימה על מנת לבצע התאמה");
@@ -234,7 +214,8 @@ namespace Gui
                 if (MessageBoxConfirmation($"בטוח שברצונך להתאים את {first.Name} ל- {second.Name}?"))
                 {
                     await bl.MatchAsync(first, second);
-                    RefreshMyView();
+                    RefreshMyStudentsView();
+                    RefreshMyPairView();
                 }
             }
             catch (Exception ex)
@@ -243,47 +224,39 @@ namespace Gui
             }
         }
 
-        private async void allStudentFromWorldBtn_Click(object sender, RoutedEventArgs e)
+        private void allStudentFromWorldBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (bl.StudentList.Count() == 0)
-            {
-                await bl.UpdateAsync();
-            }
-            lvStudents.ItemsSource = new ObservableCollection<Student>(from s in bl.StudentList
-                                                                        where s.Country != "Israel"
-                                                                        select s);
+            lvStudents.ItemsSource = new ObservableCollection<Student>(bl.GetAllStudentsBy(s => s.Country != "Israel"));
             allPairsGrig.Visibility = Visibility.Collapsed;
+            tbIsThereResultOfSearcing.Text = string.Empty;
             allStudentGrig.Visibility = Visibility.Visible;
         }
 
-        private async void allStudentFromIsraelBtn_Click(object sender, RoutedEventArgs e)
+        private void allStudentFromIsraelBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (bl.StudentList.Count() == 0)
-            {
-                await bl.UpdateAsync();
-            }
-            lvStudents.ItemsSource = new ObservableCollection<Student>(from s in bl.StudentList
-                                                                        where s.Country == "Israel"
-                                                                        select s);
+            lvStudents.ItemsSource = new ObservableCollection<Student>(bl.GetAllStudentsBy(s => s.Country == "Israel"));
             allPairsGrig.Visibility = Visibility.Collapsed;
+            tbIsThereResultOfSearcing.Text = string.Empty;
             allStudentGrig.Visibility = Visibility.Visible;
         }
 
         private void RefreshMyPairView()
         {
-            pairsList = new ObservableCollection<Pair>(bl.GetAllPair());
+            pairsList = new ObservableCollection<Pair>(bl.GetAllPairs());
             lvPairs.ItemsSource = pairsList;
+            tbIsThereResultOfSearcing.Text = string.Empty;
         }
 
-        private void RefreshMyView()
+        private void RefreshMyStudentsView()
         {
-            lvStudents.ItemsSource = isStudentWitoutPairUi ? 
-                new ObservableCollection<Student>(from s in bl.StudentList
-                                                where s.MatchTo == 0
-                                                select s) : bl.StudentList;
+            lvStudents.ItemsSource = isStudentWitoutPairUi ?
+                new ObservableCollection<Student>(bl.GetAllStudentsBy(s => s.MatchTo == 0)) 
+                : bl.StudentList;
+
             spStudent.Visibility = Visibility.Collapsed;
             lbOpenQuestions.Visibility = Visibility.Collapsed;
             spBtnForMatch.Visibility = Visibility.Collapsed;
+            tbIsThereResultOfSearcing.Text = string.Empty;
         }
 
         private void MessageBoxError(string message)
@@ -308,9 +281,9 @@ namespace Gui
                             == MessageBoxResult.Yes;
         }
 
-        private async void searchBtn_Click(object sender, RoutedEventArgs e)
+        private void searchBtn_Click(object sender, RoutedEventArgs e)
         {
-            await Search();
+            Search();
         }
 
         private void clearCBFirstMatchBtn_Click(object sender, RoutedEventArgs e)
@@ -325,28 +298,19 @@ namespace Gui
 
         private void compFirstMatchBtn_Click(object sender, RoutedEventArgs e)
         {
-            if(cbFirstMatching.SelectedItem != null && lvStudents.SelectedItem != null)
-            {
-                var frist = bl.StudentList
-                    .FirstOrDefault(s => s.Id == (cbFirstMatching.SelectedItem as SuggestStudent).SuggestStudentId);
-                var seconde = lvStudents.SelectedItem as Student;
-                if(frist.Country == "Israel")
-                {
-                    new ComparingStudentsWin(frist, seconde).Show();
-                }
-                else
-                {
-                    new ComparingStudentsWin(seconde, frist).Show();
-                }
-            }
+            ShowComparingStudentsWin(cbFirstMatching.SelectedItem);
         }
 
         private void compSecondeMatchBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (cbSecondeMatching.SelectedItem != null && lvStudents.SelectedItem != null)
+            ShowComparingStudentsWin(cbSecondeMatching.SelectedItem);
+        }
+
+        private void ShowComparingStudentsWin(object fristStudent)
+        {
+            if (fristStudent != null && lvStudents.SelectedItem != null)
             {
-                var first = bl.StudentList
-                    .FirstOrDefault(s => s.Id == (cbSecondeMatching.SelectedItem as SuggestStudent).SuggestStudentId);
+                var first = bl.GetStudent((fristStudent as SuggestStudent).SuggestStudentId);
                 var seconde = lvStudents.SelectedItem as Student;
                 if (first.Country == "Israel")
                 {
@@ -378,34 +342,56 @@ namespace Gui
             }
         }
 
-        private void tbSearch_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            searchBtn.Focus();
-        }
-
-        private async void tbSearch_KeyDown(object sender, KeyEventArgs e)
+        private  void tbSearch_KeyDown(object sender, KeyEventArgs e)
         {
             if(e.Key == Key.Return)
             {
-                await Search();
+                Search();
             }
         }
 
-        private async Task Search()
+        private void Search()
         {
+            tbIsThereResultOfSearcing.Text = string.Empty;
             if (tbSearch.Text != string.Empty)
             {
-                if (bl.StudentList.Count() == 0)
+                lvStudents.ItemsSource = new ObservableCollection<Student>(bl.SearchStudents(tbSearch.Text));
+                if (lvStudents.Items.IsEmpty)
                 {
-                    await bl.UpdateAsync();
+                    tbIsThereResultOfSearcing.Text = "אין תוצאות";
+                    return;
                 }
-                lvStudents.ItemsSource = new ObservableCollection<Student>(from s in bl.StudentList
-                                                                           where s.Name.StartsWith(tbSearch.Text, StringComparison.InvariantCultureIgnoreCase)
-                                                                           select s);
                 lvStudents.Items.Refresh();
                 allPairsGrig.Visibility = Visibility.Collapsed;
                 allStudentGrig.Visibility = Visibility.Visible;
             }
+        }
+    }
+
+    /// <summary>
+    /// Converter class for convert from ListViewItem to number of row 
+    /// atending to display row number in the list that displays
+    /// </summary>
+    public class OrdinalConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int ordinal = 0;
+
+            if (value is ListViewItem lvi)
+            {
+                ListView lv = ItemsControl.ItemsControlFromItemContainer(lvi) as ListView;
+                ordinal = lv.ItemContainerGenerator.IndexFromContainer(lvi) + 1;
+            }
+
+            return ordinal;
+
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // This converter does not provide conversion back from ordinal position to list view item
+            throw new InvalidOperationException();
         }
     }
 }

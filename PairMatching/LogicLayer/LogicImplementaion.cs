@@ -19,7 +19,7 @@ namespace LogicLayer
         /// <summary>
         /// maching object to cheack all the condition to make a match
         /// </summary>
-        public Matching Matcher { get; } = new Matching();
+        private Matching Matcher { get; } = new Matching();
 
         /// <summary>
         /// the students list that keep all the data of the students
@@ -34,6 +34,7 @@ namespace LogicLayer
         private LogicImplementaion() { }
         #endregion
 
+        #region Updating data from the Google Sheets and from the data base
         /// <summary>
         /// Update all the data from the google sheets
         /// </summary>
@@ -43,16 +44,25 @@ namespace LogicLayer
             {
                 // get the last date of the update of the sheets to read from there
                 var lastDate = dal.GetLastDateOfSheets();
-                if(lastDate == null)
+                if (lastDate == null)
                 {
                     lastDate = new DO.LastDateOfSheets();
                 }
+                var oldDate = lastDate;
+
                 // create parser for the spradsheets
                 GoogleSheetParser parser = new GoogleSheetParser();
                 // read the english sheet
                 lastDate.EnglishSheets = parser.UpdateDataInEnglish(lastDate);
                 // read the hebrew sheet
                 lastDate.HebrewSheets = parser.UpdateDataInHebrew(lastDate);
+
+                // if there is no new data dont update the data base
+                if (lastDate.Equals(oldDate))
+                {
+                    return;
+                }
+
                 // update the last date of updating of the sheets
                 dal.UpdateLastDateOfSheets(lastDate);
                 // update my StudentList with the new students and the new matching
@@ -68,15 +78,50 @@ namespace LogicLayer
         /// Update the data from the data base
         /// </summary>
         public async Task UpdateAsync()
-        {           
+        {
             await Task.Run(() =>
             {
                 Matcher.MatchingHoursList.Clear();
-                StudentList = new ObservableCollection<BO.Student>(GetAllStudents());
-                BuildStudents();
+                StudentList = new ObservableCollection<BO.Student>(CreateAllStudents());
+                BuildAllStudents();
             });
         }
+        #endregion
 
+        #region Students
+        public IEnumerable<BO.Student> GetAllStudentsBy(Predicate<BO.Student> predicate)
+        {
+            return from s in StudentList
+                   where predicate(s)
+                   select s;
+        }
+
+        public BO.Student GetStudent(int id)
+        {
+            return StudentList.FirstOrDefault(s => s.Id == id);
+        }
+
+        public IEnumerable<BO.Student> SearchStudents(string preifxName)
+        {
+            return from s in StudentList
+                   where s.Name.StartsWith(preifxName, StringComparison.InvariantCultureIgnoreCase)
+                   select s;
+        }
+
+        public void RemoveStudent(int id)
+        {
+            try
+            {
+                dal.RemoveStudent(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        } 
+        #endregion
+
+        #region Pair matching
         /// <summary>
         /// making the match between the tow students
         /// </summary>
@@ -88,14 +133,14 @@ namespace LogicLayer
             {
                 fromIsrael.MatchTo = fromWorld.Id;
                 fromWorld.MatchTo = fromIsrael.Id;
-                
+
                 var fromIsrealDo = fromIsrael.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
                 fromIsrealDo.PrefferdTracks = fromIsrael.PrefferdTracks;
                 var fromWorldDo = fromWorld.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
                 fromWorldDo.PrefferdTracks = fromWorld.PrefferdTracks;
                 dal.UpdateStudent(fromIsrealDo);
                 dal.UpdateStudent(fromWorldDo);
-                
+
                 dal.AddPair(new DO.Pair()
                 {
                     FirstStudent = fromIsrael.Id,
@@ -116,58 +161,76 @@ namespace LogicLayer
             }
         }
 
-        public int AddStudent(BO.Student student)
+        /// <summary>
+        /// Get all pairs from the data base
+        /// </summary>
+        /// <returns>list of all pairs in a tuple of tow students</returns>
+        public IEnumerable<BO.Pair> GetAllPairs()
         {
-            int id;
+            return from p in dal.GetAllPairs()
+                   let pt = GetPrefferdTrackOfPair(p)
+                   select new BO.Pair
+                   {
+                       FirstStudent = GetSimpleStudent(p.FirstStudent),
+                       SecondStudent = GetSimpleStudent(p.SecondStudent),
+                       PrefferdTracks = pt
+                   };
+        }
+
+        public async Task RemovePairAsync(BO.Pair pair)
+        {
             try
             {
-                var studDO = student.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
-                id = dal.AddStudent(studDO);
+                var firstStudDO = dal.GetStudent(pair.FirstStudent.Id);
+                var secondeStudDO = dal.GetStudent(pair.SecondStudent.Id);
+                firstStudDO.MatchTo = 0;
+                secondeStudDO.MatchTo = 0;
+                dal.UpdateStudent(firstStudDO);
+                dal.UpdateStudent(secondeStudDO);
+                dal.RemovePair(pair.FirstStudent.Id, pair.SecondStudent.Id);
+                await UpdateAsync();
+            }
+            catch (DO.BadPairException)
+            {
+                throw new BO.BadPairException("חברותא לא קיימת", pair.FirstStudent.Name, pair.SecondStudent.Name);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw ex;
             }
-            return id;
         }
+        #endregion
 
-        public IEnumerable<BO.Student> GetAllStudents()
+        #region Build all the students and find a suggests students for each one
+        private IEnumerable<BO.Student> CreateAllStudents()
         {
             return from id in Enumerable.Range(1, dal.GetCounters().StudentCounter)
-                   let sBO = GetStudent(id)
+                   let sBO = CreateStudent(id)
                    select sBO;
         }
 
-        public IEnumerable<BO.Student> GetAllStudentsBy(Predicate<BO.Student> predicate)
-        {
-            return from id in Enumerable.Range(1, dal.GetCounters().StudentCounter)
-                   let sBO = GetStudent(id)
-                   where predicate(sBO)
-                   select sBO;
-        }
-
-        public BO.Student GetStudent(int id)
+        private BO.Student CreateStudent(int id)
         {
             try
             {
                 // get the student from the data base
                 var studDO = dal.GetStudent(id);
-                
+
                 // copy the propertis to BO student
-                var studBO = studDO.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;            
-                
+                var studBO = studDO.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
+
                 // copy the enumrable
                 studBO.PrefferdTracks = studDO.PrefferdTracks.Distinct();
-                
+
                 // get the learning time of the student from the data base
                 studBO.DesiredLearningTime = dal.GetAllLearningTimesBy(l => l.Id == id);
-                
+
                 // get the open question and answers of the student from the data base
                 var openQuestions = dal.GetAllOpenQuestionsBy(o => o.Id == id);
-                
+
                 // create a dictionary of the open Q&A for the student 
                 studBO.OpenQuestions = new Dictionary<string, string>();
-                foreach(var o in openQuestions)
+                foreach (var o in openQuestions)
                 {
                     studBO.OpenQuestions.Add(o.Question, o.Answer);
                 }
@@ -180,40 +243,28 @@ namespace LogicLayer
             }
         }
 
-        public void RemoveStudent(int id)
-        {
-            try
-            {
-                dal.RemoveStudent(id);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        void BuildStudents()
+        private void BuildAllStudents()
         {
             var temp = new List<BO.Student>();
             // find matcing student for each one
-            foreach(var s in StudentList)
+            foreach (var s in StudentList)
             {
                 temp.Add(BuildStudent(s));
             }
             StudentList = new ObservableCollection<BO.Student>(temp);
         }
 
-        BO.Student BuildStudent(BO.Student student)
+        private BO.Student BuildStudent(BO.Student student)
         {
             // find matching students from first degry to this one
             student.FirstSuggestStudents = GetMatchingStudents(student, Matcher.IsFirstMatching);
-            
+
             // find matching students from second degry to this one
             student.SecondeSuggestStudents = GetMatchingStudents(student, Matcher.IsMatchingStudentsCritical);
-            
+
             // remove the duplacit matching
             student.SecondeSuggestStudents = student.SecondeSuggestStudents.Except(student.FirstSuggestStudents);
-            
+
             return student;
         }
 
@@ -229,15 +280,16 @@ namespace LogicLayer
                 {
                     if (func(student, studFromWorld))
                     {
+                        // get the matchin hours between the tow students
                         var matchingLearningTime = from m in Matcher.MatchingHoursList
-                                                    where m.Item1.Id == studFromWorld.Id
-                                                    && m.Item2.Id == student.Id
-                                                    group m.Item1.TimeInDay.First() by m.Item1.Day into times
-                                                    select new DO.LearningTime
-                                                    {
-                                                        Day = times.Key,
-                                                        TimeInDay = times.Distinct()
-                                                    };
+                                                   where m.Item1.Id == studFromWorld.Id
+                                                   && m.Item2.Id == student.Id
+                                                   group m.Item1.TimeInDay.First() by m.Item1.Day into times
+                                                   select new DO.LearningTime
+                                                   {
+                                                       Day = times.Key,
+                                                       TimeInDay = times.Distinct()
+                                                   };
                         var mat = new BO.SuggestStudent
                         {
                             ThisStudentId = student.Id,
@@ -259,6 +311,7 @@ namespace LogicLayer
                 {
                     if (func(studFromIsreal, student))
                     {
+                        // get the matchin hours between the tow students
                         var matchingLearningTime = from m in Matcher.MatchingHoursList
                                                    where m.Item1.Id == student.Id
                                                    && m.Item2.Id == studFromIsreal.Id
@@ -283,35 +336,9 @@ namespace LogicLayer
 
             return result;
         }
+        #endregion
 
-        /// <summary>
-        /// Get all pairs from the data base
-        /// </summary>
-        /// <returns>list of all pairs in a tuple of tow students</returns>
-        public IEnumerable<Tuple<BO.Student, BO.Student>> GetAllPairs()
-        {
-            return from p in dal.GetAllPairs()
-                   let s1 = GetStudent(p.FirstStudent)
-                   let s2 = GetStudent(p.SecondStudent)
-                   select new Tuple<BO.Student, BO.Student>(s1, s2);
-        }
-
-        /// <summary>
-        /// Get all pairs from the data base
-        /// </summary>
-        /// <returns>list of all pairs in a tuple of tow students</returns>
-        public IEnumerable<BO.Pair> GetAllPair()
-        {
-            return from p in dal.GetAllPairs()
-                   let pt = GetPrefferdTrackOfPair(p)
-                   select new BO.Pair 
-                   {
-                       FirstStudent = GetSimpleStudent(p.FirstStudent),
-                       SecondStudent = GetSimpleStudent(p.SecondStudent),
-                       PrefferdTracks = pt
-                   };
-        }
-
+        #region Pairs helper functions
         private IEnumerable<DO.PrefferdTracks> GetPrefferdTrackOfPair(DO.Pair p)
         {
             var firstStudDO = dal.GetStudent(p.FirstStudent);
@@ -325,31 +352,7 @@ namespace LogicLayer
             var studDO = dal.GetStudent(id);
             var simpleStudent = studDO.CopyPropertiesToNew(typeof(BO.SimpleStudent)) as BO.SimpleStudent;
             return simpleStudent;
-        }
-
-
-        public async Task RemovePairAsync(BO.Pair pair)
-        {
-            try
-            {
-                var firstStudDO = dal.GetStudent(pair.FirstStudent.Id);
-                var secondeStudDO = dal.GetStudent(pair.SecondStudent.Id);
-                firstStudDO.MatchTo = 0;
-                secondeStudDO.MatchTo = 0;
-                dal.UpdateStudent(firstStudDO);
-                dal.UpdateStudent(secondeStudDO);
-                dal.RemovePair(pair.FirstStudent.Id, pair.SecondStudent.Id);
-                await UpdateAsync();
-            }
-            catch (DO.BadPairException)
-            {
-                throw new BO.BadPairException("חברותא לא קיימת", pair.FirstStudent.Name, pair.SecondStudent.Name);
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
-        }
-
+        } 
+        #endregion
     }
 }
