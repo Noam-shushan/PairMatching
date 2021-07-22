@@ -256,14 +256,21 @@ namespace LogicLayer
 
         private BO.Student BuildStudent(BO.Student student)
         {
-            // find matching students from first degry to this one
-            student.FirstSuggestStudents = GetMatchingStudents(student, Matcher.IsFirstMatching);
+            // find matching students from first rank to this one
+            // and order them by the number of matcing houers
+            student.FirstSuggestStudents = from s in GetMatchingStudents(student, Matcher.IsFirstMatching)
+                                           orderby (from l in s.MatchingLearningTime
+                                                    select l.TimeInDay.Count()).Count()
+                                                    descending
+                                           select s;
 
-            // find matching students from second degry to this one
-            student.SecondeSuggestStudents = GetMatchingStudents(student, Matcher.IsMatchingStudentsCritical);
-
-            // remove the duplacit matching
-            student.SecondeSuggestStudents = student.SecondeSuggestStudents.Except(student.FirstSuggestStudents);
+            // find matching students from seconde rank to this one
+            // and order them by the number of matcing houers
+            student.SecondeSuggestStudents = from s in GetMatchingStudents(student, Matcher.IsMatchingStudentsCritical)
+                                             orderby (from l in s.MatchingLearningTime
+                                                      select l.TimeInDay.Count()).Count()
+                                                    descending
+                                             select s;
 
             return student;
         }
@@ -278,6 +285,10 @@ namespace LogicLayer
                                select s;
                 foreach (var studFromWorld in studList)
                 {
+                    if(IsInTheSuggestStudents(student, studFromWorld))
+                    {
+                        continue;
+                    }
                     if (func(student, studFromWorld))
                     {
                         // get the matchin hours between the tow students
@@ -309,6 +320,10 @@ namespace LogicLayer
                                select s;
                 foreach (var studFromIsreal in studList)
                 {
+                    if (IsInTheSuggestStudents(student, studFromIsreal))
+                    {
+                        continue;
+                    }
                     if (func(studFromIsreal, student))
                     {
                         // get the matchin hours between the tow students
@@ -335,6 +350,22 @@ namespace LogicLayer
             }
 
             return result;
+        }
+
+        private bool IsInTheSuggestStudents(BO.Student student, BO.Student suggestStudent)
+        {
+            if(student.FirstSuggestStudents != null 
+                && student.FirstSuggestStudents.Any(s => s.SuggestStudentId == suggestStudent.Id))
+            {
+                return true;
+            }
+
+            if (student.SecondeSuggestStudents != null
+                && student.SecondeSuggestStudents.Any(s => s.SuggestStudentId == suggestStudent.Id))
+            {
+                return true;
+            }
+            return false;
         }
         #endregion
 

@@ -134,31 +134,19 @@
                         <TextBlock Text="{Binding OpenQuestions[Additional information]}"/>
                     </GroupBox>
                 </Border>
-                <Border
+                    <Border
                     Background="{DynamicResource MaterialDesignBackground}">
-                    <GroupBox
+                        <GroupBox
                         Header="דרך מי (או דרך מה) הגעת לתכנית?"
                         Style="{DynamicResource MaterialDesignGroupBox}"
                         Margin="5,0,0,5"
                         Width="390"
                         Height="auto"
                         UseLayoutRounding="True">
-                        <TextBlock Text="{Binding OpenQuestions[Who introduced you to this program]}"/>
-                    </GroupBox>
-                </Border>
-                <Border
-                    Background="{DynamicResource MaterialDesignBackground}">
-                    <GroupBox
-                        Header="Country and City of residence"
-                        Style="{DynamicResource MaterialDesignGroupBox}"
-                        Margin="5,0,0,5"
-                        Width="390"
-                        Height="auto"
-                        UseLayoutRounding="True">
-                        <TextBlock Text="{Binding OpenQuestions[Country and City of residence]}"/>
-                    </GroupBox>
-                </Border>
-            </ListBox>
+                            <TextBlock Text="{Binding OpenQuestions[Who introduced you to this program]}"/>
+                        </GroupBox>
+                    </Border>
+                </ListBox>
         </StackPanel>
         </GroupBox>
         <GroupBox Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" Header="תלמיד מהתפוצות" BorderBrush="BlueViolet">

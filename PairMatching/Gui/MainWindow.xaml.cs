@@ -32,6 +32,9 @@ namespace Gui
 
         public MainWindow()
         {
+            // TODO: create data template for the info of student and change that by the country
+            // TODO: make a better solution for the Visablity of the panels, maybe using trigers 
+            // and data tamplates
             InitializeComponent();
         }
 
