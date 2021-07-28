@@ -12,29 +12,16 @@ namespace LogicLayer
             new Dictionary<DO.TimesInDay, TimeInterval>()
             {
                 {DO.TimesInDay.MORNING,
-                new TimeInterval
-                {
-                    Start = TimeSpan.Parse("05:00"),
-                    End = TimeSpan.Parse("12:00")
-                }},
+                    new TimeInterval(TimeSpan.Parse("05:00"), TimeSpan.Parse("12:00"))},
+                
                 {DO.TimesInDay.NOON,
-                new TimeInterval
-                {
-                    Start = TimeSpan.Parse("12:00"),
-                    End = TimeSpan.Parse("18:00")
-                }},
+                    new TimeInterval(TimeSpan.Parse("12:00"), TimeSpan.Parse("18:00"))},
+                
                 {DO.TimesInDay.EVENING,
-                new TimeInterval
-                {
-                    Start = TimeSpan.Parse("18:00"),
-                    End = TimeSpan.Parse("21:00")
-                }},
+                    new TimeInterval(TimeSpan.Parse("18:00"), TimeSpan.Parse("21:00"))},
+                
                 {DO.TimesInDay.NIGHT,
-                new TimeInterval
-                {
-                    Start = TimeSpan.Parse("21:00"),
-                    End = TimeSpan.Parse("02:00")
-                }}
+                    new TimeInterval(TimeSpan.Parse("21:00"), TimeSpan.Parse("02:00"))}
             };
 
         public List<Tuple<DO.LearningTime, DO.LearningTime>> MatchingHoursList { get; } =
@@ -71,10 +58,14 @@ namespace LogicLayer
         {
             bool matchEnglishLevel = other.DesiredEnglishLevel == DO.EnglishLevels.DONT_MATTER 
                                     || other.DesiredEnglishLevel <= israelStudent.EnglishLevel;
-            
+
             bool matchGender = israelStudent.PrefferdGender == other.PrefferdGender
+                               || (other.PrefferdGender == DO.Genders.DONT_MATTER
+                                    && israelStudent.PrefferdGender == other.Gender)
+                               || (israelStudent.PrefferdGender == DO.Genders.DONT_MATTER
+                                    && israelStudent.Gender == other.PrefferdGender)
                                || (israelStudent.PrefferdGender == other.Gender
-                                    && israelStudent.Gender == other.PrefferdGender);
+                                    && other.PrefferdGender == israelStudent.Gender);
             
             bool matchTrack = israelStudent.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER)
                               || other.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER) 
@@ -228,11 +219,8 @@ namespace LogicLayer
         TimeInterval GetStudentTimes(TimeSpan studentDiff, DO.TimesInDay timesInDay)
         {
             var interval = BoundryOfTimeInDay[timesInDay];
-            return new TimeInterval
-            {
-                Start = interval.Start + studentDiff,
-                End = interval.End + studentDiff
-            };
+            return new TimeInterval(interval.Start + studentDiff, 
+                interval.End + studentDiff);
         }
 
         /// <summary>
@@ -278,26 +266,14 @@ namespace LogicLayer
         private static TimeSpan DELTA = TimeSpan.Parse("01:00");
         private static TimeSpan MIN_TIME_TO_LEARN = TimeSpan.Parse("02:00");
 
-        private TimeSpan _start;
-        private TimeSpan _end;
-
-        internal TimeSpan Start
-        { 
-            get => _start;
-            set 
-            {
-                _start = Raound(value);
-            }
-        }
-        internal TimeSpan End
-        { 
-            get => _end;
-            set
-            {
-                _end = Raound(value);
-            } 
+        internal TimeInterval(TimeSpan start, TimeSpan end)
+        {
+            Start = Raound(start);
+            End = end < start ? Raound(end + TimeSpan.FromHours(24)) : Raound(end);
         }
 
+        internal TimeSpan Start { get; set; }
+        internal TimeSpan End { get; set; }
 
         private TimeSpan Raound(TimeSpan t)
         {

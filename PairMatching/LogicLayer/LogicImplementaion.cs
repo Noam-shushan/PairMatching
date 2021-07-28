@@ -48,7 +48,7 @@ namespace LogicLayer
                 {
                     lastDate = new DO.LastDateOfSheets();
                 }
-                var oldDate = lastDate;
+                var oldDate = lastDate.CopyPropertiesToNew(typeof(DO.LastDateOfSheets)) as DO.LastDateOfSheets;
 
                 // create parser for the spradsheets
                 GoogleSheetParser parser = new GoogleSheetParser();
