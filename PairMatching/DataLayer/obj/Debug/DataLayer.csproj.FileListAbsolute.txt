@@ -1,6 +1,0 @@
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\bin\DataLayer.dll
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\bin\DataLayer.pdb
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DataLayer\obj\Debug\DataLayer.csproj.CoreCompileInputs.cache
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DataLayer\obj\Debug\DataLayer.dll
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DataLayer\obj\Debug\DataLayer.pdb
-C:\Users\Asuspcc\source\Repos\PairMatching\PairMatching\DataLayer\obj\Debug\DataLayer.csproj.AssemblyReference.cache
