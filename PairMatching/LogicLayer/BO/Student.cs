@@ -84,7 +84,7 @@ namespace BO
         {
             get
             {
-                return string.Join(", ", from p in PrefferdTracks 
+                return string.Join(",\n", from p in PrefferdTracks 
                                          select Dictionaries.PrefferdTracksDict[p]);
             }
         }

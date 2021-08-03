@@ -21,6 +21,8 @@ namespace LogicLayer
         /// </summary>
         private Matching Matcher { get; } = new Matching();
 
+        SendEmail sendEmail = new SendEmail();
+
         /// <summary>
         /// the students list that keep all the data of the students
         /// </summary>
@@ -70,7 +72,7 @@ namespace LogicLayer
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                await sendEmail.Error(ex);
             }
         }
 

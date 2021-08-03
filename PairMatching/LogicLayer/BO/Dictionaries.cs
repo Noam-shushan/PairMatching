@@ -12,7 +12,7 @@ namespace BO
             Dictionary<DO.LearningStyles, string>()
         {
             {DO.LearningStyles.DEEP_AND_SLOW, "לימוד איטי ומעמיק" },
-            {DO.LearningStyles.FREE, "לימוד מעודד מחשבה מחוץ לטקסט, פילוסופי" },
+            {DO.LearningStyles.FREE, "לימוד מעודד מחשבה\n מחוץ לטקסט, פילוסופי" },
             {DO.LearningStyles.PROGRESSED_FLOWING, "לימוד מהיר, הספקי ומתקדם" },
             {DO.LearningStyles.TEXTUALL_CENTERED, "לימוד צמוד טקסט" },
             {DO.LearningStyles.DONT_MATTER, "לא משנה לי" }
