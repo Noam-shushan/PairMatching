@@ -1,29 +1,30 @@
-﻿using DO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DO;
 
-namespace LogicLayer
+namespace GoogleSheetDataSource
 {
-    class HebrewDescriptor : IStudentDescriptor
+    public class EnglishDiscriptor : IStudentDescriptor
     {
-        public string Range { get => "A2:Z"; }
+        public string SpreadsheetId => "1s8JObwXhv9kCdAEX6e_m4SV6N0_RRRgmoeyoG1oR82c";
 
-        public string SpreadsheetId { get => "17gvL05Ar-0nCAKvLtAj_HUXDCmXs5L61qk_lkBSUIFo"; }
+        public string Range => "A2:W";
 
-        public string SheetName { get => "טופס רישום שלהבת תשפ\"א (תגובות)"; }
+        public string SheetName => "Shalhevet Regestration form תשפ\"א(תגובות)";
 
         public EnglishLevels GetEnglishLevel(object row)
         {
             switch (row.ToString())
             {
-                case "טובה":
+                case "Excellent (I don't know any hebrew whatsoever)":
                     return EnglishLevels.GOOD;
-                case "לא כל כך טובה":
+                case "Doesn't have to be perfect. I know some Hebrew":
                     return EnglishLevels.NOT_GOOD;
-                case "רמת שיחה":
+                case "Conversational level":
                     return EnglishLevels.TALK_LEVEL;
             }
             return EnglishLevels.DONT_MATTER;
@@ -33,27 +34,27 @@ namespace LogicLayer
         {
             switch (row.ToString())
             {
-                case "גבר":
+                case "Male":
                     return Genders.MALE;
-                case "אישה":
+                case "Female":
                     return Genders.FMALE;
-                case "לא משנה":
+                case "Prefer not to say":
                     return Genders.DONT_MATTER;
             }
-            return Genders.DONT_MATTER;
+            return default;
         }
 
         public LearningStyles GetLearningStyle(object row)
         {
             switch (row.ToString())
             {
-                case "לימוד איטי ומעמיק":
+                case "Deep and slow":
                     return LearningStyles.DEEP_AND_SLOW;
-                case "לימוד מהיר, הספקי ומתקדם":
+                case "progressed, flowing":
                     return LearningStyles.PROGRESSED_FLOWING;
-                case "לימוד צמוד טקסט":
+                case "Text centered":
                     return LearningStyles.TEXTUALL_CENTERED;
-                case "לימוד מעודד מחשבה מחוץ לטקסט, פילוסופי":
+                case "Philosofical, free talking, deriving from text into thought":
                     return LearningStyles.FREE;
             }
             return LearningStyles.DONT_MATTER;
@@ -63,11 +64,11 @@ namespace LogicLayer
         {
             switch (row.ToString())
             {
-                case "אני מעוניין ללמוד רק עם גבר":
+                case "Only with men":
                     return Genders.MALE;
-                case "אני מעוניינת ללמוד רק עם אישה":
+                case "Only with women":
                     return Genders.FMALE;
-                case "אין לי העדפה":
+                case "No prefrence":
                     return Genders.DONT_MATTER;
             }
             return Genders.DONT_MATTER;
@@ -77,17 +78,17 @@ namespace LogicLayer
         {
             switch (row.ToString())
             {
-                case "תניא":
+                case "Tanya":
                     return PrefferdTracks.TANYA;
-                case "גמרא":
+                case "Talmud":
                     return PrefferdTracks.TALMUD;
-                case "פרשת שבוע":
+                case "Parsha":
                     return PrefferdTracks.PARASHA;
-                case "תפילה":
+                case "Prayer":
                     return PrefferdTracks.PRAYER;
-                case "פרקי אבות":
+                case "Pirkey Avot (Ethics of the fathers)":
                     return PrefferdTracks.PIRKEY_AVOT;
-                case "אין לי העדפה":
+                case "No preference":
                     return PrefferdTracks.DONT_MATTER;
             }
             return PrefferdTracks.DONT_MATTER;
@@ -106,52 +107,49 @@ namespace LogicLayer
             return result;
         }
 
-
         public SkillLevels GetSkillLevel(object row)
         {
             switch (row.ToString())
             {
-                case "טובה":
+                case "Advanced":
                     return SkillLevels.ADVANCED;
-                case "רמת שיחה (בינונית)":
+                case "Moderate":
                     return SkillLevels.MODERATE;
-                case "מתחיל":
+                case "Begginer":
                     return SkillLevels.BEGGINER;
-                case "אין לי העדפה":
-                    return SkillLevels.DONT_MATTER;
             }
             return SkillLevels.DONT_MATTER;
         }
 
-        public TimeSpan GetStudentOffset(object v)
+        public TimeSpan GetStudentOffset(object row)
         {
-            return TimeZoneInfo.Local.BaseUtcOffset;
+            string timeFormat = Regex.Replace(row.ToString(), "[^0-9.:-]", "");
+            return TimeSpan.Parse(timeFormat);
         }
 
         public IEnumerable<TimesInDay> GetTimesInDey(object row)
         {
             var timesInString = row.ToString()
-                .Split(',');
+                .Replace(",", "")
+                .Replace("Late", "")
+                .Split(' ');
             var result = new List<TimesInDay>();
 
             foreach (var s in timesInString)
             {
-                switch (s.Replace(",", "").Trim())
+                switch (s)
                 {
-                    case "בוקר":
+                    case "morning":
                         result.Add(TimesInDay.MORNING);
                         break;
-                    case "צהריים":
+                    case "Noon":
                         result.Add(TimesInDay.NOON);
                         break;
-                    case "ערב":
+                    case "Evening":
                         result.Add(TimesInDay.EVENING);
                         break;
-                    case "לילה":
+                    case "night":
                         result.Add(TimesInDay.NIGHT);
-                        break;
-                    case "אין לי זמן ביום זה":
-                        result.Add(TimesInDay.INCAPABLE);
                         break;
                 }
             }
@@ -179,7 +177,8 @@ namespace LogicLayer
 
         public string GetCountryName(object row)
         {
-            return "Israel";
+            var rgx = new Regex("[^a-zA-Z ]");
+            return rgx.Replace(row.ToString(), "").Trim();
         }
     }
 }

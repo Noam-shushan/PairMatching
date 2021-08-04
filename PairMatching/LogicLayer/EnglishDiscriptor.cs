@@ -130,14 +130,13 @@ namespace LogicLayer
         public IEnumerable<TimesInDay> GetTimesInDey(object row)
         {
             var timesInString = row.ToString()
-                .Replace(",", "")
                 .Replace("Late", "")
-                .Split(' ');
+                .Split(',');
             var result = new List<TimesInDay>();
 
             foreach(var s in timesInString)
             {
-                switch (s)
+                switch (s.Replace(",", "").Trim())
                 {
                     case "morning":
                         result.Add(TimesInDay.MORNING);
@@ -150,6 +149,9 @@ namespace LogicLayer
                         break;
                     case "night":
                         result.Add(TimesInDay.NIGHT);
+                        break;
+                    case "This day is not available for me":
+                        result.Add(TimesInDay.INCAPABLE);
                         break;
                 }
             }

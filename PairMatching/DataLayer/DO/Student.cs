@@ -8,7 +8,6 @@ namespace DO
 {
     public class Student
     {
-
         /// <summary>
         /// the id number of the student
         /// </summary>
@@ -88,6 +87,8 @@ namespace DO
         /// the id of the student that match to this.
         /// </summary>
         public int MatchTo { get; set; }
+
+        public int PrefferdNumberOfMatchs { get; set; }
 
         public override string ToString()
         {

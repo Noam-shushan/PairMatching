@@ -25,7 +25,10 @@ namespace LogicLayer
         {
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "emailAddress.json");
             mail = LoadObjFromJsonFile<MailAccount>(path);
+        }
 
+        public async Task Send<T>(T model)
+        {
             var smtp = new SmtpClient
             {
                 Host = "smtp.gmail.com",
@@ -35,14 +38,10 @@ namespace LogicLayer
                 UseDefaultCredentials = false,
                 Credentials = new NetworkCredential(mail.Address, mail.Password)
             };
-
             var sender = new SmtpSender(() => smtp);
             Email.DefaultSender = sender;
             Email.DefaultRenderer = new RazorRenderer();
-        }
 
-        public async Task Send<T>(T model)
-        {
             var email = await Email
                 .From(mail.Address, mail.Name)
                 .To(_to)

@@ -56,5 +56,7 @@ namespace LogicLayer
         Task RemovePairAsync(BO.Pair pair);
 
         IEnumerable<BO.Student> SearchStudents(string preifxName);
+
+        Task SendEmailToPairAsync(BO.Pair pair);
     }
 }

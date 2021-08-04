@@ -138,6 +138,10 @@ namespace DalJson
             {
                 throw new BadPairException("the pair is exist", pTemp.FirstStudent, pTemp.SecondStudent);
             }
+            if (pTemp != null && pTemp.IsDeleted)
+            {
+                pairList.Remove(pTemp);
+            }
 
             pairList.Add(pair);
             JsonTools.SaveListToJsonFile(pairList, pairsPath);

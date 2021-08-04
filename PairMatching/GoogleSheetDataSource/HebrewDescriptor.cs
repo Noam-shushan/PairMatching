@@ -1,13 +1,13 @@
-﻿using DO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DO;
 
-namespace LogicLayer
+namespace GoogleSheetDataSource
 {
-    class HebrewDescriptor : IStudentDescriptor
+    public class HebrewDescriptor : IStudentDescriptor
     {
         public string Range { get => "A2:Z"; }
 
@@ -131,12 +131,13 @@ namespace LogicLayer
         public IEnumerable<TimesInDay> GetTimesInDey(object row)
         {
             var timesInString = row.ToString()
-                .Split(',');
+                .Replace(",", "")
+                .Split(' ');
             var result = new List<TimesInDay>();
 
             foreach (var s in timesInString)
             {
-                switch (s.Replace(",", "").Trim())
+                switch (s)
                 {
                     case "בוקר":
                         result.Add(TimesInDay.MORNING);
@@ -149,9 +150,6 @@ namespace LogicLayer
                         break;
                     case "לילה":
                         result.Add(TimesInDay.NIGHT);
-                        break;
-                    case "אין לי זמן ביום זה":
-                        result.Add(TimesInDay.INCAPABLE);
                         break;
                 }
             }

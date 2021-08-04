@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DataLayer;
 
@@ -160,6 +159,22 @@ namespace LogicLayer
             catch (Exception ex2)
             {
                 throw new Exception(ex2.Message);
+            }
+        }
+
+        public async Task SendEmailToPairAsync(BO.Pair pair)
+        {
+            try
+            {
+                await sendEmail
+                .To(pair.FirstStudent.Email)
+                .Subject("Pair found!")
+                .Template(BO.Dictionaries.TemplateEmails["match for student from word"])
+                .Send(pair);
+            }
+            catch (Exception ex)
+            {
+                await sendEmail.Error(ex);
             }
         }
 

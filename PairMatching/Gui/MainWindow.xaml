@@ -234,12 +234,19 @@
                         </GridView>
                     </ListView.View>
                 </ListView>
-                <Button 
-                    x:Name="removePairBtn"
-                    Width="150"
-                    Margin="10"
-                    Content="מחק חברותא"
-                    Click="removePairBtn_Click"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button 
+                        x:Name="removePairBtn"
+                        Width="150"
+                        Margin="10"
+                        Content="מחק חברותא"
+                        Click="removePairBtn_Click"/>
+                    <Button
+                        x:Name="sendEmailToThePairBtn"
+                        Width="150"
+                        Content="שלח מייל לחבורתא"
+                        Click="sendEmailToThePairBtn_Click"/>
+                </StackPanel>
             </StackPanel>
         </Grid>
         <StackPanel Visibility="Collapsed" FlowDirection="RightToLeft" x:Name="spStudent" Grid.Column="2" Grid.Row="1" Grid.RowSpan="2">

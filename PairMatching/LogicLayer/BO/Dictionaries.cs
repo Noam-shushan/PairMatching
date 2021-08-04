@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BO
 {
-    static class Dictionaries
+    public static class Dictionaries
     {
         internal static Dictionary<DO.LearningStyles, string> LearningStylesDict = new
             Dictionary<DO.LearningStyles, string>()
@@ -72,6 +72,21 @@ namespace BO
                 {DO.Genders.FMALE, "אישה" },
                 {DO.Genders.DONT_MATTER, "לא משנה לי" }
             };
-
+        public static Dictionary<string, StringBuilder> TemplateEmails =
+            new Dictionary<string, StringBuilder>
+            {
+                {
+                    "match for student from word",
+                    new StringBuilder()
+                    .AppendLine("<h3>Hi <b>@Model.FirstStudent.Name</b></h3>")
+                    .AppendLine("We found Chevruta for you!")
+                    .AppendLine("<p>Details of the Chevruta:</p>")
+                    .AppendLine("<p>Yours study track is <i>@Model.PrefferdTracksShow</i></p>")
+                    .AppendLine("<p>Name: <i>@Model.SecondStudent.Name</i><br>" +
+                        "Email: <i>@Model.SecondStudent.Email</i>.<br>" +
+                        "Phone number: <i>@Model.SecondStudent.PhoneNumber</p>")
+                
+                }
+            };
     }
 }

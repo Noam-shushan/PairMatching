@@ -68,10 +68,6 @@ namespace Gui
 
         private async void removePairBtn_Click(object sender, RoutedEventArgs e)
         {
-            if(pairsList == null)
-            {
-                return;
-            }
             var selectedPairs = pairsList.Where(p => p.IsSelected);
             int numOfPairsToRem = selectedPairs.Count();
             if (numOfPairsToRem == 0)
@@ -367,6 +363,32 @@ namespace Gui
                 lvStudents.Items.Refresh();
                 allPairsGrig.Visibility = Visibility.Collapsed;
                 allStudentGrig.Visibility = Visibility.Visible;
+            }
+        }
+
+        private async void sendEmailToThePairBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedPair = pairsList.Where(p => p.IsSelected);
+            int numOfPairs = selectedPair.Count();
+            if (numOfPairs == 0 || numOfPairs > 1)
+            {
+                MessageBoxWarning("בחר חברותא אחת");
+                return;
+            }
+
+            try
+            {
+                sendEmailToThePairBtn.IsEnabled = false;
+                await bl.SendEmailToPairAsync(selectedPair.First());
+                MessageBox.Show("המייל נשלח בהצלחה!");
+            }
+            catch (Exception ex)
+            {
+                MessageBoxError(ex.Message);
+            }
+            finally
+            {
+                sendEmailToThePairBtn.IsEnabled = true;
             }
         }
     }

@@ -159,6 +159,8 @@ namespace BO
         /// </summary>
         public int MatchTo { get; set; }
 
+        public int PrefferdNumberOfMatchs { get; set; }
+
         public IEnumerable<SuggestStudent> FirstSuggestStudents { get; set; }
 
         public IEnumerable<SuggestStudent> SecondeSuggestStudents { get; set; }

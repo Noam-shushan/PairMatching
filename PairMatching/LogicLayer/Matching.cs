@@ -97,6 +97,10 @@ namespace LogicLayer
             {
                 foreach(var t in dt.TimeInDay)
                 {
+                    if(t == DO.TimesInDay.INCAPABLE)
+                    {
+                        continue;
+                    }
                     var equivalentIntervalInWorld = GetStudentTimes(diff, t);
                     var equivalentTimeInIsrael = GetTimesInDayByInterval(equivalentIntervalInWorld);
                     
@@ -131,7 +135,11 @@ namespace LogicLayer
                 }
                 foreach(var t in lt.TimeInDay)
                 {
-                    if(lt.Day == learningTimeFromWorld.Day 
+                    if (t == DO.TimesInDay.INCAPABLE)
+                    {
+                        continue;
+                    }
+                    if (lt.Day == learningTimeFromWorld.Day 
                         && BoundryOfTimeInDay[t].IsIn(equivalentIntevalFromWorld.Start))
                     {
                         AddToMatchingHouersList(ltToAddFromWorld, new DO.LearningTime 
