@@ -161,6 +161,12 @@ namespace BO
 
         public int PrefferdNumberOfMatchs { get; set; }
 
+        public string InfoAbout { get; set; }
+
+        public IEnumerable<string> Languages { get; set; }
+        
+        public MoreLanguages MoreLanguages { get; set; }
+
         public IEnumerable<SuggestStudent> FirstSuggestStudents { get; set; }
 
         public IEnumerable<SuggestStudent> SecondeSuggestStudents { get; set; }

@@ -127,7 +127,8 @@ namespace Gui
             try
             {
                 pbUpdate.Visibility = Visibility.Visible;
-                await Task.Run(() => bl.UpdateDataAsync());
+                await bl.ReadDataFromSpredsheetAsync();
+                await bl.UpdateAsync();
             }
             catch (Exception ex)
             {

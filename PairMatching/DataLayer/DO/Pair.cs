@@ -16,16 +16,29 @@ namespace DO
         /// <summary>
         /// the first student id 
         /// </summary>
-        public int FirstStudent { get; set; }
+        public int FirstStudentId { get; set; }
         
         /// <summary>
         /// The macher student id for the first student
         /// </summary>
-        public int SecondStudent { get; set; }
+        public int SecondStudentId { get; set; }
         
         /// <summary>
         /// the matching degree of the pair 
         /// </summary>
         public MatchingDegrees MatchingDegree { get; set; }
+
+        public DateTime DateOfCreate { get; set; }
+
+        public DateTime DateOfUpdate { get; set; }
+
+        public DateTime DateOfDelete { get; set; }
+
+        public string InfoAbout { get; set; }
+
+        /// <summary>
+        /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}
+        /// </summary>
+        public IEnumerable<PrefferdTracks> PrefferdTracks { get; set; }
     }
 }

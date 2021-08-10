@@ -4,11 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DO;
+using LogicLayer;
 
 namespace BO
 {
     public class Pair
     {
+
+        public Pair() { }
+
+        public Pair CreateFromDO(DO.Pair pairDo, Func<int ,SimpleStudent> createSimpleStudentFunc)
+        {
+            var res = pairDo.CopyPropertiesToNew(typeof(Pair)) as Pair;
+            res.FirstStudent = createSimpleStudentFunc(pairDo.FirstStudentId);
+            res.SecondStudent = createSimpleStudentFunc(pairDo.SecondStudentId);
+            return res;
+        }
         /// <summary>
         /// flag that determine if the pair is deleted from the data source 
         /// </summary>
@@ -23,6 +34,14 @@ namespace BO
         /// The macher student id for the first student
         /// </summary>
         public SimpleStudent SecondStudent { get; set; }
+
+        public DateTime DateOfCreate { get; set; }
+
+        public DateTime DateOfUpdate { get; set; }
+
+        public DateTime DateOfDelete { get; set; }
+
+        public string InfoAbout { get; set; }
 
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}

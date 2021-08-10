@@ -12,13 +12,22 @@ namespace LogicLayer
     {
         public string SpreadsheetId => "1s8JObwXhv9kCdAEX6e_m4SV6N0_RRRgmoeyoG1oR82c";
 
-        public string Range => "A2:W";
+        public string Range => "A2:Z";
 
         public string SheetName => "Shalhevet Regestration form תשפ\"א(תגובות)";
 
-        public EnglishLevels GetEnglishLevel(object row)
+        public DateTime LastUpdate { get; set; }
+
+        public EnglishDiscriptor() { }
+
+        public EnglishDiscriptor(LastDateOfSheets lastDateOfUpdate)
         {
-            switch (row.ToString())
+            LastUpdate = lastDateOfUpdate.EnglishSheets;
+        }
+
+        public EnglishLevels GetEnglishLevel(string value)
+        {
+            switch (value)
             {
                 case "Excellent (I don't know any hebrew whatsoever)":
                     return EnglishLevels.GOOD;
@@ -30,9 +39,9 @@ namespace LogicLayer
             return EnglishLevels.DONT_MATTER;
         }
 
-        public Genders GetGender(object row)
+        public Genders GetGender(string value)
         {
-            switch (row.ToString())
+            switch (value)
             {
                 case "Male":
                     return Genders.MALE;
@@ -44,9 +53,9 @@ namespace LogicLayer
             return default;
         }
 
-        public LearningStyles GetLearningStyle(object row)
+        public LearningStyles GetLearningStyle(string value)
         {
-            switch (row.ToString())
+            switch (value)
             {
                 case "Deep and slow":
                     return LearningStyles.DEEP_AND_SLOW;
@@ -60,9 +69,9 @@ namespace LogicLayer
             return LearningStyles.DONT_MATTER;
         }
 
-        public Genders GetPrefferdGender(object row)
+        public Genders GetPrefferdGender(string value)
         {
-            switch (row.ToString())
+            switch (value)
             {
                 case "Only with men":
                     return Genders.MALE;
@@ -74,9 +83,9 @@ namespace LogicLayer
             return Genders.DONT_MATTER;
         }
 
-        private PrefferdTracks SwitchPrefferdTracks(string row)
+        private PrefferdTracks SwitchPrefferdTracks(string value)
         {
-            switch (row.ToString())
+            switch (value.Replace(",", "").Trim())
             {
                 case "Tanya":
                     return PrefferdTracks.TANYA;
@@ -94,11 +103,9 @@ namespace LogicLayer
             return PrefferdTracks.DONT_MATTER;
         }
 
-        public List<PrefferdTracks> GetPrefferdTracks(object row)
+        public List<PrefferdTracks> GetPrefferdTracks(string value)
         {
-            var tracksInString = row.ToString()
-                .Replace(",", "")
-                .Split(' ');
+            var tracksInString = value.Split(',');
             var result = new List<PrefferdTracks>();
             foreach (var s in tracksInString)
             {
@@ -107,9 +114,9 @@ namespace LogicLayer
             return result;
         }
 
-        public SkillLevels GetSkillLevel(object row)
+        public SkillLevels GetSkillLevel(string value)
         {
-            switch (row.ToString())
+            switch (value)
             {
                 case "Advanced":
                     return SkillLevels.ADVANCED;
@@ -121,15 +128,15 @@ namespace LogicLayer
             return SkillLevels.DONT_MATTER;
         }
 
-        public TimeSpan GetStudentOffset(object row)
+        public TimeSpan GetStudentOffset(string value)
         {
-            string timeFormat = Regex.Replace(row.ToString(), "[^0-9.:-]", "");
+            string timeFormat = Regex.Replace(value, "[^0-9.:-]", "");
             return TimeSpan.Parse(timeFormat);
         }
 
-        public IEnumerable<TimesInDay> GetTimesInDey(object row)
+        public IEnumerable<TimesInDay> GetTimesInDey(string value)
         {
-            var timesInString = row.ToString()
+            var timesInString = value
                 .Replace("Late", "")
                 .Split(',');
             var result = new List<TimesInDay>();
@@ -177,10 +184,48 @@ namespace LogicLayer
             return Days.DONT_MATTER;
         }
 
-        public string GetCountryName(object row)
+        public string GetCountryName(string value)
         {
             var rgx = new  Regex("[^a-zA-Z ]");
-            return rgx.Replace(row.ToString(), "").Trim();
+            return rgx.Replace(value, "").Trim();
+        }
+
+        public IEnumerable<string> GetLanguages(string value)
+        {
+            var result = value
+                .Split(',')
+                .ToList();
+            result.ForEach(l => l.Replace(",", "").Trim());
+            return result;
+        }
+
+        public MoreLanguages GetMoreLanguages(string value)
+        {
+            switch (value)
+            {
+                case "Yes":
+                    return MoreLanguages.YES;
+                case "No":
+                    return MoreLanguages.NO;
+                default:
+                    return MoreLanguages.NOT_ENGLISH;
+            }
+        }
+
+        public int GetPrefferdNumberOfMatchs(string value)
+        {
+            switch (value)
+            {
+                case "One is enough":
+                    return 1;
+                case "I would like to have 2":
+                    return 2;
+                case "I would like to have 3":
+                    return 3;
+                default:
+                    break;
+            }
+            return 1;
         }
     }
 }

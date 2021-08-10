@@ -90,6 +90,12 @@ namespace DO
 
         public int PrefferdNumberOfMatchs { get; set; }
 
+        public string InfoAbout { get; set; }
+
+        public MoreLanguages MoreLanguages { get; set; }
+
+        public IEnumerable<string> Languages { get; set; }
+
         public override string ToString()
         {
             return $"Name: {Name}\n" +

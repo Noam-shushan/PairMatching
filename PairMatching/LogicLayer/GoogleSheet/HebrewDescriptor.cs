@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LogicLayer
 {
-    class HebrewDescriptor : IStudentDescriptor
+    public class HebrewDescriptor : IStudentDescriptor
     {
         public string Range { get => "A2:Z"; }
 
@@ -15,9 +15,18 @@ namespace LogicLayer
 
         public string SheetName { get => "טופס רישום שלהבת תשפ\"א (תגובות)"; }
 
-        public EnglishLevels GetEnglishLevel(object row)
+        public DateTime LastUpdate { get; set; }
+
+        public HebrewDescriptor() { }
+
+        public HebrewDescriptor(LastDateOfSheets lastDateOfUpdate)
         {
-            switch (row.ToString())
+            LastUpdate = lastDateOfUpdate.HebrewSheets;
+        }
+
+        public EnglishLevels GetEnglishLevel(string value)
+        {
+            switch (value)
             {
                 case "טובה":
                     return EnglishLevels.GOOD;
@@ -29,9 +38,9 @@ namespace LogicLayer
             return EnglishLevels.DONT_MATTER;
         }
 
-        public Genders GetGender(object row)
+        public Genders GetGender(string value)
         {
-            switch (row.ToString())
+            switch (value)
             {
                 case "גבר":
                     return Genders.MALE;
@@ -43,9 +52,9 @@ namespace LogicLayer
             return Genders.DONT_MATTER;
         }
 
-        public LearningStyles GetLearningStyle(object row)
+        public LearningStyles GetLearningStyle(string value)
         {
-            switch (row.ToString())
+            switch (value)
             {
                 case "לימוד איטי ומעמיק":
                     return LearningStyles.DEEP_AND_SLOW;
@@ -59,9 +68,9 @@ namespace LogicLayer
             return LearningStyles.DONT_MATTER;
         }
 
-        public Genders GetPrefferdGender(object row)
+        public Genders GetPrefferdGender(string value)
         {
-            switch (row.ToString())
+            switch (value)
             {
                 case "אני מעוניין ללמוד רק עם גבר":
                     return Genders.MALE;
@@ -73,9 +82,9 @@ namespace LogicLayer
             return Genders.DONT_MATTER;
         }
 
-        private PrefferdTracks SwitchPrefferdTracks(string row)
+        private PrefferdTracks SwitchPrefferdTracks(string value)
         {
-            switch (row.ToString())
+            switch (value.Replace(",", "").Trim())
             {
                 case "תניא":
                     return PrefferdTracks.TANYA;
@@ -93,11 +102,9 @@ namespace LogicLayer
             return PrefferdTracks.DONT_MATTER;
         }
 
-        public List<PrefferdTracks> GetPrefferdTracks(object row)
+        public List<PrefferdTracks> GetPrefferdTracks(string value)
         {
-            var tracksInString = row.ToString()
-                .Replace(",", "")
-                .Split(' ');
+            var tracksInString = value.Split(',');
             var result = new List<PrefferdTracks>();
             foreach (var s in tracksInString)
             {
@@ -107,9 +114,9 @@ namespace LogicLayer
         }
 
 
-        public SkillLevels GetSkillLevel(object row)
+        public SkillLevels GetSkillLevel(string value)
         {
-            switch (row.ToString())
+            switch (value)
             {
                 case "טובה":
                     return SkillLevels.ADVANCED;
@@ -123,15 +130,14 @@ namespace LogicLayer
             return SkillLevels.DONT_MATTER;
         }
 
-        public TimeSpan GetStudentOffset(object v)
+        public TimeSpan GetStudentOffset(string value)
         {
             return TimeZoneInfo.Local.BaseUtcOffset;
         }
 
-        public IEnumerable<TimesInDay> GetTimesInDey(object row)
+        public IEnumerable<TimesInDay> GetTimesInDey(string value)
         {
-            var timesInString = row.ToString()
-                .Split(',');
+            var timesInString = value.Split(',');
             var result = new List<TimesInDay>();
 
             foreach (var s in timesInString)
@@ -177,9 +183,64 @@ namespace LogicLayer
             return Days.DONT_MATTER;
         }
 
-        public string GetCountryName(object row)
+        public string GetCountryName(string value)
         {
             return "Israel";
+        }
+
+        public IEnumerable<string> GetLanguages(string value)
+        {
+            var lang = value.Split(',');
+            List<string> result = new List<string>();
+            
+            foreach(var l in lang)
+            {
+                switch (l.Replace(",", "").Trim())
+                {
+                    case "ספרדית":
+                        result.Add("Spanish");
+                        break;
+                    case "צרפתית" :
+                        result.Add("French");
+                        break;
+                    case "רוסית" :
+                        result.Add("Russian");
+                        break;
+                    case "גרמנית":
+                        result.Add("German");
+                        break;
+                }
+            }
+            return result;
+        }
+
+        public MoreLanguages GetMoreLanguages(string value)
+        {
+            switch (value)
+            {
+                case "כן" :
+                    return MoreLanguages.YES;
+                case "לא":
+                    return MoreLanguages.NO;
+                default :
+                    return MoreLanguages.NOT_ENGLISH;
+            }
+        }
+
+        public int GetPrefferdNumberOfMatchs(string value)
+        {
+            switch (value)
+            {
+                case "חברותא אחת":
+                    return 1;
+                case "2 חברותות":
+                    return 2;
+                case "3 חברותות":
+                    return 3;
+                default:
+                    break;
+            }
+            return 1;
         }
     }
 }

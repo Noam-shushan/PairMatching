@@ -32,7 +32,7 @@ namespace LogicLayer
         /// <summary>
         /// Update all the data from the google sheets
         /// </summary>
-        Task UpdateDataAsync();
+        Task ReadDataFromSpredsheetAsync();
 
         /// <summary>
         /// the students list which wiil use in the Gui layer
@@ -58,5 +58,7 @@ namespace LogicLayer
         IEnumerable<BO.Student> SearchStudents(string preifxName);
 
         Task SendEmailToPairAsync(BO.Pair pair);
+
+        void UpdatePair(BO.Pair pair);
     }
 }

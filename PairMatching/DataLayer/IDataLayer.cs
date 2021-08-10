@@ -24,6 +24,10 @@ namespace DataLayer
         /// <returns>all students thet is the condition</returns>
         IEnumerable<DO.Student> GetAllStudentsBy(Predicate<DO.Student> predicate);
 
+        Task SaveAllDataFromSpredsheetAsync();
+
+        int GetNewStudentId();
+
         /// <summary>
         /// Add new student to the data source
         /// </summary>
@@ -93,6 +97,8 @@ namespace DataLayer
         /// <param name="firstStudent">first sudent id</param>
         /// <param name="secondStudent">second student id</param>
         void RemovePair(int firstStudent, int secondStudent);
+
+        void UpdatePair(DO.Pair pair);
         #endregion
 
         #region OpenQuestions

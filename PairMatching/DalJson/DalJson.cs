@@ -10,6 +10,16 @@ namespace DalJson
 {
     public class DalJson : IDataLayer
     {
+        #region Singleton
+        public static IDataLayer Instance { get; } = new DalJson();
+
+        private DalJson() 
+        {
+            SetCounters();
+        }
+        #endregion
+
+        #region Counters
         private Counters _counters;
 
         public Counters GetCounters()
@@ -29,14 +39,6 @@ namespace DalJson
                 _counters = counter;
             }
         }
-
-        #region Singleton
-        public static IDataLayer Instance { get; } = new DalJson();
-
-        private DalJson() 
-        {
-            SetCounters();
-        }
         #endregion
 
         #region paths
@@ -48,7 +50,40 @@ namespace DalJson
         private readonly string openQuestionsPath = @"openQuestions.json";
         #endregion
 
+        public async Task SaveAllDataFromSpredsheetAsync()
+        {
+            // load all students from the json file 
+            await Task.Run(() =>
+            {
+                var studentsListFromDB = JsonTools.LoadListFromJsonFile<Student>(studentsPath);
+                studentsListFromDB.AddRange(DataSource.StudentsList);
+                JsonTools.SaveListToJsonFile(studentsListFromDB, studentsPath);
+            });
+
+            await Task.Run(() => JsonTools.SaveObjToJsonFile(_counters, countersPath));
+
+            await Task.Run(() =>
+            {
+                var learningTimesListFromDB = JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath);
+                learningTimesListFromDB.AddRange(DataSource.LearningTimesList);
+                JsonTools.SaveListToJsonFile(learningTimesListFromDB, learningTimePath);
+            });
+
+            await Task.Run(() =>
+            {
+                var openQuestionsListFromDB = JsonTools.LoadListFromJsonFile<OpenQuestion>(openQuestionsPath);
+                openQuestionsListFromDB.AddRange(DataSource.OpenQuestionsList);
+                JsonTools.SaveListToJsonFile(openQuestionsListFromDB, openQuestionsPath);
+            });
+        }
+
         #region Student
+        public int GetNewStudentId()
+        {
+            _counters.IncStudentCounter();
+            return _counters.StudentCounter;
+        }
+
         public int AddStudent(Student student)
         {
             // load all students from the json file 
@@ -132,11 +167,11 @@ namespace DalJson
         public void AddPair(Pair pair)
         {
             var pairList = JsonTools.LoadListFromJsonFile<Pair>(pairsPath);
-            var pTemp = pairList.Find(p => p.FirstStudent == pair.FirstStudent
-                                                 && p.SecondStudent == pair.SecondStudent);
+            var pTemp = pairList.Find(p => p.FirstStudentId == pair.FirstStudentId
+                                                 && p.SecondStudentId == pair.SecondStudentId);
             if (pTemp != null && !pTemp.IsDeleted)
             {
-                throw new BadPairException("the pair is exist", pTemp.FirstStudent, pTemp.SecondStudent);
+                throw new BadPairException("the pair is exist", pTemp.FirstStudentId, pTemp.SecondStudentId);
             }
             if (pTemp != null && pTemp.IsDeleted)
             {
@@ -150,33 +185,53 @@ namespace DalJson
         public Pair GetPair(int firstStudent, int secondStudent)
         {
             var pairList = JsonTools.LoadListFromJsonFile<Pair>(pairsPath);
-            var pTemp = pairList.Find(p => p.FirstStudent == firstStudent
-                                                 && p.SecondStudent == secondStudent);
+            var pTemp = pairList.Find(p => p.FirstStudentId == firstStudent
+                                                 && p.SecondStudentId == secondStudent);
             if (pTemp != null && !pTemp.IsDeleted)
             {
                 return pTemp;
             }
-            throw new BadPairException("the pair is not found", pTemp != null ? pTemp.FirstStudent : 0, 
-                pTemp != null ? pTemp.SecondStudent : 0);
+            throw new BadPairException("the pair is not found", pTemp != null ? pTemp.FirstStudentId : 0, 
+                pTemp != null ? pTemp.SecondStudentId : 0);
         }
 
         public void RemovePair(int firstStudent, int secondStudent)
         {
             var pairList = JsonTools.LoadListFromJsonFile<Pair>(pairsPath);
-            var pTemp = pairList.Find(p => p.FirstStudent == firstStudent
-                                                 && p.SecondStudent == secondStudent);
+            var pTemp = pairList.Find(p => p.FirstStudentId == firstStudent
+                                                 && p.SecondStudentId == secondStudent);
             if (pTemp != null && !pTemp.IsDeleted)
             {
                 pairList.Remove(pTemp);
                 pTemp.IsDeleted = true;
+                pTemp.DateOfDelete = DateTime.Now;
                 pairList.Add(pTemp);
 
                 JsonTools.SaveListToJsonFile(pairList, pairsPath);
                 return;
             }
 
-            throw new BadPairException("the pair is not found", pTemp != null ? pTemp.FirstStudent : 0,
-                        pTemp != null ? pTemp.SecondStudent : 0);
+            throw new BadPairException("the pair is not found", pTemp != null ? pTemp.FirstStudentId : 0,
+                        pTemp != null ? pTemp.SecondStudentId : 0);
+        }
+
+        public void UpdatePair(Pair pair)
+        {
+            var pairList = JsonTools.LoadListFromJsonFile<Pair>(pairsPath);
+            var pTemp = pairList.Find(p => p.FirstStudentId == pair.FirstStudentId
+                                                 && p.SecondStudentId == pair.SecondStudentId);
+            if (pTemp != null && !pTemp.IsDeleted)
+            {
+                pairList.Remove(pTemp);
+                pTemp.DateOfUpdate = DateTime.Now;
+                pairList.Add(pTemp);
+
+                JsonTools.SaveListToJsonFile(pairList, pairsPath);
+                return;
+            }
+
+            throw new BadPairException("the pair is not found", pTemp != null ? pTemp.FirstStudentId : 0,
+                        pTemp != null ? pTemp.SecondStudentId : 0);
         }
 
         public IEnumerable<Pair> GetAllPairs()

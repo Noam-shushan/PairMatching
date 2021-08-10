@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -16,10 +17,15 @@ namespace LogicLayer
             {
                 PropertyInfo propFrom = typeof(S).GetProperty(propTo.Name);
                 if (propFrom == null)
+                {
                     continue;
+                }
+
                 var value = propFrom.GetValue(from, null);
-                if (value is ValueType || value is string)
+                if (value != null)
+                {
                     propTo.SetValue(to, value);
+                }
             }
             return to;
         }
@@ -27,8 +33,7 @@ namespace LogicLayer
         public static object CopyPropertiesToNew<S>(this S from, Type type)
         {
             object to = Activator.CreateInstance(type); // new object of Type
-            from.CopyPropertiesTo(to);
-            return to;
+            return from.CopyPropertiesTo(to);
         }
     }
 }

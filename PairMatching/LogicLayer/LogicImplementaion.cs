@@ -20,7 +20,7 @@ namespace LogicLayer
         /// </summary>
         private Matching Matcher { get; } = new Matching();
 
-        SendEmail sendEmail = new SendEmail();
+        private readonly SendEmail sendEmail = new SendEmail();
 
         /// <summary>
         /// the students list that keep all the data of the students
@@ -39,7 +39,7 @@ namespace LogicLayer
         /// <summary>
         /// Update all the data from the google sheets
         /// </summary>
-        public async Task UpdateDataAsync()
+        public async Task ReadDataFromSpredsheetAsync()
         {
             try
             {
@@ -54,9 +54,14 @@ namespace LogicLayer
                 // create parser for the spradsheets
                 GoogleSheetParser parser = new GoogleSheetParser();
                 // read the english sheet
-                lastDate.EnglishSheets = parser.UpdateDataInEnglish(lastDate);
+                var englishSheets = parser.ReadAsync(new EnglishDiscriptor(lastDate));
                 // read the hebrew sheet
-                lastDate.HebrewSheets = parser.UpdateDataInHebrew(lastDate);
+                var hebrewSheets = parser.ReadAsync(new HebrewDescriptor(lastDate));
+
+                await Task.WhenAll(englishSheets, hebrewSheets);
+
+                lastDate.EnglishSheets = englishSheets.Result;
+                lastDate.HebrewSheets = hebrewSheets.Result;
 
                 // if there is no new data dont update the data base
                 if (lastDate.Equals(oldDate))
@@ -64,14 +69,15 @@ namespace LogicLayer
                     return;
                 }
 
+                // save all new data from the spredsheet to the DB
+                await dal.SaveAllDataFromSpredsheetAsync();
+
                 // update the last date of updating of the sheets
-                dal.UpdateLastDateOfSheets(lastDate);
-                // update my StudentList with the new students and the new matching
-                await UpdateAsync();
+                await Task.Run(() => dal.UpdateLastDateOfSheets(lastDate));
             }
             catch (Exception ex)
             {
-                await sendEmail.Error(ex);
+                //await sendEmail.Error(ex);
             }
         }
 
@@ -119,10 +125,26 @@ namespace LogicLayer
             {
                 throw new Exception(ex.Message);
             }
-        } 
+        }
         #endregion
 
         #region Pair matching
+
+        public void UpdatePair(BO.Pair pair)
+        {
+            pair.DateOfUpdate = DateTime.Now;
+            var pairDo = pair.CopyPropertiesToNew(typeof(DO.Pair)) as DO.Pair;
+
+            try
+            {
+                dal.UpdatePair(pairDo);
+            }
+            catch (DO.BadPairException)
+            {
+                throw new BO.BadPairException("חברותא לא נמצאה", pair.FirstStudent.Name, pair.SecondStudent.Name);
+            }
+        }
+
         /// <summary>
         /// making the match between the tow students
         /// </summary>
@@ -136,16 +158,17 @@ namespace LogicLayer
                 fromWorld.MatchTo = fromIsrael.Id;
 
                 var fromIsrealDo = fromIsrael.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
-                fromIsrealDo.PrefferdTracks = fromIsrael.PrefferdTracks;
                 var fromWorldDo = fromWorld.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
-                fromWorldDo.PrefferdTracks = fromWorld.PrefferdTracks;
+                
                 dal.UpdateStudent(fromIsrealDo);
                 dal.UpdateStudent(fromWorldDo);
 
                 dal.AddPair(new DO.Pair()
                 {
-                    FirstStudent = fromIsrael.Id,
-                    SecondStudent = fromWorld.Id,
+                    FirstStudentId = fromIsrael.Id,
+                    SecondStudentId = fromWorld.Id,
+                    DateOfCreate = DateTime.Now,
+                    PrefferdTracks = GetPrefferdTrackOfPair(fromIsrealDo, fromWorldDo),
                     IsDeleted = false
                 });
                 // update the students from the data base
@@ -185,13 +208,8 @@ namespace LogicLayer
         public IEnumerable<BO.Pair> GetAllPairs()
         {
             return from p in dal.GetAllPairs()
-                   let pt = GetPrefferdTrackOfPair(p)
-                   select new BO.Pair
-                   {
-                       FirstStudent = GetSimpleStudent(p.FirstStudent),
-                       SecondStudent = GetSimpleStudent(p.SecondStudent),
-                       PrefferdTracks = pt
-                   };
+                   select new BO.Pair()
+                   .CreateFromDO(p, GetSimpleStudent);
         }
 
         public async Task RemovePairAsync(BO.Pair pair)
@@ -235,9 +253,6 @@ namespace LogicLayer
 
                 // copy the propertis to BO student
                 var studBO = studDO.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
-
-                // copy the enumrable
-                studBO.PrefferdTracks = studDO.PrefferdTracks.Distinct();
 
                 // get the learning time of the student from the data base
                 studBO.DesiredLearningTime = dal.GetAllLearningTimesBy(l => l.Id == id);
@@ -387,12 +402,10 @@ namespace LogicLayer
         #endregion
 
         #region Pairs helper functions
-        private IEnumerable<DO.PrefferdTracks> GetPrefferdTrackOfPair(DO.Pair p)
+        private IEnumerable<DO.PrefferdTracks> GetPrefferdTrackOfPair(DO.Student firstStud, DO.Student secondeStud)
         {
-            var firstStudDO = dal.GetStudent(p.FirstStudent);
-            var secondeStudDO = dal.GetStudent(p.SecondStudent);
-            return firstStudDO.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER) ?
-                secondeStudDO.PrefferdTracks : firstStudDO.PrefferdTracks;
+            return firstStud.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER) ?
+                secondeStud.PrefferdTracks : firstStud.PrefferdTracks;
         }
 
         private BO.SimpleStudent GetSimpleStudent(int id)

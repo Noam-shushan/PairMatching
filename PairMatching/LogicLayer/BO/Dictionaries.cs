@@ -63,6 +63,7 @@ namespace BO
             {DO.TimesInDay.NOON, "צהריים" },
             {DO.TimesInDay.EVENING, "ערב" },
             {DO.TimesInDay.NIGHT, "לילה" },
+            {DO.TimesInDay.INCAPABLE, "אין לי זמן ביום זה" }
         };
 
         internal static Dictionary<DO.Genders, string> GendersDict =
@@ -78,14 +79,32 @@ namespace BO
                 {
                     "match for student from word",
                     new StringBuilder()
-                    .AppendLine("<h3>Hi <b>@Model.FirstStudent.Name</b></h3>")
-                    .AppendLine("We found Chevruta for you!")
-                    .AppendLine("<p>Details of the Chevruta:</p>")
-                    .AppendLine("<p>Yours study track is <i>@Model.PrefferdTracksShow</i></p>")
-                    .AppendLine("<p>Name: <i>@Model.SecondStudent.Name</i><br>" +
+                    .AppendLine("<h2>Hi <b>@Model.FirstStudent.Name</b></h2>")
+                    .AppendLine("<h3>We found Chevruta for you!</h3>")
+                    .AppendLine("<h4>Details of the Chevruta:</h4>")
+                    .AppendLine("<h4>Yours study track is <i>@Model.PrefferdTracksShow</i></h4>")
+                    .AppendLine("<h4>Name: <i>@Model.SecondStudent.Name</i><br>" +
                         "Email: <i>@Model.SecondStudent.Email</i>.<br>" +
-                        "Phone number: <i>@Model.SecondStudent.PhoneNumber</p>")
+                        "Phone number: <i>@Model.SecondStudent.PhoneNumber.</h4>")
                 
+                },
+                {
+                    "match for student from israel",
+                    new StringBuilder()
+                    .AppendLine("<h2><b>@Model.FirstStudent.Name</b>שלום!</h2>")
+                    .AppendLine("<h3>We found Chevruta for you!</h3>")
+                    .AppendLine("<h4>Details of the Chevruta:</h4>")
+                    .AppendLine("<h4>Yours study track is <i>@Model.PrefferdTracksShow</i></h4>")
+                    .AppendLine("<h4>Name: <i>@Model.SecondStudent.Name</i><br>" +
+                        "Email: <i>@Model.SecondStudent.Email</i>.<br>" +
+                        "Phone number: <i>@Model.SecondStudent.PhoneNumber.</h4>")
+
+                },
+                {
+                    "pair to the secretary",
+                    new StringBuilder()
+                    .AppendLine("<h2>@Model</h2>")
+                    .AppendLine("<p>שעות </p>")
                 }
             };
     }

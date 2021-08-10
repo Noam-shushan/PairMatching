@@ -15,39 +15,46 @@ namespace LogicLayer
 {
     public class SendEmail
     {
-        private MailAccount mail;
-        private string _to;
-        private string _subject;
+        private readonly MailAccount fromMail;
+        private string _to = "";
+        private string _subject = "";
         private StringBuilder _template = new StringBuilder();
 
 
         public SendEmail()
         {
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "emailAddress.json");
-            mail = LoadObjFromJsonFile<MailAccount>(path);
+            fromMail = LoadObjFromJsonFile<MailAccount>(path);
         }
 
         public async Task Send<T>(T model)
         {
-            var smtp = new SmtpClient
+            if (_to == string.Empty)
+            {
+                throw new Exception("Missing destination address to send email");
+            }
+            using (var smtp = new SmtpClient
             {
                 Host = "smtp.gmail.com",
                 Port = 587,
                 EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(mail.Address, mail.Password)
-            };
-            var sender = new SmtpSender(() => smtp);
-            Email.DefaultSender = sender;
-            Email.DefaultRenderer = new RazorRenderer();
+                Credentials = new NetworkCredential(fromMail.Address, fromMail.Password)
+            })
+            {
+                var sender = new SmtpSender(() => smtp);
+                Email.DefaultSender = sender;
+                Email.DefaultRenderer = new RazorRenderer();
 
-            var email = await Email
-                .From(mail.Address, mail.Name)
-                .To(_to)
-                .Subject(_subject)
-                .UsingTemplate(_template.ToString(), model)
-                .SendAsync();
+                var email = await Email
+                    .From(fromMail.Address, fromMail.Name)
+                    .To(_to)
+                    .Subject(_subject)
+                    .UsingTemplate(_template.ToString(), model)
+                    .SendAsync();
+            }
+
         }
 
         public async Task Error(Exception exception)

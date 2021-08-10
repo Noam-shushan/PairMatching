@@ -314,12 +314,12 @@
     <Compile Include="BO\SuggestStudent.cs" />
     <Compile Include="BO\Student.cs" />
     <Compile Include="CopyTools.cs" />
-    <Compile Include="EnglishDiscriptor.cs" />
-    <Compile Include="GoogleSheetParser.cs" />
-    <Compile Include="GoogleSheetReader.cs" />
-    <Compile Include="HebrewDescriptor.cs" />
+    <Compile Include="GoogleSheet\EnglishDiscriptor.cs" />
+    <Compile Include="GoogleSheet\GoogleSheetParser.cs" />
+    <Compile Include="GoogleSheet\GoogleSheetReader.cs" />
+    <Compile Include="GoogleSheet\HebrewDescriptor.cs" />
     <Compile Include="IBL.cs" />
-    <Compile Include="IStudentDescriptor.cs" />
+    <Compile Include="GoogleSheet\IStudentDescriptor.cs" />
     <Compile Include="LogicImplementaion.cs" />
     <Compile Include="Matching.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
