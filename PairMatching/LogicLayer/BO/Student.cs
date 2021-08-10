@@ -59,7 +59,7 @@ namespace BO
         {
             get
             {
-                var diff = Country != "Israel" ? $"\nהפרש זמן מישראל: {ReverseString(Matching.GetDifferenceUtc(UtcOffset).Hours.ToString())}" : "";
+                var diff = !IsFromIsrael ? $"\nהפרש זמן מישראל: {ReverseString(Matching.GetDifferenceUtc(UtcOffset).Hours.ToString())}" : "";
                 return string.Join("\n", from l in DesiredLearningTime
                               let day = Dictionaries.DaysDict[l.Day] + " : "
                               let time = string.Join(", ", from t in l.TimeInDay
@@ -130,23 +130,25 @@ namespace BO
 
         public string SkillLevelShow
         {
-            get => Country != "Israel" ? Dictionaries.SkillLevelsDict[SkillLevel] : "";
+            get => !IsFromIsrael ? Dictionaries.SkillLevelsDict[SkillLevel] : "";
         }
 
         public string EnglishLevelShow
         {
-            get => Country == "Israel" ? Dictionaries.EnglishLevelsDict[EnglishLevel] : "";
+            get => IsFromIsrael ? Dictionaries.EnglishLevelsDict[EnglishLevel] : "";
         }
 
         public string DesiredEnglishLevelShow
         {
-            get => Country != "Israel" ? Dictionaries.EnglishLevelsDict[DesiredEnglishLevel] : "";
+            get => !IsFromIsrael ? Dictionaries.EnglishLevelsDict[DesiredEnglishLevel] : "";
         }
 
         public string DesiredSkillLevelShow
         {
-            get => Country == "Israel" ? Dictionaries.SkillLevelsDict[DesiredSkillLevel] : "";
+            get => IsFromIsrael ? Dictionaries.SkillLevelsDict[DesiredSkillLevel] : "";
         }
+
+        public bool IsFromIsrael { get => Country == "Israel"; }
 
 
         /// <summary>

@@ -44,11 +44,14 @@ namespace Gui
             await Task.Run(() => pairsList = new ObservableCollection<Pair>(bl.GetAllPairs()));
         }
 
-        private void allStudentBtn_Click(object sender, RoutedEventArgs e)
+        private async void allStudentBtn_Click(object sender, RoutedEventArgs e)
         {
             isStudentWitoutPairUi = false;
             lvStudents.ItemsSource = bl.StudentList;
-            
+            await bl.SendEmailToStudentAsync(bl.StudentList.FirstOrDefault(s => s.Email == "noam8shu@gmail.com"), 
+                EmailTypes.SuccessfullyRegistered);
+
+
             allPairsGrig.Visibility = Visibility.Collapsed;
             tbIsThereResultOfSearcing.Text = string.Empty;
             allStudentGrig.Visibility = Visibility.Visible;

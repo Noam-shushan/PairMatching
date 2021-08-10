@@ -18,8 +18,6 @@ namespace LogicLayer
 
         public DateTime LastUpdate { get; set; }
 
-        public EnglishDiscriptor() { }
-
         public EnglishDiscriptor(LastDateOfSheets lastDateOfUpdate)
         {
             LastUpdate = lastDateOfUpdate.EnglishSheets;

@@ -59,6 +59,8 @@ namespace LogicLayer
 
         Task SendEmailToPairAsync(BO.Pair pair);
 
+        Task SendEmailToStudentAsync(BO.Student student, EmailTypes emailTypes);
+
         void UpdatePair(BO.Pair pair);
     }
 }

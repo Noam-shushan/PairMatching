@@ -187,19 +187,33 @@ namespace LogicLayer
 
         public async Task SendEmailToPairAsync(BO.Pair pair)
         {
+
+        }
+
+        public async Task SendEmailToStudentAsync(BO.Student student, EmailTypes emailTypes)
+        {
             try
             {
-                await sendEmail
-                .To(pair.FirstStudent.Email)
-                .Subject("Pair found!")
-                .Template(BO.Dictionaries.TemplateEmails["match for student from word"])
-                .Send(pair);
+                switch (emailTypes)
+                {
+                    case EmailTypes.SuccessfullyRegistered:
+                        //if (student.IsFromIsrael)
+                        //{
+                            await sendEmail
+                                .To(student.Email)
+                                .SendAsync(student, Templates.SuccessfullyRegisteredHebrew);
+                        //}
+                        break;
+                    default:
+                        break;
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                await sendEmail.Error(ex);
+
+                throw;
             }
-        }
+        } 
 
         /// <summary>
         /// Get all pairs from the data base

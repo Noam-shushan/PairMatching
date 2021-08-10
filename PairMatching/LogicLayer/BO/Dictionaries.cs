@@ -73,39 +73,5 @@ namespace BO
                 {DO.Genders.FMALE, "אישה" },
                 {DO.Genders.DONT_MATTER, "לא משנה לי" }
             };
-        public static Dictionary<string, StringBuilder> TemplateEmails =
-            new Dictionary<string, StringBuilder>
-            {
-                {
-                    "match for student from word",
-                    new StringBuilder()
-                    .AppendLine("<h2>Hi <b>@Model.FirstStudent.Name</b></h2>")
-                    .AppendLine("<h3>We found Chevruta for you!</h3>")
-                    .AppendLine("<h4>Details of the Chevruta:</h4>")
-                    .AppendLine("<h4>Yours study track is <i>@Model.PrefferdTracksShow</i></h4>")
-                    .AppendLine("<h4>Name: <i>@Model.SecondStudent.Name</i><br>" +
-                        "Email: <i>@Model.SecondStudent.Email</i>.<br>" +
-                        "Phone number: <i>@Model.SecondStudent.PhoneNumber.</h4>")
-                
-                },
-                {
-                    "match for student from israel",
-                    new StringBuilder()
-                    .AppendLine("<h2><b>@Model.FirstStudent.Name</b>שלום!</h2>")
-                    .AppendLine("<h3>We found Chevruta for you!</h3>")
-                    .AppendLine("<h4>Details of the Chevruta:</h4>")
-                    .AppendLine("<h4>Yours study track is <i>@Model.PrefferdTracksShow</i></h4>")
-                    .AppendLine("<h4>Name: <i>@Model.SecondStudent.Name</i><br>" +
-                        "Email: <i>@Model.SecondStudent.Email</i>.<br>" +
-                        "Phone number: <i>@Model.SecondStudent.PhoneNumber.</h4>")
-
-                },
-                {
-                    "pair to the secretary",
-                    new StringBuilder()
-                    .AppendLine("<h2>@Model</h2>")
-                    .AppendLine("<p>שעות </p>")
-                }
-            };
     }
 }
