@@ -14,7 +14,7 @@ obj
 packages
 client_secret.json
 *.TokenResponse-user
-emailAddress.json
+*.config
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
