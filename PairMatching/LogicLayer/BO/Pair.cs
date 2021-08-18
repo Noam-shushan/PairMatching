@@ -13,27 +13,39 @@ namespace BO
 
         public Pair() { }
 
-        public Pair CreateFromDO(DO.Pair pairDo, Func<int ,SimpleStudent> createSimpleStudentFunc)
+        public Pair CreateFromDO(DO.Pair pairDo, Func<int, SimpleStudent> createSimpleStudentFunc)
         {
             var res = pairDo.CopyPropertiesToNew(typeof(Pair)) as Pair;
-            res.FirstStudent = createSimpleStudentFunc(pairDo.FirstStudentId);
-            res.SecondStudent = createSimpleStudentFunc(pairDo.SecondStudentId);
+            res.StudentFromIsrael = createSimpleStudentFunc(pairDo.StudentFromIsraelId);
+            res.StudentFromWorld = createSimpleStudentFunc(pairDo.StudentFromWorldId);
             return res;
         }
+
+        public int Id { get; set; }
         /// <summary>
         /// flag that determine if the pair is deleted from the data source 
         /// </summary>
         public bool IsDeleted { get; set; }
 
         /// <summary>
+        /// The student from israel 
+        /// </summary>
+        public SimpleStudent StudentFromIsrael { get; set; }
+
+        /// <summary>
+        /// The macher student from world 
+        /// </summary>
+        public SimpleStudent StudentFromWorld { get; set; }
+
+        /// <summary>
         /// the first student id 
         /// </summary>
-        public SimpleStudent FirstStudent { get; set; }
+        public int StudentFromIsraelId { get; set; }
 
         /// <summary>
         /// The macher student id for the first student
         /// </summary>
-        public SimpleStudent SecondStudent { get; set; }
+        public int StudentFromWorldId { get; set; }
 
         public DateTime DateOfCreate { get; set; }
 
@@ -61,42 +73,7 @@ namespace BO
 
         public override string ToString()
         {
-            return $"חברותא א: {FirstStudent.Name} , חברותא ב: {SecondStudent.Name}";
+            return $"חברותא א: {StudentFromIsrael.Name} , חברותא ב: {StudentFromWorld.Name}";
         }
-    }
-
-    public class SimpleStudent
-    {
-        /// <summary>
-        /// the id number of the student
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// the name of the student
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// the country of the student
-        /// </summary>
-        public string Country { get; set; }
-
-        /// <summary>
-        /// the email of the student
-        /// </summary>
-        public string Email { get; set; }
-
-        /// <summary>
-        /// the phone number of the student
-        /// </summary>
-        public string PhoneNumber { get; set; }
-
-        /// <summary>
-        /// the gender of the student
-        /// </summary>
-        public Genders Gender { get; set; }
-
-        public string GenderShow { get => Dictionaries.GendersDict[Gender]; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,12 +9,15 @@ namespace DataLayer
 {
     public static class DalFactory
     {
-        public static IDataLayer GetDal(string dalImpName)
+        public static IDataLayer GetDal()
         {
-            switch (dalImpName)
+            var dal = ConfigurationManager.AppSettings["dal"];
+            switch (dal)
             {
                 case "json":
                     return DalJson.DalJson.Instance;
+                case "mongo":
+                    return DalMongo.DalMongo.Instance;
                 default:
                     return null;
             }

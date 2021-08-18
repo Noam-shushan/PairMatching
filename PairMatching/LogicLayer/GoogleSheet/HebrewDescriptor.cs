@@ -17,7 +17,7 @@ namespace LogicLayer
 
         public DateTime LastUpdate { get; set; }
 
-        public HebrewDescriptor(LastDateOfSheets lastDateOfUpdate)
+        public HebrewDescriptor(LastDataOfSpredsheet lastDateOfUpdate)
         {
             LastUpdate = lastDateOfUpdate.HebrewSheets;
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,12 +7,14 @@ using System.Threading.Tasks;
 
 namespace DO
 {
-    public class LastDateOfSheets : IEquatable<LastDateOfSheets>
+    public class LastDataOfSpredsheet : IEquatable<LastDataOfSpredsheet>
     {
+        [BsonId]
+        public int Id { get; } = 2;
         public DateTime HebrewSheets { get; set; }
         public DateTime EnglishSheets { get; set; }
 
-        public bool Equals(LastDateOfSheets other)
+        public bool Equals(LastDataOfSpredsheet other)
         {
             //Check whether the compared object is null.
             if (ReferenceEquals(other, null)) 
@@ -25,7 +28,7 @@ namespace DO
                 && EnglishSheets == other.EnglishSheets;
         }
 
-        public override bool Equals(object obj) => Equals(obj as LastDateOfSheets);
+        public override bool Equals(object obj) => Equals(obj as LastDataOfSpredsheet);
 
         public override int GetHashCode() => (HebrewSheets, EnglishSheets).GetHashCode();
     }

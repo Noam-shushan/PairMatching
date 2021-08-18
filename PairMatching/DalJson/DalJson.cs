@@ -22,14 +22,9 @@ namespace DalJson
         #region Counters
         private Counters _counters;
 
-        public Counters GetCounters()
-        {
-            return _counters;
-        }
-
         void SetCounters()
         {
-            var counter = JsonTools.LoadObjFromJsonFile<Counters>(countersPath);
+            var counter = JsonTools.LoadOne<Counters>(countersPath);
             if (counter == null)
             {
                 _counters = Counters.Instance;
@@ -45,9 +40,7 @@ namespace DalJson
         private readonly string studentsPath = @"studentListJson.json";
         private readonly string pairsPath = @"pairListJson.json";
         private readonly string countersPath = @"counters.json";
-        private readonly string learningTimePath = @"learningTime.json";
         private readonly string lastDateOfSheetsPath = @"lastDateOfSheets.json";
-        private readonly string openQuestionsPath = @"openQuestions.json";
         #endregion
 
         public async Task SaveAllDataFromSpredsheetAsync()
@@ -55,26 +48,12 @@ namespace DalJson
             // load all students from the json file 
             await Task.Run(() =>
             {
-                var studentsListFromDB = JsonTools.LoadListFromJsonFile<Student>(studentsPath);
+                var studentsListFromDB = JsonTools.LoadRecords<Student>(studentsPath);
                 studentsListFromDB.AddRange(DataSource.StudentsList);
-                JsonTools.SaveListToJsonFile(studentsListFromDB, studentsPath);
+                JsonTools.InsertRecords(studentsListFromDB, studentsPath);
             });
 
-            await Task.Run(() => JsonTools.SaveObjToJsonFile(_counters, countersPath));
-
-            await Task.Run(() =>
-            {
-                var learningTimesListFromDB = JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath);
-                learningTimesListFromDB.AddRange(DataSource.LearningTimesList);
-                JsonTools.SaveListToJsonFile(learningTimesListFromDB, learningTimePath);
-            });
-
-            await Task.Run(() =>
-            {
-                var openQuestionsListFromDB = JsonTools.LoadListFromJsonFile<OpenQuestion>(openQuestionsPath);
-                openQuestionsListFromDB.AddRange(DataSource.OpenQuestionsList);
-                JsonTools.SaveListToJsonFile(openQuestionsListFromDB, openQuestionsPath);
-            });
+            await Task.Run(() => JsonTools.InsertOne(_counters, countersPath));
         }
 
         #region Student
@@ -87,26 +66,25 @@ namespace DalJson
         public int AddStudent(Student student)
         {
             // load all students from the json file 
-            var studList = JsonTools.LoadListFromJsonFile<Student>(studentsPath);
+            var studList = JsonTools.LoadRecords<Student>(studentsPath);
             var stud = studList.Find(s => s.Email == student.Email);
             // Checks for duplication student
             if (stud != null && !stud.IsDeleted)
             {
                 throw new Exception($"student {student.Id} is exists");
             }
-            
             _counters.IncStudentCounter();
             student.Id = _counters.StudentCounter;
             studList.Add(student);
             
-            JsonTools.SaveListToJsonFile(studList, studentsPath);
-            JsonTools.SaveObjToJsonFile(_counters, countersPath);
+            JsonTools.InsertRecords(studList, studentsPath);
+            JsonTools.InsertOne(_counters, countersPath);
             return student.Id;
         }
 
         public void RemoveStudent(int id)
         {
-            var studList = JsonTools.LoadListFromJsonFile<Student>(studentsPath);
+            var studList = JsonTools.LoadRecords<Student>(studentsPath);
             var stud = studList.FirstOrDefault(s => s.Id == id);
             
             if (stud != null && !stud.IsDeleted)
@@ -115,7 +93,7 @@ namespace DalJson
                 stud.IsDeleted = true;
                 studList.Add(stud);
 
-                JsonTools.SaveListToJsonFile(studList, studentsPath);
+                JsonTools.InsertRecords(studList, studentsPath);
                 return;
             }
             throw new Exception($"can not find the sutdent {id}");
@@ -123,32 +101,30 @@ namespace DalJson
 
         public Student GetStudent(int id)
         {
-            var studList = JsonTools.LoadListFromJsonFile<Student>(studentsPath);
+            var studList = JsonTools.LoadRecords<Student>(studentsPath);
             var stud = studList.FirstOrDefault(s => s.Id == id);
-            if(stud != null && !stud.IsDeleted)
-            {
-                return stud;
-            }
-            throw new Exception($"can not find the sutdent {id}");
+            
+            return stud != null && !stud.IsDeleted ? stud :
+                throw new Exception($"can not find the sutdent {id}");
         }
 
         public IEnumerable<Student> GetAllStudents()
         {
-            return from s in JsonTools.LoadListFromJsonFile<Student>(studentsPath)
+            return from s in JsonTools.LoadRecords<Student>(studentsPath)
                    where !s.IsDeleted
                    select s;
         }
 
         public IEnumerable<Student> GetAllStudentsBy(Predicate<Student> predicate)
         {
-            return from s in JsonTools.LoadListFromJsonFile<Student>(studentsPath)
+            return from s in JsonTools.LoadRecords<Student>(studentsPath)
                    where !s.IsDeleted && predicate(s)
                    select s;
         }
 
         public void UpdateStudent(Student student)
         {
-            var studList = JsonTools.LoadListFromJsonFile<Student>(studentsPath);
+            var studList = JsonTools.LoadRecords<Student>(studentsPath);
             var stud = studList.FirstOrDefault(s => s.Id == student.Id);
 
             if (stud != null && !stud.IsDeleted)
@@ -156,7 +132,7 @@ namespace DalJson
                 studList.Remove(stud);
                 studList.Add(student);
 
-                JsonTools.SaveListToJsonFile(studList, studentsPath);
+                JsonTools.InsertRecords(studList, studentsPath);
                 return;
             }
             throw new Exception($"can not find the sutdent {student}");
@@ -166,40 +142,30 @@ namespace DalJson
         #region Pair
         public void AddPair(Pair pair)
         {
-            var pairList = JsonTools.LoadListFromJsonFile<Pair>(pairsPath);
-            var pTemp = pairList.Find(p => p.FirstStudentId == pair.FirstStudentId
-                                                 && p.SecondStudentId == pair.SecondStudentId);
+            var pairList = JsonTools.LoadRecords<Pair>(pairsPath);
+            var pTemp = pairList.Find(p => p.StudentFromIsraelId == pair.StudentFromIsraelId
+                                                 && p.StudentFromWorldId == pair.StudentFromWorldId);
             if (pTemp != null && !pTemp.IsDeleted)
             {
-                throw new BadPairException("the pair is exist", pTemp.FirstStudentId, pTemp.SecondStudentId);
+                throw new BadPairException("the pair is exist", pTemp.StudentFromIsraelId, pTemp.StudentFromWorldId);
             }
             if (pTemp != null && pTemp.IsDeleted)
             {
                 pairList.Remove(pTemp);
             }
 
+            _counters.IncPairCounter();
+            pair.Id = _counters.PairCounter;
+
             pairList.Add(pair);
-            JsonTools.SaveListToJsonFile(pairList, pairsPath);
+            JsonTools.InsertRecords(pairList, pairsPath);
+            JsonTools.InsertOne(_counters, countersPath);
         }
 
-        public Pair GetPair(int firstStudent, int secondStudent)
+        public void RemovePair(Pair pair)
         {
-            var pairList = JsonTools.LoadListFromJsonFile<Pair>(pairsPath);
-            var pTemp = pairList.Find(p => p.FirstStudentId == firstStudent
-                                                 && p.SecondStudentId == secondStudent);
-            if (pTemp != null && !pTemp.IsDeleted)
-            {
-                return pTemp;
-            }
-            throw new BadPairException("the pair is not found", pTemp != null ? pTemp.FirstStudentId : 0, 
-                pTemp != null ? pTemp.SecondStudentId : 0);
-        }
-
-        public void RemovePair(int firstStudent, int secondStudent)
-        {
-            var pairList = JsonTools.LoadListFromJsonFile<Pair>(pairsPath);
-            var pTemp = pairList.Find(p => p.FirstStudentId == firstStudent
-                                                 && p.SecondStudentId == secondStudent);
+            var pairList = JsonTools.LoadRecords<Pair>(pairsPath);
+            var pTemp = pairList.Find(p => p.Id == pair.Id);
             if (pTemp != null && !pTemp.IsDeleted)
             {
                 pairList.Remove(pTemp);
@@ -207,111 +173,57 @@ namespace DalJson
                 pTemp.DateOfDelete = DateTime.Now;
                 pairList.Add(pTemp);
 
-                JsonTools.SaveListToJsonFile(pairList, pairsPath);
+                JsonTools.InsertRecords(pairList, pairsPath);
                 return;
             }
 
-            throw new BadPairException("the pair is not found", pTemp != null ? pTemp.FirstStudentId : 0,
-                        pTemp != null ? pTemp.SecondStudentId : 0);
+            throw new BadPairException("the pair is not found", pTemp != null ? pTemp.StudentFromIsraelId : 0,
+                        pTemp != null ? pTemp.StudentFromWorldId : 0);
         }
 
         public void UpdatePair(Pair pair)
         {
-            var pairList = JsonTools.LoadListFromJsonFile<Pair>(pairsPath);
-            var pTemp = pairList.Find(p => p.FirstStudentId == pair.FirstStudentId
-                                                 && p.SecondStudentId == pair.SecondStudentId);
+            var pairList = JsonTools.LoadRecords<Pair>(pairsPath);
+            var pTemp = pairList.Find(p => p.StudentFromIsraelId == pair.StudentFromIsraelId
+                                                 && p.StudentFromWorldId == pair.StudentFromWorldId);
             if (pTemp != null && !pTemp.IsDeleted)
             {
                 pairList.Remove(pTemp);
                 pTemp.DateOfUpdate = DateTime.Now;
                 pairList.Add(pTemp);
 
-                JsonTools.SaveListToJsonFile(pairList, pairsPath);
+                JsonTools.InsertRecords(pairList, pairsPath);
                 return;
             }
 
-            throw new BadPairException("the pair is not found", pTemp != null ? pTemp.FirstStudentId : 0,
-                        pTemp != null ? pTemp.SecondStudentId : 0);
+            throw new BadPairException("the pair is not found", pTemp != null ? pTemp.StudentFromIsraelId : 0,
+                        pTemp != null ? pTemp.StudentFromWorldId : 0);
         }
 
         public IEnumerable<Pair> GetAllPairs()
         {
-            return from p in JsonTools.LoadListFromJsonFile<Pair>(pairsPath)
+            return from p in JsonTools.LoadRecords<Pair>(pairsPath)
                    where !p.IsDeleted
                    select p;
         }
 
         public IEnumerable<Pair> GetAllPairsBy(Predicate<Pair> predicate)
         {
-            return from p in JsonTools.LoadListFromJsonFile<Pair>(pairsPath)
+            return from p in JsonTools.LoadRecords<Pair>(pairsPath)
                    where !p.IsDeleted && predicate(p)
                    select p;
         }
         #endregion
 
-        #region LearningTime
-        public IEnumerable<LearningTime> GetAllLearningTimes()
-        {
-            return JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath);
-        }
-
-        public IEnumerable<LearningTime> GetAllLearningTimesBy(Predicate<LearningTime> predicate)
-        {
-            return from l in JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath)
-                   where predicate(l) 
-                   select l;
-        }
-
-        public LearningTime GetLearningTime(int id)
-        {
-            var learningTime = (from l in JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath)
-                    where l.Id == id
-                    select l).FirstOrDefault();
-            if(learningTime == default)
-            {
-                return null;
-            }
-            return learningTime;
-        }
-
-        public void AddLearningTime(LearningTime learningTime)
-        {
-            var learningTimesList = JsonTools.LoadListFromJsonFile<LearningTime>(learningTimePath);
-            learningTimesList.Add(learningTime);
-            JsonTools.SaveListToJsonFile(learningTimesList, learningTimePath);
-        }
-        #endregion
-
-        #region OpenQuestions
-        public IEnumerable<OpenQuestion> GetAllOpenQuestions()
-        {
-            return JsonTools.LoadListFromJsonFile<OpenQuestion>(openQuestionsPath);
-        }
-
-        public IEnumerable<OpenQuestion> GetAllOpenQuestionsBy(Predicate<OpenQuestion> predicate)
-        {
-            return from o in JsonTools.LoadListFromJsonFile<OpenQuestion>(openQuestionsPath)
-                   where predicate(o)
-                   select o;
-        }
-
-        public void AddOpenQuestions(OpenQuestion openQuestion)
-        {
-            var list = JsonTools.LoadListFromJsonFile<OpenQuestion>(openQuestionsPath);
-            list.Add(openQuestion);
-            JsonTools.SaveListToJsonFile(list, openQuestionsPath);
-        } 
-        #endregion
-
         #region Last update of the data tables
-        public void UpdateLastDateOfSheets(LastDateOfSheets lastDateOfSheets)
+        public void UpdateLastDateOfSheets(LastDataOfSpredsheet lastDateOfSheets)
         {
-            JsonTools.SaveObjToJsonFile(lastDateOfSheets, lastDateOfSheetsPath);
+            JsonTools.InsertOne(lastDateOfSheets, lastDateOfSheetsPath);
         }
 
-        public LastDateOfSheets GetLastDateOfSheets()
+        public LastDataOfSpredsheet GetLastDateOfSheets()
         {
-            return JsonTools.LoadObjFromJsonFile<LastDateOfSheets>(lastDateOfSheetsPath);
+            return JsonTools.LoadOne<LastDataOfSpredsheet>(lastDateOfSheetsPath);
         }
         #endregion
     }

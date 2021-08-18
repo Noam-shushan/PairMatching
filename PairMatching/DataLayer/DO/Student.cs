@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MongoDB.Bson.Serialization.Attributes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace DO
         /// <summary>
         /// the id number of the student
         /// </summary>
+        [BsonId]
         public int Id { get; set; }
 
         /// <summary>
@@ -87,6 +89,13 @@ namespace DO
         /// the id of the student that match to this.
         /// </summary>
         public int MatchTo { get; set; }
+
+        /// <summary>
+        /// Desired learning time and day
+        /// </summary>
+        public IEnumerable<LearningTime> DesiredLearningTime { get; set; }
+
+        public IEnumerable<OpenQuestion> OpenQuestions { get; set; }
 
         public int PrefferdNumberOfMatchs { get; set; }
 

@@ -18,7 +18,7 @@ namespace DalJson
                 Directory.CreateDirectory(dir);
         }
 
-        public static void SaveListToJsonFile<T>(List<T> list, string filePath)
+        public static void InsertRecords<T>(List<T> list, string filePath)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace DalJson
             }
         }
 
-        public static List<T> LoadListFromJsonFile<T>(string filePath)
+        public static List<T> LoadRecords<T>(string filePath)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace DalJson
             }
         }
 
-        public static T LoadObjFromJsonFile<T>(string filePath)
+        public static T LoadOne<T>(string filePath)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace DalJson
             } 
         }
 
-        public static void SaveObjToJsonFile<T>(T obj, string filePath)
+        public static void InsertOne<T>(T obj, string filePath)
         {
             try
             {

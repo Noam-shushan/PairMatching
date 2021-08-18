@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -48,6 +49,10 @@
     <ProjectReference Include="..\DalJson\DalJson.csproj">
       <Project>{571241b5-15a2-4fdc-9a20-f79694aede9f}</Project>
       <Name>DalJson</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DalMongo\DalMongo.csproj">
+      <Project>{a07a733f-d9d2-4d82-a938-d0da62b72907}</Project>
+      <Name>DalMongo</Name>
     </ProjectReference>
     <ProjectReference Include="..\DataLayer\DataLayer.csproj">
       <Project>{cc9290ca-4323-43d9-b840-785b6d113957}</Project>

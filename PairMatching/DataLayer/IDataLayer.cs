@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 namespace DataLayer
 {
     public interface IDataLayer
-    {
-        Counters GetCounters();
-
+    { 
         #region Student
         /// <summary>
         /// Get all the students from the data source
@@ -53,16 +51,6 @@ namespace DataLayer
         void UpdateStudent(DO.Student student);
         #endregion
 
-        #region LearningTime
-        IEnumerable<DO.LearningTime> GetAllLearningTimes();
-
-        IEnumerable<DO.LearningTime> GetAllLearningTimesBy(Predicate<DO.LearningTime> predicate);
-
-        DO.LearningTime GetLearningTime(int id);
-
-        void AddLearningTime(DO.LearningTime learningTime); 
-        #endregion
-
         #region Pair
         /// <summary>
         /// Get all the pairs from the data source
@@ -84,34 +72,17 @@ namespace DataLayer
         void AddPair(DO.Pair pair);
 
         /// <summary>
-        /// Get pair from the data source
-        /// </summary>
-        /// <param name="firstStudent">first sudent id</param>
-        /// <param name="secondStudent">second student id</param>
-        /// <returns>the pair match to the id's</returns>
-        DO.Pair GetPair(int firstStudent, int secondStudent);
-
-        /// <summary>
         /// Remove pair from the data source
         /// </summary>
-        /// <param name="firstStudent">first sudent id</param>
-        /// <param name="secondStudent">second student id</param>
-        void RemovePair(int firstStudent, int secondStudent);
+        /// <param name="id">the id of the pair</param>
+        void RemovePair(DO.Pair pair);
 
         void UpdatePair(DO.Pair pair);
         #endregion
 
-        #region OpenQuestions
-        IEnumerable<DO.OpenQuestion> GetAllOpenQuestions();
-
-        IEnumerable<DO.OpenQuestion> GetAllOpenQuestionsBy(Predicate<DO.OpenQuestion> predicate);
-
-        void AddOpenQuestions(DO.OpenQuestion openQuestion);
-        #endregion
-
         #region LastDateOfSheets
-        void UpdateLastDateOfSheets(DO.LastDateOfSheets lastDateOfSheets);
-        DO.LastDateOfSheets GetLastDateOfSheets(); 
+        void UpdateLastDateOfSheets(DO.LastDataOfSpredsheet lastDateOfSheets);
+        DO.LastDataOfSpredsheet GetLastDateOfSheets(); 
         #endregion
     }
 }

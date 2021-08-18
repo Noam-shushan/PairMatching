@@ -6,12 +6,12 @@ using System.Text;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using FluentEmail.Core;
-using System.IO;
 using Newtonsoft.Json;
 using System.Net;
 using FluentEmail.Razor;
 using System.Configuration;
 using System.Net.Configuration;
+using FluentEmail.Core.Models;
 
 namespace LogicLayer
 {
@@ -21,7 +21,7 @@ namespace LogicLayer
         private string _to = "";
         private string _subject = "";
         private StringBuilder _template = new StringBuilder();
-        private readonly SmtpClient client;
+        private readonly SmtpSection smtp;
 
 
         public SendEmail()
@@ -35,17 +35,8 @@ namespace LogicLayer
             {
                 return;
             }
+            smtp = mailSettings.Smtp;
 
-            client = new SmtpClient
-            {
-                Host = mailSettings.Smtp.Network.Host,
-                Port = mailSettings.Smtp.Network.Port,
-                UseDefaultCredentials = mailSettings.Smtp.Network.DefaultCredentials,
-                Credentials = new NetworkCredential(mailSettings.Smtp.From,
-                    mailSettings.Smtp.Network.Password),
-                EnableSsl = mailSettings.Smtp.Network.EnableSsl,
-                DeliveryMethod = mailSettings.Smtp.DeliveryMethod
-            };
             fromMail = new MailAddress(mailSettings.Smtp.From, 
                 mailSettings.Smtp.Network.UserName);
         }
@@ -57,22 +48,45 @@ namespace LogicLayer
                 throw new Exception("Missing destination address to send email");
             }
 
-            var sender = new SmtpSender(() => client);
+            SmtpClient client = new SmtpClient
+            {
+                Host = smtp.Network.Host,
+                Port = smtp.Network.Port,
+                UseDefaultCredentials = smtp.Network.DefaultCredentials,
+                Credentials = new NetworkCredential(smtp.From,
+                    smtp.Network.Password),
+                EnableSsl = smtp.Network.EnableSsl,
+                DeliveryMethod = smtp.DeliveryMethod
+            };
+
+            var clientToTest = new SmtpClient
+            {
+                Host = "localhost",
+                Port = 25,
+                EnableSsl = false,
+            };
+
+            var sender = new SmtpSender(() => clientToTest);
             Email.DefaultSender = sender;
             Email.DefaultRenderer = new RazorRenderer();
 
+            SendResponse email = new SendResponse();
             try
             {
-                var email = await Email
+                email = await Email
                     .From(fromMail.Address, fromMail.DisplayName)
                     .To(_to)
                     .Subject(_subject)
                     .UsingTemplate(_template.ToString(), model)
                     .SendAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                if (!email.Successful)
+                {
+                    throw new Exception(string.Join("\n", email.ErrorMessages));
+                }
+                throw ex;
             }
         }
 
@@ -109,33 +123,6 @@ namespace LogicLayer
         {
             _template = template;
             return this;
-        }
-    }
-
-    public class MailTemplate
-    {
-        public string Subject { get; set; }
-
-        public StringBuilder Template { get; set; }
-    }
-
-    public enum EmailTypes { SuccessfullyRegistered }
-
-    public static class Templates
-    {
-        public static MailTemplate SuccessfullyRegisteredHebrew
-        {
-            get => new MailTemplate
-            {
-                Subject = "נרשמת בהצלחה לתכנית שלהבת!",
-                Template = new StringBuilder()
-                    .Append("<p>@Model.Name</p>")
-                    .Append("<p>היקר\\ה, השאלון שמילאת נקלט אצלנו, והנך חלק משלהבת! תודה רבה על שותפותך והאמון שלך בנו! תהליך התאמת החברותא לוקח זמן מה, אך בקרוב נודיע לך מי החברותא שהותאמה לך. </ p>")
-                    .Append("<br>")
-                    .Append("<p>לאחר ההתאמה, יישלח לך מייל ובו פרטי ההתקשרות של החברותא, הסבר על אופן יצירת הקשר. עוד נשלח הסבר על אופי המסלול שבחרתם, כולל מגוון הכלים שהוא מציע לתמיכה בלימוד שלכם.</ p>")
-                    .Append("<br><br>")
-                    .Append("<p>כל טוב,<br> צוות שלהבת</p>")
-            };
         }
     }
 }

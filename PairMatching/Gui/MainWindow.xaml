@@ -17,6 +17,9 @@
         FontSize="15"
         Loaded="Window_Loaded"
         Title="שלהבת" Height="800" Width="1200">
+    <Window.Resources>
+        <local:BooleanAndConverter x:Key="booleanAndConverter"/>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>
@@ -165,7 +168,7 @@
                 MouseDoubleClick="lvPairs_MouseDoubleClick"
                 ItemsSource="{Binding}">
                     <ListView.Resources>
-                        <Style TargetType="ListViewItem">
+                        <Style TargetType="DataGridRow">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         </Style>
                         <local:OrdinalConverter x:Key="OrdinalConverter" />
@@ -177,59 +180,62 @@
                     <ListView.View>
                         <GridView>
                             <GridView.Columns>
-                                <GridViewColumn 
-                                    Header="#" 
-                                    CellTemplate="{StaticResource ResourceKey=OrdinalColumnDataTemplate}" 
-                                    Width="30"/>
                                 <GridViewColumn>
+                                    <GridViewColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <CheckBox 
+                                        x:Name="selectAllPairCB" 
+                                        Checked="selectAllPairCB_Checked"
+                                        Unchecked="selectAllPairCB_Unchecked"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.HeaderTemplate>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <CheckBox IsChecked="{Binding Path=IsSelected, Mode=TwoWay}"/>
+                                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="חברותא א" Width="260">
+                                <GridViewColumn Header="משתתף מישראל" Width="260">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <StackPanel>
+                                            <StackPanel DataContext="{Binding StudentFromIsrael}">
                                                 <StackPanel Orientation="Horizontal" Margin="5">
                                                     <TextBlock Text="שם:  " FontWeight="Bold" TextDecorations="Underline"/>
-                                                    <TextBlock Text="{Binding Path=FirstStudent.Name}"/>
+                                                    <TextBlock Text="{Binding Path=Name}"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Margin="5">
                                                     <TextBlock Text="מייל:  " FontWeight="Bold" TextDecorations="Underline"/>
-                                                    <TextBlock Text="{Binding Path=FirstStudent.Email}"/>
+                                                    <TextBlock Text="{Binding Path=Email}"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Margin="5">
                                                     <TextBlock Text="טלפון:  " FontWeight="Bold" TextDecorations="Underline"/>
-                                                    <TextBlock Text="{Binding Path=FirstStudent.PhoneNumber}"/>
+                                                    <TextBlock Text="{Binding Path=PhoneNumber}"/>
                                                 </StackPanel>
                                             </StackPanel>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="חברותא ב" Width="260">
+                                <GridViewColumn Header="משתתף מהתפוצות" Width="260">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <StackPanel>
+                                            <StackPanel DataContext="{Binding StudentFromWorld}">
                                                 <StackPanel Orientation="Horizontal" Margin="5">
                                                     <TextBlock Text="שם:  " FontWeight="Bold" TextDecorations="Underline"/>
-                                                    <TextBlock Text="{Binding Path=SecondStudent.Name}"/>
+                                                    <TextBlock Text="{Binding Path=Name}"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Margin="5">
                                                     <TextBlock Text="מייל:  " FontWeight="Bold" TextDecorations="Underline"/>
-                                                    <TextBlock Text="{Binding Path=SecondStudent.Email}"/>
+                                                    <TextBlock Text="{Binding Path=Email}"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Margin="5">
                                                     <TextBlock Text="טלפון:  " FontWeight="Bold" TextDecorations="Underline"/>
-                                                    <TextBlock Text="{Binding Path=SecondStudent.PhoneNumber}"/>
+                                                    <TextBlock Text="{Binding Path=PhoneNumber}"/>
                                                 </StackPanel>
                                             </StackPanel>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="מסלול לימוד"
-                                                DisplayMemberBinding="{Binding Path=PrefferdTracksShow}"/>
+                                <GridViewColumn Header="מסלול לימוד" DisplayMemberBinding="{Binding Path=PrefferdTracksShow}"/>
                             </GridView.Columns>
                         </GridView>
                     </ListView.View>
@@ -379,7 +385,7 @@
                         Width="480"
                         Height="auto"
                         UseLayoutRounding="True" RenderTransformOrigin="0.5,0.5">
-                    <TextBlock Text="{Binding OpenQuestions[Personal information]}"/>
+                    <TextBlock Text="{Binding OpenQuestionsDict[Personal information]}"/>
                 </GroupBox>
             </Border>
             <Border
@@ -391,7 +397,7 @@
                     Width="480"
                     Height="auto"
                     UseLayoutRounding="True">
-                    <TextBlock Text="{Binding OpenQuestions[Personality trates]}"/>
+                    <TextBlock Text="{Binding OpenQuestionsDict[Personality trates]}"/>
                 </GroupBox>
             </Border>
             <Border
@@ -403,7 +409,7 @@
                     Width="480"
                     Height="auto"
                     UseLayoutRounding="True">
-                    <TextBlock Text="{Binding OpenQuestions[What are your hopes and expectations from this program]}"/>
+                    <TextBlock Text="{Binding OpenQuestionsDict[What are your hopes and expectations from this program]}"/>
                 </GroupBox>
             </Border>
             <Border
@@ -415,7 +421,7 @@
                     Width="480"
                     Height="auto"
                     UseLayoutRounding="True">
-                    <TextBlock Text="{Binding OpenQuestions[Additional information]}"/>
+                    <TextBlock Text="{Binding OpenQuestionsDict[Additional information]}"/>
                 </GroupBox>
             </Border>
             <Border
@@ -427,7 +433,7 @@
                     Width="480"
                     Height="auto"
                     UseLayoutRounding="True">
-                    <TextBlock Text="{Binding OpenQuestions[Who introduced you to this program]}"/>
+                    <TextBlock Text="{Binding OpenQuestionsDict[Who introduced you to this program]}"/>
                 </GroupBox>
             </Border>
             <Border
@@ -439,7 +445,7 @@
                     Width="480"
                     Height="auto"
                     UseLayoutRounding="True">
-                    <TextBlock Text="{Binding OpenQuestions[Country and City of residence]}"/>
+                    <TextBlock Text="{Binding OpenQuestionsDict[Country and City of residence]}"/>
                 </GroupBox>
             </Border>
         </ListBox>

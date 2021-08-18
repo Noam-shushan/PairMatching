@@ -24,8 +24,8 @@ namespace LogicLayer
                     new TimeInterval(TimeSpan.Parse("21:00"), TimeSpan.Parse("02:00"))}
             };
 
-        public List<Tuple<DO.LearningTime, DO.LearningTime>> MatchingHoursList { get; } =
-            new List<Tuple<DO.LearningTime, DO.LearningTime>>();
+        public List<MatchingTime> MatchingTimes { get; } =
+            new List<MatchingTime>();
 
         /// <summary>
         /// Cheack if tow student is a match from first degree 
@@ -104,8 +104,8 @@ namespace LogicLayer
                     var equivalentIntervalInWorld = GetStudentTimes(diff, t);
                     var equivalentTimeInIsrael = GetTimesInDayByInterval(equivalentIntervalInWorld);
                     
-                    if(FindMatcinHouers(israelStudent, dt,t, 
-                        equivalentIntervalInWorld, equivalentTimeInIsrael, diff))
+                    if(FindMatcinHouers(israelStudent, dt, t, 
+                        equivalentIntervalInWorld, equivalentTimeInIsrael, diff, other.Id))
                     {
                         found = true;
                     }
@@ -116,12 +116,12 @@ namespace LogicLayer
 
         private bool FindMatcinHouers(BO.Student israeliStudent, DO.LearningTime learningTimeFromWorld,
             DO.TimesInDay timesInDayFromWorld, TimeInterval equivalentIntevalFromWorld, 
-            DO.TimesInDay equivalentTimeInIsrael, TimeSpan diff)
+            DO.TimesInDay equivalentTimeInIsrael, TimeSpan diff, int worldStudentId)
         {
             bool found = false;
             var ltToAddFromWorld = new DO.LearningTime
             {
-                Id = learningTimeFromWorld.Id,
+                //Id = learningTimeFromWorld.Id,
                 Day = learningTimeFromWorld.Day,
                 TimeInDay = new List<DO.TimesInDay> { timesInDayFromWorld }
             };
@@ -142,11 +142,16 @@ namespace LogicLayer
                     if (lt.Day == learningTimeFromWorld.Day 
                         && BoundryOfTimeInDay[t].IsIn(equivalentIntevalFromWorld.Start))
                     {
-                        AddToMatchingHouersList(ltToAddFromWorld, new DO.LearningTime 
+                        MatchingTimes.Add(new MatchingTime
                         {
-                            Id = lt.Id,
-                            Day = lt.Day,
-                            TimeInDay = new List<DO.TimesInDay> { t } 
+                            MatchingLearningTimeInIsrael = new DO.LearningTime 
+                            {
+                                Day = lt.Day,
+                                TimeInDay = new List<DO.TimesInDay> { t }
+                            },
+                            MatchingLearningTimeInWorld = ltToAddFromWorld,
+                            StudentFromIsraelId = israeliStudent.Id,
+                            StudentFromWorldId = worldStudentId
                         });
                         found = true;
                         continue;
@@ -157,11 +162,16 @@ namespace LogicLayer
                             (BoundryOfTimeInDay[t].IsIn(equivalentIntevalFromWorld.Start)
                             || (t == equivalentTimeInIsrael && equivalentTimeInIsrael != DO.TimesInDay.DONT_MATTER)))
                         {
-                            AddToMatchingHouersList(ltToAddFromWorld, new DO.LearningTime
+                            MatchingTimes.Add(new MatchingTime
                             {
-                                Id = lt.Id,
-                                Day = lt.Day,
-                                TimeInDay = new List<DO.TimesInDay> { t }
+                                MatchingLearningTimeInIsrael = new DO.LearningTime
+                                {
+                                    Day = lt.Day,
+                                    TimeInDay = new List<DO.TimesInDay> { t }
+                                },
+                                MatchingLearningTimeInWorld = ltToAddFromWorld,
+                                StudentFromIsraelId = israeliStudent.Id,
+                                StudentFromWorldId = worldStudentId
                             });
                             found = true;
                             continue;
@@ -173,11 +183,16 @@ namespace LogicLayer
                             (BoundryOfTimeInDay[t].IsIn(equivalentIntevalFromWorld.Start)
                             || (t == equivalentTimeInIsrael && equivalentTimeInIsrael != DO.TimesInDay.DONT_MATTER)))
                         {
-                            AddToMatchingHouersList(ltToAddFromWorld, new DO.LearningTime
+                            MatchingTimes.Add(new MatchingTime
                             {
-                                Id = lt.Id,
-                                Day = lt.Day,
-                                TimeInDay = new List<DO.TimesInDay> { t }
+                                MatchingLearningTimeInIsrael = new DO.LearningTime
+                                {
+                                    Day = lt.Day,
+                                    TimeInDay = new List<DO.TimesInDay> { t }
+                                },
+                                MatchingLearningTimeInWorld = ltToAddFromWorld,
+                                StudentFromIsraelId = israeliStudent.Id,
+                                StudentFromWorldId = worldStudentId
                             });
                             found = true;
                             continue;
@@ -190,11 +205,16 @@ namespace LogicLayer
                     if (lt.Day == learningTimeFromWorld.Day 
                         && t == equivalentTimeInIsrael)
                     {
-                        AddToMatchingHouersList(ltToAddFromWorld, new DO.LearningTime
+                        MatchingTimes.Add(new MatchingTime
                         {
-                            Id = lt.Id,
-                            Day = lt.Day,
-                            TimeInDay = new List<DO.TimesInDay> { t }
+                            MatchingLearningTimeInIsrael = new DO.LearningTime
+                            {
+                                Day = lt.Day,
+                                TimeInDay = new List<DO.TimesInDay> { t }
+                            },
+                            MatchingLearningTimeInWorld = ltToAddFromWorld,
+                            StudentFromIsraelId = israeliStudent.Id,
+                            StudentFromWorldId = worldStudentId
                         });
                         found = true;
                         continue;
@@ -203,19 +223,6 @@ namespace LogicLayer
             }
 
             return found;
-        }
-
-        private void AddToMatchingHouersList(DO.LearningTime first, DO.LearningTime second)
-        {
-/*            if(!(from m in MatchingHoursList
-                where m.Item1.Equals(first)
-               select m.Item1).Any() && 
-               !(from m in MatchingHoursList
-                 where m.Item2.Equals(second)
-                 select m.Item2).Any())*/
-            {
-                MatchingHoursList.Add(new Tuple<DO.LearningTime, DO.LearningTime>(first, second));
-            }
         }
 
         /// <summary>
@@ -267,6 +274,17 @@ namespace LogicLayer
         {
             return offset - TimeZoneInfo.Local.BaseUtcOffset;
         }
+    }
+
+    public class MatchingTime
+    {
+        public DO.LearningTime MatchingLearningTimeInIsrael { get; set; }
+        
+        public DO.LearningTime MatchingLearningTimeInWorld { get; set; }
+
+        public int StudentFromIsraelId { get; set; }
+
+        public int StudentFromWorldId { get; set; }
     }
 
     internal class TimeInterval

@@ -33,11 +33,11 @@ namespace Gui
         private void SetLayoutOfOpenQ(Student student)
         {
             Dictionary<string, string> openQA = new Dictionary<string, string>();
-            foreach(var o in student.OpenQuestions)
+            foreach(var o in student.OpenQuestionsDict)
             {
                 openQA.Add(o.Key, SpliceText(o.Value));
             }
-            student.OpenQuestions = openQA;
+            student.OpenQuestionsDict = openQA;
         }
 
         private static string SpliceText(string text)

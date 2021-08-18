@@ -23,6 +23,8 @@ namespace LogicLayer
         /// <returns>the student match to the id</returns>
         BO.Student GetStudent(int id);
 
+        BO.Student GetStudent(Predicate<BO.Student> predicate);
+
         /// <summary>
         /// Remove student from the data source
         /// </summary>
@@ -57,7 +59,7 @@ namespace LogicLayer
 
         IEnumerable<BO.Student> SearchStudents(string preifxName);
 
-        Task SendEmailToPairAsync(BO.Pair pair);
+        Task SendEmailToPairAsync(BO.Pair pair, EmailTypes emailTypes);
 
         Task SendEmailToStudentAsync(BO.Student student, EmailTypes emailTypes);
 

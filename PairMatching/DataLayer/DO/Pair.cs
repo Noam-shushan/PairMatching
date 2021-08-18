@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MongoDB.Bson.Serialization.Attributes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,9 @@ namespace DO
 {
     public class Pair
     {
+        [BsonId]
+        public int Id { get; set; }
+
         /// <summary>
         /// flag that determine if the pair is deleted from the data source 
         /// </summary>
@@ -16,12 +20,12 @@ namespace DO
         /// <summary>
         /// the first student id 
         /// </summary>
-        public int FirstStudentId { get; set; }
+        public int StudentFromIsraelId { get; set; }
         
         /// <summary>
         /// The macher student id for the first student
         /// </summary>
-        public int SecondStudentId { get; set; }
+        public int StudentFromWorldId { get; set; }
         
         /// <summary>
         /// the matching degree of the pair 

@@ -26,7 +26,7 @@ namespace Gui
     {
         private static readonly IBL bl = BlFactory.GetBL();
 
-        private ObservableCollection<Pair> pairsList;
+        private ObservableCollection<Pair> pairsList = new ObservableCollection<Pair>();
 
         private bool isStudentWitoutPairUi;
 
@@ -40,17 +40,25 @@ namespace Gui
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            //await bl.ReadDataFromSpredsheetAsync();
             await bl.UpdateAsync();
-            await Task.Run(() => pairsList = new ObservableCollection<Pair>(bl.GetAllPairs()));
+            await Task.Run(() =>
+            {
+                var pairsTemp = bl.GetAllPairs();
+                if(pairsTemp != null)
+                {
+                    pairsList = new ObservableCollection<Pair>(pairsTemp);
+                }
+            });
         }
 
-        private async void allStudentBtn_Click(object sender, RoutedEventArgs e)
+        private void allStudentBtn_Click(object sender, RoutedEventArgs e)
         {
             isStudentWitoutPairUi = false;
             lvStudents.ItemsSource = bl.StudentList;
-            await bl.SendEmailToStudentAsync(bl.StudentList.FirstOrDefault(s => s.Email == "noam8shu@gmail.com"), 
-                EmailTypes.SuccessfullyRegistered);
 
+            //await bl.SendEmailToStudentAsync(
+            //    bl.GetStudent(s => s.Email == "noam8shu@gmail.com"), EmailTypes.StatusQuiz);
 
             allPairsGrig.Visibility = Visibility.Collapsed;
             tbIsThereResultOfSearcing.Text = string.Empty;
@@ -229,7 +237,7 @@ namespace Gui
 
         private void allStudentFromWorldBtn_Click(object sender, RoutedEventArgs e)
         {
-            lvStudents.ItemsSource = new ObservableCollection<Student>(bl.GetAllStudentsBy(s => s.Country != "Israel"));
+            lvStudents.ItemsSource = new ObservableCollection<Student>(bl.GetAllStudentsBy(s => !s.IsFromIsrael));
             allPairsGrig.Visibility = Visibility.Collapsed;
             tbIsThereResultOfSearcing.Text = string.Empty;
             allStudentGrig.Visibility = Visibility.Visible;
@@ -237,7 +245,7 @@ namespace Gui
 
         private void allStudentFromIsraelBtn_Click(object sender, RoutedEventArgs e)
         {
-            lvStudents.ItemsSource = new ObservableCollection<Student>(bl.GetAllStudentsBy(s => s.Country == "Israel"));
+            lvStudents.ItemsSource = new ObservableCollection<Student>(bl.GetAllStudentsBy(s => s.IsFromIsrael));
             allPairsGrig.Visibility = Visibility.Collapsed;
             tbIsThereResultOfSearcing.Text = string.Empty;
             allStudentGrig.Visibility = Visibility.Visible;
@@ -333,8 +341,8 @@ namespace Gui
             {
                 return;
             }
-            var first = bl.StudentList.FirstOrDefault(s => s.Id == selectedPair.FirstStudent.Id);
-            var seconde = bl.StudentList.FirstOrDefault(s => s.Id == selectedPair.SecondStudent.Id);
+            var first = bl.StudentList.FirstOrDefault(s => s.Id == selectedPair.StudentFromIsrael.Id);
+            var seconde = bl.StudentList.FirstOrDefault(s => s.Id == selectedPair.StudentFromWorld.Id);
             if (first.Country == "Israel")
             {
                 new ComparingStudentsWin(first, seconde).Show();
@@ -383,7 +391,7 @@ namespace Gui
             try
             {
                 sendEmailToThePairBtn.IsEnabled = false;
-                await bl.SendEmailToPairAsync(selectedPair.First());
+                await bl.SendEmailToPairAsync(selectedPair.First(), EmailTypes.YouGotPair);
                 MessageBox.Show("המייל נשלח בהצלחה!");
             }
             catch (Exception ex)
@@ -394,6 +402,25 @@ namespace Gui
             {
                 sendEmailToThePairBtn.IsEnabled = true;
             }
+        }
+
+        private void selectAllPairCB_Checked(object sender, RoutedEventArgs e)
+        {
+
+            foreach(var p in pairsList)
+            {
+                p.IsSelected = true;
+            }
+            lvPairs.Items.Refresh();
+        }
+
+        private void selectAllPairCB_Unchecked(object sender, RoutedEventArgs e)
+        {
+            foreach (var p in pairsList)
+            {
+                p.IsSelected = false;
+            }
+            lvPairs.Items.Refresh();
         }
     }
 
@@ -421,6 +448,19 @@ namespace Gui
         {
             // This converter does not provide conversion back from ordinal position to list view item
             throw new InvalidOperationException();
+        }
+    }
+
+    public class BooleanAndConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return values.Any(v => (v is bool b) && b);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            return null;
         }
     }
 }

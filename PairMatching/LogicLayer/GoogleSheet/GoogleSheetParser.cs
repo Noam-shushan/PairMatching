@@ -11,7 +11,7 @@ namespace LogicLayer
 {
     public class GoogleSheetParser
     {   
-        private static readonly IDataLayer dal = DalFactory.GetDal("json");
+        private static readonly IDataLayer dal = DalFactory.GetDal();
 
         private static readonly int ROW_SIZE = 26;
 
@@ -170,6 +170,8 @@ namespace LogicLayer
                     {
                         Id = id,
                         Name = row[indexHebSheet["Name"]],
+                        DesiredLearningTime = GetLearningTime(row, studentDescriptor),
+                        OpenQuestions = GetQandAheb(row),
                         PrefferdTracks = studentDescriptor.GetPrefferdTracks(row[indexHebSheet["PrefferdTracks"]]),
                         PrefferdGender = studentDescriptor.GetPrefferdGender(row[indexHebSheet["PrefferdGender"]]),
                         EnglishLevel = studentDescriptor.GetEnglishLevel(row[indexHebSheet["EnglishLevel"]]),
@@ -183,9 +185,9 @@ namespace LogicLayer
                         Languages = studentDescriptor.GetLanguages(row[indexHebSheet["Languages"]]),
                         PrefferdNumberOfMatchs = studentDescriptor
                             .GetPrefferdNumberOfMatchs(row[indexHebSheet["PrefferdNumberOfMatchs"]])
-                    });
-                    AddLearningTime(id, row, studentDescriptor);
-                    QandAheb(id, row);
+                    }) ;
+                    //AddLearningTime(id, row, studentDescriptor);
+                    //QandAheb(id, row);
                 }
                 catch (Exception ex)
                 {
@@ -207,6 +209,8 @@ namespace LogicLayer
                     {
                         Id = id,
                         Name = row[indexEngSheet["Name"]],
+                        DesiredLearningTime = GetLearningTime(row, studentDescriptor),
+                        OpenQuestions = GetQandAeng(row),
                         PrefferdTracks = studentDescriptor.GetPrefferdTracks(row[indexEngSheet["PrefferdTracks"]]),
                         PrefferdGender = studentDescriptor.GetPrefferdGender(row[indexEngSheet["PrefferdGender"]]),
                         DesiredEnglishLevel = studentDescriptor.GetEnglishLevel(row[indexEngSheet["DesiredEnglishLevel"]]),
@@ -221,9 +225,10 @@ namespace LogicLayer
                         Languages = studentDescriptor.GetLanguages(row[indexEngSheet["Languages"]]),
                         PrefferdNumberOfMatchs = studentDescriptor
                             .GetPrefferdNumberOfMatchs(row[indexEngSheet["PrefferdNumberOfMatchs"]])
+
                     });
-                    AddLearningTime(id, row, studentDescriptor);
-                    QandAeng(id, row);
+                    //AddLearningTime(id, row, studentDescriptor);
+                    //QandAeng(id, row);
                 }
                 catch (Exception ex)
                 {
@@ -234,109 +239,101 @@ namespace LogicLayer
             return DateTime.Parse(tableStr.Last()[0]);
         }
 
-        private static void AddLearningTime(int id, List<string> row, IStudentDescriptor studentDescriptor)
+        private static IEnumerable<DO.LearningTime> GetLearningTime(List<string> row, IStudentDescriptor studentDescriptor)
         {
+            var result = new List<DO.LearningTime>();
             for (int i = TIME_COLUMN_START; i < TIME_COLUMN_END; i++)
             {
-                DataSource.LearningTimesList.Add(new DO.LearningTime
+                result.Add(new DO.LearningTime
                 {
-                    Id = id,
                     Day = studentDescriptor.GetDay(i),
                     TimeInDay = studentDescriptor.GetTimesInDey(row[i])
                 });
             }
+            return result;
         }
 
-        private static void QandAheb(int id, List<string> row)
+        private static IEnumerable<DO.OpenQuestion> GetQandAheb(List<string> row)
         {
-            DataSource.OpenQuestionsList.Add(new DO.OpenQuestion
+            var result = new List<DO.OpenQuestion>();
+            result.Add(new DO.OpenQuestion
             {
-                Id = id,
                 Answer = SpliceText(row[indexHebSheet["Personal information"]].ToString()),
                 Question = "Personal information"
             });
 
-            DataSource.OpenQuestionsList.Add(new DO.OpenQuestion
+            result.Add(new DO.OpenQuestion
             {
-                Id = id,
                 Answer = SpliceText(row[indexHebSheet["What are your hopes and expectations from this program"]].ToString()),
                 Question = "What are your hopes and expectations from this program"
             });
 
-            DataSource.OpenQuestionsList.Add(new DO.OpenQuestion
+            result.Add(new DO.OpenQuestion
             {
-                Id = id,
                 Answer = SpliceText(row[indexHebSheet["Personality trates"]].ToString()),
                 Question = "Personality trates"
             });
 
-            DataSource.OpenQuestionsList.Add(new DO.OpenQuestion
+            result.Add(new DO.OpenQuestion
             {
-                Id = id,
                 Answer = SpliceText(row[indexHebSheet["Who introduced you to this program"]].ToString()),
                 Question = "Who introduced you to this program"
             });
 
-            DataSource.OpenQuestionsList.Add(new DO.OpenQuestion
+            result.Add(new DO.OpenQuestion
             {
-                Id = id,
                 Answer = SpliceText(row[indexHebSheet["Additional information"]].ToString()),
                 Question = "Additional information"
             });
+
+            return result;
         }
 
-        private static void QandAeng(int id, List<string> row)
+        private static IEnumerable<DO.OpenQuestion> GetQandAeng(List<string> row)
         {
-            DataSource.OpenQuestionsList.Add(new DO.OpenQuestion
+            var result = new List<DO.OpenQuestion>();
+            result.Add(new DO.OpenQuestion
             {
-                Id = id,
                 Answer = SpliceText(row[indexEngSheet["Personal information"]].ToString()),
                 Question = "Personal information"
             });
 
-            DataSource.OpenQuestionsList.Add(new DO.OpenQuestion
+            result.Add(new DO.OpenQuestion
             {
-                Id = id,
                 Answer = SpliceText(row[indexEngSheet["What are your hopes and expectations from this program"]].ToString()),
                 Question = "What are your hopes and expectations from this program"
             });
 
-            DataSource.OpenQuestionsList.Add(new DO.OpenQuestion
+            result.Add(new DO.OpenQuestion
             {
-                Id = id,
                 Answer = SpliceText(row[indexEngSheet["Personality trates"]].ToString()),
                 Question = "Personality trates"
             });
 
-            DataSource.OpenQuestionsList.Add(new DO.OpenQuestion
+            result.Add(new DO.OpenQuestion
             {
-                Id = id,
                 Answer = SpliceText(row[indexEngSheet["Who introduced you to this program"]].ToString()),
                 Question = "Who introduced you to this program"
             });
 
-            DataSource.OpenQuestionsList.Add(new DO.OpenQuestion
+            result.Add(new DO.OpenQuestion
             {
-                Id = id,
                 Answer = SpliceText(row[indexEngSheet["Additional information"]].ToString()),
                 Question = "Additional information"
             });
 
-            DataSource.OpenQuestionsList.Add(new DO.OpenQuestion
+            result.Add(new DO.OpenQuestion
             {
-                Id = id,
                 Answer = SpliceText(row[indexEngSheet["Country and City of residence"]].ToString()),
                 Question = "Country and City of residence"
             });
 
-
-            DataSource.OpenQuestionsList.Add(new DO.OpenQuestion
+            result.Add(new DO.OpenQuestion
             {
-                Id = id,
                 Answer = SpliceText(row[indexEngSheet["Anything else you would like to tell us"]].ToString()),
                 Question = "Anything else you would like to tell us"
             });
-            
+            return result;
         }
 
         private static string SpliceText(string text, int n = 8)

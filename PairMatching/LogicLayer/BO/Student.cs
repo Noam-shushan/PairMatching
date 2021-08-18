@@ -173,7 +173,9 @@ namespace BO
 
         public IEnumerable<SuggestStudent> SecondeSuggestStudents { get; set; }
 
-        public Dictionary<string, string> OpenQuestions { get; set; }
+        public Dictionary<string, string> OpenQuestionsDict { get; set; }
+
+        public IEnumerable<OpenQuestion> OpenQuestions { get; set; }
 
         public override string ToString()
         {
@@ -185,6 +187,22 @@ namespace BO
         public override bool Equals(object obj) => Equals(obj as Student);
 
         public override int GetHashCode() => (Id, Name).GetHashCode();
+
+        public bool IsInTheSuggestStudents(Student student)
+        {
+            if (FirstSuggestStudents != null
+                    && FirstSuggestStudents.Any(s => s.SuggestStudentId == student.Id))
+            {
+                return true;
+            }
+
+            if (SecondeSuggestStudents != null
+                && SecondeSuggestStudents.Any(s => s.SuggestStudentId == student.Id))
+            {
+                return true;
+            }
+            return false;
+        }
 
         public bool Equals(Student other)
         {
