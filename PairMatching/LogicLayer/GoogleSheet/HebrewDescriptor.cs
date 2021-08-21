@@ -218,7 +218,7 @@ namespace LogicLayer
             {
                 case "כן" :
                     return MoreLanguages.YES;
-                case "לא":
+                case "לא": case "":
                     return MoreLanguages.NO;
                 default :
                     return MoreLanguages.NOT_ENGLISH;

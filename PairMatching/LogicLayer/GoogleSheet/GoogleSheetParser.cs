@@ -217,7 +217,7 @@ namespace LogicLayer
                         SkillLevel = studentDescriptor.GetSkillLevel(row[indexEngSheet["SkillLevel"]]),
                         LearningStyle = studentDescriptor.GetLearningStyle(row[indexEngSheet["LearningStyle"]]),
                         Gender = studentDescriptor.GetGender(row[indexEngSheet["Gender"]]),
-                        Country = SpliceText(studentDescriptor.GetCountryName(row[indexEngSheet["Country"]]), 3),
+                        Country = studentDescriptor.GetCountryName(row[indexEngSheet["Country"]]).SpliceText(3),
                         UtcOffset = studentDescriptor.GetStudentOffset(row[indexEngSheet["UtcOffset"]]),
                         PhoneNumber = row[indexEngSheet["PhoneNumber"]],
                         Email = row[indexEngSheet["Email"]],
@@ -258,31 +258,31 @@ namespace LogicLayer
             var result = new List<DO.OpenQuestion>();
             result.Add(new DO.OpenQuestion
             {
-                Answer = SpliceText(row[indexHebSheet["Personal information"]].ToString()),
+                Answer = row[indexHebSheet["Personal information"]],
                 Question = "Personal information"
             });
 
             result.Add(new DO.OpenQuestion
             {
-                Answer = SpliceText(row[indexHebSheet["What are your hopes and expectations from this program"]].ToString()),
+                Answer = row[indexHebSheet["What are your hopes and expectations from this program"]],
                 Question = "What are your hopes and expectations from this program"
             });
 
             result.Add(new DO.OpenQuestion
             {
-                Answer = SpliceText(row[indexHebSheet["Personality trates"]].ToString()),
+                Answer = row[indexHebSheet["Personality trates"]],
                 Question = "Personality trates"
             });
 
             result.Add(new DO.OpenQuestion
             {
-                Answer = SpliceText(row[indexHebSheet["Who introduced you to this program"]].ToString()),
+                Answer = row[indexHebSheet["Who introduced you to this program"]],
                 Question = "Who introduced you to this program"
             });
 
             result.Add(new DO.OpenQuestion
             {
-                Answer = SpliceText(row[indexHebSheet["Additional information"]].ToString()),
+                Answer = row[indexHebSheet["Additional information"]],
                 Question = "Additional information"
             });
 
@@ -294,54 +294,46 @@ namespace LogicLayer
             var result = new List<DO.OpenQuestion>();
             result.Add(new DO.OpenQuestion
             {
-                Answer = SpliceText(row[indexEngSheet["Personal information"]].ToString()),
+                Answer = row[indexEngSheet["Personal information"]],
                 Question = "Personal information"
             });
 
             result.Add(new DO.OpenQuestion
             {
-                Answer = SpliceText(row[indexEngSheet["What are your hopes and expectations from this program"]].ToString()),
+                Answer = row[indexEngSheet["What are your hopes and expectations from this program"]],
                 Question = "What are your hopes and expectations from this program"
             });
 
             result.Add(new DO.OpenQuestion
             {
-                Answer = SpliceText(row[indexEngSheet["Personality trates"]].ToString()),
+                Answer = row[indexEngSheet["Personality trates"]],
                 Question = "Personality trates"
             });
 
             result.Add(new DO.OpenQuestion
             {
-                Answer = SpliceText(row[indexEngSheet["Who introduced you to this program"]].ToString()),
+                Answer = row[indexEngSheet["Who introduced you to this program"]],
                 Question = "Who introduced you to this program"
             });
 
             result.Add(new DO.OpenQuestion
             {
-                Answer = SpliceText(row[indexEngSheet["Additional information"]].ToString()),
+                Answer = row[indexEngSheet["Additional information"]],
                 Question = "Additional information"
             });
 
             result.Add(new DO.OpenQuestion
             {
-                Answer = SpliceText(row[indexEngSheet["Country and City of residence"]].ToString()),
+                Answer = row[indexEngSheet["Country and City of residence"]],
                 Question = "Country and City of residence"
             });
 
             result.Add(new DO.OpenQuestion
             {
-                Answer = SpliceText(row[indexEngSheet["Anything else you would like to tell us"]].ToString()),
+                Answer = row[indexEngSheet["Anything else you would like to tell us"]],
                 Question = "Anything else you would like to tell us"
             });
             return result;
-        }
-
-        private static string SpliceText(string text, int n = 8)
-        {
-            return string.Join(Environment.NewLine, text.Split()
-                .Select((word, index) => new { word, index })
-                .GroupBy(x => x.index / n)
-                .Select(grp => string.Join(" ", grp.Select(x => x.word))));
         }
     }
 }

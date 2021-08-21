@@ -165,9 +165,18 @@ namespace BO
 
         public string InfoAbout { get; set; }
 
+        public bool IsCompereWin { get; set; }
+
         public IEnumerable<string> Languages { get; set; }
-        
+
+        public string LanguagesShow 
+        {
+            get => Languages.Count() == 0 ? "" : string.Join(", ", Languages); 
+        }
+
         public MoreLanguages MoreLanguages { get; set; }
+
+        public bool IsKnowMoreLanguages { get => Languages != null && Languages.Count() > 0; }
 
         public IEnumerable<SuggestStudent> FirstSuggestStudents { get; set; }
 

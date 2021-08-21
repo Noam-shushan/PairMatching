@@ -16,9 +16,17 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         FontSize="15"
         Loaded="Window_Loaded"
+        x:Name="Main"
         Title="שלהבת" Height="800" Width="1200">
     <Window.Resources>
         <local:BooleanAndConverter x:Key="booleanAndConverter"/>
+        <Style x:Key="disableEnableWhileLoaded" TargetType="Button" BasedOn="{StaticResource MaterialDesignOutlinedButton}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsLoaded, ElementName=Main}" Value="True">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -35,47 +43,47 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        <CheckBox Visibility="Hidden" x:Name="cbUpdateForEnable" IsChecked="True"/>
         <StackPanel Grid.Column="4" Grid.Row="1" Margin="10,20,0,0" Grid.RowSpan="2">
             <Button 
                 x:Name="updateBtn"
                 Margin="0,0,0,20"
                 Content="עדכן נתונים"
-                Click="updateBtn_Click"               
+                Click="updateBtn_Click"
+                Style="{StaticResource disableEnableWhileLoaded}"
             />
             <Button 
                 x:Name="allStudentBtn"
                 Content="הצג את כל התלמידים"
                 Click="allStudentBtn_Click"
-                IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
+                Style="{StaticResource disableEnableWhileLoaded}"
                 Margin="0,0,0,20"
             />
             <Button
                 x:Name="allPairsBtn"
                 Content="הצג את כל החברותות"
                 Click="allPairsBtn_Click"
-                IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
+                Style="{StaticResource disableEnableWhileLoaded}"
                 Margin="0,0,0,20"
             />
             <Button 
                 x:Name="allStudentWithoutPairBtn"
                 Content="הצג תלמידים ללא חברותא"
                 Click="allStudentWithoutPairBtn_Click"
-                IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
+                Style="{StaticResource disableEnableWhileLoaded}"
                 Margin="0,0,0,20"
             />
             <Button 
                 x:Name="allStudentFromWorldBtn"
                 Content="הצג תלמידים מהעולם"
                 Click="allStudentFromWorldBtn_Click"
-                IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
+                Style="{StaticResource disableEnableWhileLoaded}"
                 Margin="0,0,0,20"
             />
             <Button 
                 x:Name="allStudentFromIsraelBtn"
                 Content="הצג תלמידים מישראל"
                 Click="allStudentFromIsraelBtn_Click"
-                IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
+                Style="{StaticResource disableEnableWhileLoaded}"
                 Margin="0,0,0,20"
             />
             <Grid>
@@ -91,7 +99,7 @@
                     x:Name="searchBtn"
                     Click="searchBtn_Click"
                     Style="{DynamicResource MaterialDesignToolButton}">
-                            <materialDesign:PackIcon
+                    <materialDesign:PackIcon
                     Kind="Search"
                     IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
                     Opacity=".56" />
@@ -110,27 +118,30 @@
                     VerticalAlignment="Center"/>
                 <TextBlock x:Name="tbIsThereResultOfSearcing" Grid.Row="1" Grid.Column="1"/>
             </Grid>
-            <StackPanel x:Name="spBtnForMatch" Visibility="Collapsed" Margin="0,50,0,0">
-                <Button 
-                x:Name="matchBtn"
-                Margin="0,10,0,10"
-                Content="בצע התאמה מההצעות"
-                Background="#88d6c6"
-                Click="matchBtn_Click"/>
-                <Button 
-                x:Name="manualMatchBtn"
-                Content="בצע התאמה ידנית"
-                Background="#88d6c6"
-                Click="manualMatchBtn_Click"/>
-            </StackPanel>
         </StackPanel>
 
-        <Grid x:Name="allStudentGrig" 
-              Visibility="Collapsed" Grid.Column="3" Grid.Row="1" Grid.RowSpan="2">
+        <StackPanel x:Name="allStudentGrig" 
+              Visibility="Visible" Grid.Column="3" Grid.Row="1" Grid.RowSpan="2">
+            <StackPanel Orientation="Horizontal">
+                <Button 
+                Grid.Column="1" Grid.Row="2"
+                Width="150"
+                x:Name="manualMatchBtn"
+                Content="בצע התאמה ידנית"
+                Style="{StaticResource MaterialDesignOutlinedButton}"
+                Click="manualMatchBtn_Click"/>
+                <Button 
+                Grid.Column="1" Grid.Row="2"
+                Width="150"
+                x:Name="addStudent"
+                Content="הוסף"
+                Style="{StaticResource MaterialDesignOutlinedButton}"/>
+            </StackPanel>
             <ListView 
                 x:Name="lvStudents"
                 Height="800"
                 ItemsSource="{Binding}"
+                FlowDirection="RightToLeft"
                 SelectionChanged="lvStudents_SelectionChanged">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem" BasedOn="{StaticResource MaterialDesignGridViewItem}">
@@ -144,8 +155,6 @@
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
-                            <GridViewColumn Header="תלמידים" 
-                                            DisplayMemberBinding="{Binding Path=Name}"/>
                             <GridViewColumn>
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
@@ -153,11 +162,37 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
+                            <GridViewColumn Header="תלמידים" 
+                                            DisplayMemberBinding="{Binding Path=Name}"/>
+                            <GridViewColumn>
+                                <GridViewColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Button 
+                                            x:Name="sendEmaileForAllStudentsBtn"
+                                            Style="{StaticResource MaterialDesignIconButton}"
+                                            ToolTip="שלח מייל לכולם"    
+                                            >
+                                            <materialDesign:PackIcon Kind="EmailSend" />
+                                        </Button>
+                                    </DataTemplate>
+                                </GridViewColumn.HeaderTemplate>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button 
+                                            x:Name="sendEmaileToStudentsBtn"
+                                            Style="{StaticResource MaterialDesignIconButton}"
+                                            ToolTip="שלח מייל"    
+                                            >
+                                            <materialDesign:PackIcon Kind="EmailSend" />
+                                        </Button>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                         </GridView.Columns>
                     </GridView>
                 </ListView.View>
             </ListView>
-        </Grid>
+        </StackPanel>
         <Grid x:Name="allPairsGrig" 
               Visibility="Collapsed" Grid.Column="3" Grid.Row="1" Grid.RowSpan="2">
             <StackPanel>
@@ -255,200 +290,7 @@
                 </StackPanel>
             </StackPanel>
         </Grid>
-        <StackPanel Visibility="Collapsed" FlowDirection="RightToLeft" x:Name="spStudent" Grid.Column="2" Grid.Row="1" Grid.RowSpan="2">
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="שם:  " FontWeight="Bold" TextDecorations="Underline"/>
-                <TextBlock Text="{Binding Path=Name}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="טלפון:  " FontWeight="Bold" TextDecorations="Underline"/>
-                <TextBlock Text="{Binding Path=PhoneNumber}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="אימייל:  " FontWeight="Bold" TextDecorations="Underline"/>
-                <TextBox Text="{Binding Path=Email}" IsReadOnly="True"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="ארץ: " FontWeight="Bold" TextDecorations="Underline"/>
-                <TextBlock Text="{Binding Path=Country}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="תחום לימוד מועדף:  " FontWeight="Bold" TextDecorations="Underline"/>
-                <TextBlock Text="{Binding Path=PrefferdTracksShow}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="מגדר:  " FontWeight="Bold" TextDecorations="Underline"/>
-                <TextBlock Text="{Binding Path=GenderShow}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="מגדר מועדף:  " FontWeight="Bold" TextDecorations="Underline"/>
-                <TextBlock Text="{Binding Path=PrefferdGenderShow}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="רמת אנגלית:  " FontWeight="Bold" TextDecorations="Underline"/>
-                <TextBlock Text="{Binding Path=EnglishLevelShow}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="רמת אנגלית רצויה:  " FontWeight="Bold" TextDecorations="Underline"/>
-                <TextBlock Text="{Binding Path=DesiredEnglishLevelShow}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="רמת לימוד:  " FontWeight="Bold" TextDecorations="Underline"/>
-                <TextBlock Text="{Binding Path=SkillLevelShow}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="רמת לימוד רצויה:  " FontWeight="Bold" TextDecorations="Underline"/>
-                <TextBlock Text="{Binding Path=DesiredSkillLevelShow}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="סגנון לימוד:  " FontWeight="Bold" TextDecorations="Underline"/>
-                <TextBlock Text="{Binding Path=LearningStyleShow}"/>
-            </StackPanel>
-            <StackPanel>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Button
-                        x:Name="compFirstMatchBtn"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        HorizontalAlignment="Left"
-                        Content="השווה"
-                        Click="compFirstMatchBtn_Click"/>
-                    <Button
-                        x:Name="clearCBFirstMatchBtn"
-                        Content="Clear"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        HorizontalAlignment="Right"
-                        Grid.Column="1" 
-                        Click="clearCBFirstMatchBtn_Click"/>
-                </Grid>
-                <ComboBox
-                    x:Name="cbFirstMatching"
-                    Style="{StaticResource MaterialDesignFilledComboBox}"
-                    materialDesign:HintAssist.Hint="התאמה ראשונה"
-                    ItemsSource="{Binding Path=FirstSuggestStudents}"
-                    Margin="0,0,0,5"                    
-                    Width="256">
-                </ComboBox>
-            </StackPanel>
-            <StackPanel>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Button
-                        x:Name="compSecondeMatchBtn"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        HorizontalAlignment="Left"
-                        Content="השווה"
-                        Click="compSecondeMatchBtn_Click"/>
-                    <Button
-                        x:Name="clearCBSecondeMatchBtn"
-                        Content="Clear"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        HorizontalAlignment="Right"
-                        Grid.Column="1" 
-                        Click="clearCBSecondeMatchBtn_Click"/>
-                </Grid>
-                <ComboBox
-                    x:Name="cbSecondeMatching"
-                    Style="{StaticResource MaterialDesignFilledComboBox}"
-                    materialDesign:HintAssist.Hint="התאמה שנייה"
-                    ItemsSource="{Binding Path=SecondeSuggestStudents}"
-                    Margin="0,0,0,5"
-                    Width="256">
-                </ComboBox>
-            </StackPanel>
-        </StackPanel>
-        <ListBox Visibility="Collapsed" VerticalAlignment="Top" x:Name="lbOpenQuestions" Width="490" Height="700" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" FlowDirection="RightToLeft">
-            <Border
-                Background="{DynamicResource MaterialDesignBackground}">
-                <GroupBox
-                        Header="זמני לימוד אפשריים"
-                        Style="{DynamicResource MaterialDesignGroupBox}"
-                        Margin="5,0,0,5"
-                        Width="480"
-                        Height="auto"
-                        UseLayoutRounding="True" RenderTransformOrigin="0.5,0.5">
-                    <TextBlock Text="{Binding DesiredLearningTimeShow}"/>
-                </GroupBox>
-            </Border>
-            <Border
-                Background="{DynamicResource MaterialDesignBackground}">
-                <GroupBox
-                        Header="פרטים ביוגרפיים"
-                        Style="{DynamicResource MaterialDesignGroupBox}"
-                        Margin="5,0,0,5"
-                        Width="480"
-                        Height="auto"
-                        UseLayoutRounding="True" RenderTransformOrigin="0.5,0.5">
-                    <TextBlock Text="{Binding OpenQuestionsDict[Personal information]}"/>
-                </GroupBox>
-            </Border>
-            <Border
-                Background="{DynamicResource MaterialDesignBackground}">
-                <GroupBox
-                    Header="תכונות אישיות, ערכים חשובים בשבילך, תחביבים"
-                    Style="{DynamicResource MaterialDesignGroupBox}"
-                    Margin="5,0,0,5"
-                    Width="480"
-                    Height="auto"
-                    UseLayoutRounding="True">
-                    <TextBlock Text="{Binding OpenQuestionsDict[Personality trates]}"/>
-                </GroupBox>
-            </Border>
-            <Border
-                Background="{DynamicResource MaterialDesignBackground}">
-                <GroupBox
-                    Header="מה מעניין אותך בהצטרפות לשלהבת?"
-                    Style="{DynamicResource MaterialDesignGroupBox}"
-                    Margin="5,0,0,5"
-                    Width="480"
-                    Height="auto"
-                    UseLayoutRounding="True">
-                    <TextBlock Text="{Binding OpenQuestionsDict[What are your hopes and expectations from this program]}"/>
-                </GroupBox>
-            </Border>
-            <Border
-                Background="{DynamicResource MaterialDesignBackground}">
-                <GroupBox
-                    Header="דברים נוספים שהיית רוצה שנדע?"
-                    Style="{DynamicResource MaterialDesignGroupBox}"
-                    Margin="5,0,0,5"
-                    Width="480"
-                    Height="auto"
-                    UseLayoutRounding="True">
-                    <TextBlock Text="{Binding OpenQuestionsDict[Additional information]}"/>
-                </GroupBox>
-            </Border>
-            <Border
-                Background="{DynamicResource MaterialDesignBackground}">
-                <GroupBox
-                    Header="דרך מי (או דרך מה) הגעת לתכנית?"
-                    Style="{DynamicResource MaterialDesignGroupBox}"
-                    Margin="5,0,0,5"
-                    Width="480"
-                    Height="auto"
-                    UseLayoutRounding="True">
-                    <TextBlock Text="{Binding OpenQuestionsDict[Who introduced you to this program]}"/>
-                </GroupBox>
-            </Border>
-            <Border
-                Background="{DynamicResource MaterialDesignBackground}">
-                <GroupBox
-                    Header="Country and City of residence"
-                    Style="{DynamicResource MaterialDesignGroupBox}"
-                    Margin="5,0,0,5"
-                    Width="480"
-                    Height="auto"
-                    UseLayoutRounding="True">
-                    <TextBlock Text="{Binding OpenQuestionsDict[Country and City of residence]}"/>
-                </GroupBox>
-            </Border>
-        </ListBox>
+        <local:StudentControl Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" x:Name="studentControl" Visibility="Collapsed"/>
         <ProgressBar
             x:Name="pbUpdate"
             Width="500"

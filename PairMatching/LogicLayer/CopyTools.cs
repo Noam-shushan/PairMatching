@@ -35,5 +35,29 @@ namespace LogicLayer
             object to = Activator.CreateInstance(type); // new object of Type
             return from.CopyPropertiesTo(to);
         }
+
+        public static string SpliceText(this string text, int n = 8)
+        {
+            text = string.Join(Environment.NewLine, text.Split()
+                .Select((word, index) => new { word, index })
+                .GroupBy(x => x.index / n)
+                .Select(grp => string.Join(" ", grp.Select(x => x.word))));
+            return text;
+        }
+
+        public static T Clone<T>(this T original) where T : new()
+        {
+            T copyToObject = new T();
+
+            foreach (PropertyInfo propertyInfo in typeof(T).GetProperties())
+            {
+                if (propertyInfo.CanWrite)
+                {
+                    propertyInfo.SetValue(copyToObject, propertyInfo.GetValue(original, null), null);
+                }
+            }
+
+            return copyToObject;
+        }
     }
 }

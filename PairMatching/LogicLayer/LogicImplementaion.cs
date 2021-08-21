@@ -334,7 +334,7 @@ namespace LogicLayer
                 studBO.OpenQuestionsDict = new Dictionary<string, string>();
                 foreach (var o in studDO.OpenQuestions)
                 {
-                    studBO.OpenQuestionsDict.Add(o.Question, o.Answer);
+                    studBO.OpenQuestionsDict.Add(o.Question, o.Answer.SpliceText());
                 }
 
                 return studBO;

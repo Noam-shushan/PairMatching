@@ -30,6 +30,8 @@ namespace Gui
 
         private bool isStudentWitoutPairUi;
 
+        public bool IsLoaded { get; set; }
+
         public MainWindow()
         {
             // TODO: create data template for the info of student and change that by the country
@@ -40,6 +42,7 @@ namespace Gui
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            IsLoaded = true;
             //await bl.ReadDataFromSpredsheetAsync();
             await bl.UpdateAsync();
             await Task.Run(() =>
@@ -50,16 +53,13 @@ namespace Gui
                     pairsList = new ObservableCollection<Pair>(pairsTemp);
                 }
             });
+            IsLoaded = false;
         }
 
         private void allStudentBtn_Click(object sender, RoutedEventArgs e)
         {
             isStudentWitoutPairUi = false;
             lvStudents.ItemsSource = bl.StudentList;
-
-            //await bl.SendEmailToStudentAsync(
-            //    bl.GetStudent(s => s.Email == "noam8shu@gmail.com"), EmailTypes.StatusQuiz);
-
             allPairsGrig.Visibility = Visibility.Collapsed;
             tbIsThereResultOfSearcing.Text = string.Empty;
             allStudentGrig.Visibility = Visibility.Visible;
@@ -71,9 +71,7 @@ namespace Gui
             
             allStudentGrig.Visibility = Visibility.Collapsed;
             tbIsThereResultOfSearcing.Text = string.Empty;
-            spStudent.Visibility = Visibility.Collapsed;
-            spBtnForMatch.Visibility = Visibility.Collapsed;
-            lbOpenQuestions.Visibility = Visibility.Collapsed;
+            studentControl.Visibility = Visibility.Collapsed;
             allPairsGrig.Visibility = Visibility.Visible;
         }
 
@@ -83,14 +81,14 @@ namespace Gui
             int numOfPairsToRem = selectedPairs.Count();
             if (numOfPairsToRem == 0)
             {
-                MessageBoxWarning("בחר אחת או יותר חברותות");
+                Messages.MessageBoxWarning("בחר אחת או יותר חברותות");
                 return;
             }
             try
             {
                 if (numOfPairsToRem > 1)
                 {
-                    if (MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את {numOfPairsToRem} החברותות שבחרת?"))
+                    if (Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את {numOfPairsToRem} החברותות שבחרת?"))
                     {
                         foreach (var p in selectedPairs)
                         {
@@ -102,7 +100,7 @@ namespace Gui
                 }
                 else
                 {
-                    if (MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את החברותא {selectedPairs.First()} ?"))
+                    if (Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את החברותא {selectedPairs.First()} ?"))
                     {
                         await bl.RemovePairAsync(selectedPairs.First());
                         RefreshMyPairView();
@@ -112,7 +110,7 @@ namespace Gui
             }
             catch (BadPairException ex)
             {
-                MessageBoxError(ex.Message);
+                Messages.MessageBoxError(ex.Message);
             }
         }
 
@@ -128,12 +126,10 @@ namespace Gui
 
         private async void updateBtn_Click(object sender, RoutedEventArgs e)
         {
+            IsLoaded = true;
             allStudentGrig.Visibility = Visibility.Collapsed;
-            spStudent.Visibility = Visibility.Collapsed;
-            lbOpenQuestions.Visibility = Visibility.Collapsed;
+            studentControl.Visibility = Visibility.Collapsed;
             allPairsGrig.Visibility = Visibility.Collapsed;
-            spBtnForMatch.Visibility = Visibility.Collapsed;
-            cbUpdateForEnable.IsChecked = false;
             tbIsThereResultOfSearcing.Text = string.Empty;
             try
             {
@@ -143,12 +139,12 @@ namespace Gui
             }
             catch (Exception ex)
             {
-                MessageBoxError(ex.Message);
+                Messages.MessageBoxError(ex.Message);
             }
             finally
             {
                 pbUpdate.Visibility = Visibility.Collapsed;
-                cbUpdateForEnable.IsChecked = true;
+                IsLoaded = true;
             }
         }
 
@@ -159,54 +155,8 @@ namespace Gui
             {
                 return;
             }
-            spStudent.DataContext = selectedStudent;
-            lbOpenQuestions.DataContext = selectedStudent;
-            spStudent.Visibility = Visibility.Visible;
-            lbOpenQuestions.Visibility = Visibility.Visible;
-            spBtnForMatch.Visibility = Visibility.Visible;
-        }
-
-
-        private async void matchBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedStudent = lvStudents.SelectedItem as Student;
-            var firstSelectedMatch = cbFirstMatching.SelectedItem as SuggestStudent;
-            var secondSelectedMatch = cbSecondeMatching.SelectedItem as SuggestStudent;
-            if (firstSelectedMatch == null && secondSelectedMatch == null)
-            {
-                MessageBoxWarning("בחר תלמיד ממהצעות על מנת להתאים");
-                return;
-            }
-            try
-            {
-                if (firstSelectedMatch != null)
-                {
-
-                    if (MessageBoxConfirmation($"בטוח שברצונך להתאים את {selectedStudent.Name} ל- {firstSelectedMatch.SuggestStudentName}?"))
-                    {
-                        var first = bl.GetStudent(firstSelectedMatch.SuggestStudentId);
-                        await bl.MatchAsync(selectedStudent, first);
-                        RefreshMyStudentsView();
-                        RefreshMyPairView();
-                    }
-                    return;
-                }
-                if (secondSelectedMatch != null)
-                {
-                    if (MessageBoxConfirmation($"בטוח שברצונך להתאים את {selectedStudent.Name} ל- {secondSelectedMatch.SuggestStudentName}?"))
-                    {
-                        var seconde = bl.GetStudent(secondSelectedMatch.SuggestStudentId);
-                        await bl.MatchAsync(selectedStudent, seconde);
-                        RefreshMyStudentsView();
-                        RefreshMyPairView();
-                    }
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBoxError(ex.Message);
-            }
+            studentControl.DataContext = selectedStudent;
+            studentControl.Visibility = Visibility.Visible;
         }
 
         private async void manualMatchBtn_Click(object sender, RoutedEventArgs e)
@@ -214,7 +164,7 @@ namespace Gui
             var selectedList = bl.GetAllStudentsBy(s => s.IsSelected);
             if(selectedList.Count() != 2)
             {
-                MessageBoxWarning("בחר 2 תלמידים מהרשימה על מנת לבצע התאמה");
+                Messages.MessageBoxWarning("בחר 2 תלמידים מהרשימה על מנת לבצע התאמה");
                 return;
             }
 
@@ -222,7 +172,7 @@ namespace Gui
             {
                 var first = selectedList.First();
                 var second = selectedList.Last();
-                if (MessageBoxConfirmation($"בטוח שברצונך להתאים את {first.Name} ל- {second.Name}?"))
+                if (Messages.MessageBoxConfirmation($"בטוח שברצונך להתאים את {first.Name} ל- {second.Name}?"))
                 {
                     await bl.MatchAsync(first, second);
                     RefreshMyStudentsView();
@@ -231,7 +181,7 @@ namespace Gui
             }
             catch (Exception ex)
             {
-                MessageBoxError(ex.Message);
+                Messages.MessageBoxError(ex.Message);
             }
         }
 
@@ -251,87 +201,27 @@ namespace Gui
             allStudentGrig.Visibility = Visibility.Visible;
         }
 
-        private void RefreshMyPairView()
+        public void RefreshMyPairView()
         {
             pairsList = new ObservableCollection<Pair>(bl.GetAllPairs());
             lvPairs.ItemsSource = pairsList;
             tbIsThereResultOfSearcing.Text = string.Empty;
         }
 
-        private void RefreshMyStudentsView()
+        public void RefreshMyStudentsView()
         {
             lvStudents.ItemsSource = isStudentWitoutPairUi ?
                 new ObservableCollection<Student>(bl.GetAllStudentsBy(s => s.MatchTo == 0)) 
                 : bl.StudentList;
 
-            spStudent.Visibility = Visibility.Collapsed;
-            lbOpenQuestions.Visibility = Visibility.Collapsed;
-            spBtnForMatch.Visibility = Visibility.Collapsed;
+            studentControl.Visibility = Visibility.Collapsed;
             tbIsThereResultOfSearcing.Text = string.Empty;
         }
 
-        private void MessageBoxError(string message)
-        {
-            MessageBox.Show(message, "Error", MessageBoxButton.OK,
-                MessageBoxImage.Error, MessageBoxResult.None,
-                MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading);
-        }
-
-        private void MessageBoxWarning(string message)
-        {
-            MessageBox.Show(message, "Warning", MessageBoxButton.OK,
-                MessageBoxImage.Warning, MessageBoxResult.None, 
-                MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading);
-        }
-
-        private bool MessageBoxConfirmation(string message)
-        {
-            return MessageBox.Show(message, "Confirmation", MessageBoxButton.YesNo,
-                        MessageBoxImage.Question, MessageBoxResult.OK,
-                        MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading)
-                            == MessageBoxResult.Yes;
-        }
 
         private void searchBtn_Click(object sender, RoutedEventArgs e)
         {
             Search();
-        }
-
-        private void clearCBFirstMatchBtn_Click(object sender, RoutedEventArgs e)
-        {
-            cbFirstMatching.SelectedItem = null;
-        }
-
-        private void clearCBSecondeMatchBtn_Click(object sender, RoutedEventArgs e)
-        {
-            cbSecondeMatching.SelectedItem = null;
-        }
-
-        private void compFirstMatchBtn_Click(object sender, RoutedEventArgs e)
-        {
-            ShowComparingStudentsWin(cbFirstMatching.SelectedItem);
-        }
-
-        private void compSecondeMatchBtn_Click(object sender, RoutedEventArgs e)
-        {
-            ShowComparingStudentsWin(cbSecondeMatching.SelectedItem);
-        }
-
-        private void ShowComparingStudentsWin(object fristStudent)
-        {
-            if (fristStudent != null && lvStudents.SelectedItem != null)
-            {
-                var first = bl.GetStudent((fristStudent as SuggestStudent).SuggestStudentId);
-                var seconde = lvStudents.SelectedItem as Student;
-                if (first.Country == "Israel")
-                {
-                    new ComparingStudentsWin(first, seconde).Show();
-                }
-                else
-                {
-                    new ComparingStudentsWin(seconde, first).Show();
-                }
-            }
         }
 
         private void lvPairs_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -343,7 +233,7 @@ namespace Gui
             }
             var first = bl.StudentList.FirstOrDefault(s => s.Id == selectedPair.StudentFromIsrael.Id);
             var seconde = bl.StudentList.FirstOrDefault(s => s.Id == selectedPair.StudentFromWorld.Id);
-            if (first.Country == "Israel")
+            if (first.IsFromIsrael)
             {
                 new ComparingStudentsWin(first, seconde).Show();
             }
@@ -384,7 +274,7 @@ namespace Gui
             int numOfPairs = selectedPair.Count();
             if (numOfPairs == 0 || numOfPairs > 1)
             {
-                MessageBoxWarning("בחר חברותא אחת");
+                Messages.MessageBoxWarning("בחר חברותא אחת");
                 return;
             }
 
@@ -396,7 +286,7 @@ namespace Gui
             }
             catch (Exception ex)
             {
-                MessageBoxError(ex.Message);
+                Messages.MessageBoxError(ex.Message);
             }
             finally
             {

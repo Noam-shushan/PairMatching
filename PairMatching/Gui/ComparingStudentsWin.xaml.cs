@@ -21,13 +21,24 @@ namespace Gui
     /// </summary>
     public partial class ComparingStudentsWin : Window
     {
+        private readonly IBL bl = BlFactory.GetBL();
+
+        Student _fromIsrael;
+        Student _fromWolrd;
+
         public ComparingStudentsWin(Student fromIsrael, Student fromWolrd)
         {
             InitializeComponent();
-            SetLayoutOfOpenQ(fromIsrael);
-            SetLayoutOfOpenQ(fromWolrd);
-            spStudentFromIsreal.DataContext = fromIsrael;
-            spStudentFromWorld.DataContext = fromWolrd;
+            _fromIsrael = fromIsrael.Clone();
+            _fromWolrd = fromWolrd.Clone();
+            
+            _fromIsrael.IsCompereWin = true;
+            _fromWolrd.IsCompereWin = true;
+            SetLayoutOfOpenQ(_fromIsrael);
+            SetLayoutOfOpenQ(_fromWolrd);
+            
+            studentFromIsreal.DataContext = _fromIsrael;
+            studentFromWorld.DataContext = _fromWolrd;
         }
 
         private void SetLayoutOfOpenQ(Student student)
@@ -35,17 +46,29 @@ namespace Gui
             Dictionary<string, string> openQA = new Dictionary<string, string>();
             foreach(var o in student.OpenQuestionsDict)
             {
-                openQA.Add(o.Key, SpliceText(o.Value));
+                openQA.Add(o.Key, o.Value.SpliceText(6));
             }
             student.OpenQuestionsDict = openQA;
         }
 
-        private static string SpliceText(string text)
+        private async void matchBtn_Click(object sender, RoutedEventArgs e)
         {
-            return string.Join(Environment.NewLine, text.Split()
-                .Select((word, index) => new { word, index })
-                .GroupBy(x => x.index / 6)
-                .Select(grp => string.Join(" ", grp.Select(x => x.word))));
+            try
+            {
+                if(Messages.MessageBoxConfirmation("האם להתאים ולחזור לעמוד הראשי?"))
+                {
+                    await bl.MatchAsync(_fromIsrael, _fromWolrd);
+
+                    var mainWin = Application.Current.MainWindow as MainWindow;
+                    mainWin.RefreshMyStudentsView();
+                    mainWin.RefreshMyPairView();
+                    Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Messages.MessageBoxError(ex.Message);
+            }
         }
     }
 }
