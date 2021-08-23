@@ -21,6 +21,8 @@ namespace BO
         /// </summary>
         public bool IsDeleted { get; set; }
 
+        public bool IsNotForMathc { get; set; } = false;
+
         /// <summary>
         /// the name of the student
         /// </summary>
@@ -59,6 +61,10 @@ namespace BO
         {
             get
             {
+                if (IsNotForMathc)
+                {
+                    return "";
+                }
                 var diff = !IsFromIsrael ? $"\nהפרש זמן מישראל: {ReverseString(Matching.GetDifferenceUtc(UtcOffset).Hours.ToString())}" : "";
                 return string.Join("\n", from l in DesiredLearningTime
                               let day = Dictionaries.DaysDict[l.Day] + " : "
@@ -80,14 +86,8 @@ namespace BO
         /// </summary>
         public IEnumerable<PrefferdTracks> PrefferdTracks { get; set; }
 
-        public string PrefferdTracksShow
-        {
-            get
-            {
-                return string.Join(",\n", from p in PrefferdTracks 
-                                         select Dictionaries.PrefferdTracksDict[p]);
-            }
-        }
+        public string PrefferdTracksShow => IsNotForMathc ? "" : string.Join(",\n", from p in PrefferdTracks
+                                                                                    select Dictionaries.PrefferdTracksDict[p]);
 
         public bool IsSelected { get; set; }
 
@@ -167,7 +167,7 @@ namespace BO
 
         public bool IsCompereWin { get; set; }
 
-        public IEnumerable<string> Languages { get; set; }
+        public IEnumerable<string> Languages { get; set; } = new List<string>();
 
         public string LanguagesShow 
         {
@@ -211,6 +211,11 @@ namespace BO
                 return true;
             }
             return false;
+        }
+
+        public bool IsOpenToMatch()
+        {
+            return !IsNotForMathc && (!IsMatch || PrefferdNumberOfMatchs > 1);
         }
 
         public bool Equals(Student other)

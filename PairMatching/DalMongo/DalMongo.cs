@@ -136,7 +136,7 @@ namespace DalMongo
         #endregion
 
         #region Pair
-        public void AddPair(Pair pair)
+        public int AddPair(Pair pair)
         {
             try
             {
@@ -145,6 +145,8 @@ namespace DalMongo
                 
                 db.UpsertRecord(countersAndLastDataOfSpredsheetTable, _counters.Id, _counters);
                 db.InsertRecord(pairsTable, pair);
+                
+                return pair.Id;
             }
             catch (Exception ex)
             {
@@ -206,6 +208,38 @@ namespace DalMongo
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+
+        public Pair GetPair(int id)
+        {
+            try
+            {
+                var result = db.LoadeRecordById<Pair>(pairsTable, id);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public Pair GetPair(int studFromIsraelId, int studFromWorldId)
+        {
+            try
+            {
+                var result = GetAllPairsBy(p => p.StudentFromIsraelId == studFromIsraelId
+                    && p.StudentFromWorldId == studFromWorldId)
+                    .FirstOrDefault();
+                if(result != null)
+                {
+                    return result;
+                }
+                throw new BadPairException("can not find the pair", studFromWorldId, studFromIsraelId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message); 
             }
         }
         #endregion

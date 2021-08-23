@@ -8,9 +8,13 @@ namespace DO
 {
     public class BadPairException : Exception
     {
+        public int PairId { get; set; }
+
         public int FirstStudentId { get; set; }
         
         public int SecondeStudentId { get; set; }
+
+        public BadPairException(string message, int id) : base(message) => PairId = id; 
 
         public BadPairException(string message, int firstId, int secondId) : base(message)
         {

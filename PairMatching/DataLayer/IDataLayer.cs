@@ -69,7 +69,7 @@ namespace DataLayer
         /// Add new pair to the data source 
         /// </summary>
         /// <param name="pair">the new pair</param>
-        void AddPair(DO.Pair pair);
+        int AddPair(DO.Pair pair);
 
         /// <summary>
         /// Remove pair from the data source
@@ -78,6 +78,10 @@ namespace DataLayer
         void RemovePair(DO.Pair pair);
 
         void UpdatePair(DO.Pair pair);
+
+        DO.Pair GetPair(int id);
+
+        DO.Pair GetPair(int studFromIsraelId, int studFromWorldId);
         #endregion
 
         #region LastDateOfSheets

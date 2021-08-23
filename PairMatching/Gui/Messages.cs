@@ -9,6 +9,13 @@ namespace Gui
 {
     public static class Messages
     {
+        public static void MessageBoxSimple(string message)
+        {
+            MessageBox.Show(message, "הודעה", MessageBoxButton.OK,
+                MessageBoxImage.Information, MessageBoxResult.None,
+                MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading);
+        }
+
         public static void MessageBoxError(string message)
         {
             MessageBox.Show(message, "Error", MessageBoxButton.OK,

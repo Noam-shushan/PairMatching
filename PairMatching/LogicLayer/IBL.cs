@@ -29,7 +29,9 @@ namespace LogicLayer
         /// Remove student from the data source
         /// </summary>
         /// <param name="id">the student id</param>
-        void RemoveStudent(int id);
+        Task RemoveStudentAsync(int id);
+
+        void AddStudent(BO.Student student);
 
         /// <summary>
         /// Update all the data from the google sheets
@@ -46,7 +48,7 @@ namespace LogicLayer
         /// </summary>
         /// <param name="fromIsrael">student from israel</param>
         /// <param name="fromWorld">student from the world</param>
-        Task MatchAsync(BO.Student fromIsrael, BO.Student fromWorld);
+        Task<int> MatchAsync(BO.Student fromIsrael, BO.Student fromWorld);
 
         /// <summary>
         /// Update the data from the data base and calulate the matching students
@@ -62,6 +64,8 @@ namespace LogicLayer
         Task SendEmailToPairAsync(BO.Pair pair, EmailTypes emailTypes);
 
         Task SendEmailToStudentAsync(BO.Student student, EmailTypes emailTypes);
+
+        Task SendOpenEmailAsync(string to, string subject, string body, string fileAttachment = "");
 
         void UpdatePair(BO.Pair pair);
     }

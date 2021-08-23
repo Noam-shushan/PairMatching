@@ -45,6 +45,8 @@ namespace DO
         /// </summary>
         public Genders Gender { get; set; }
 
+        public bool IsNotForMathc { get; set; } = false;
+
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}
         /// </summary>

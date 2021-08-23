@@ -92,11 +92,17 @@ namespace Gui
                 if (Messages.MessageBoxConfirmation($"בטוח שברצונך להתאים את {selectedStudent.Name} ל- {suggestStudent.SuggestStudentName}?"))
                 {
                     var first = bl.GetStudent(suggestStudent.SuggestStudentId);
-                    await bl.MatchAsync(selectedStudent, first);
+                    int id = await bl.MatchAsync(selectedStudent, first);
                     
                     var mainWin = Application.Current.MainWindow as MainWindow;
                     mainWin.RefreshMyStudentsView();
                     mainWin.RefreshMyPairView();
+                    var newPair = mainWin.PairsList.FirstOrDefault(p => p.Id == id);
+                    if (newPair != null)
+                    {
+                        await bl.SendEmailToPairAsync(newPair, EmailTypes.YouGotPair);
+                        await bl.SendEmailToPairAsync(newPair, EmailTypes.ToSecretaryNewPair);
+                    }
                 }
             }
             catch (Exception ex)

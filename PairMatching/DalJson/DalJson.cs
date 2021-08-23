@@ -140,7 +140,7 @@ namespace DalJson
         #endregion
 
         #region Pair
-        public void AddPair(Pair pair)
+        public int AddPair(Pair pair)
         {
             var pairList = JsonTools.LoadRecords<Pair>(pairsPath);
             var pTemp = pairList.Find(p => p.StudentFromIsraelId == pair.StudentFromIsraelId
@@ -160,6 +160,8 @@ namespace DalJson
             pairList.Add(pair);
             JsonTools.InsertRecords(pairList, pairsPath);
             JsonTools.InsertOne(_counters, countersPath);
+
+            return pair.Id;
         }
 
         public void RemovePair(Pair pair)
@@ -212,6 +214,29 @@ namespace DalJson
             return from p in JsonTools.LoadRecords<Pair>(pairsPath)
                    where !p.IsDeleted && predicate(p)
                    select p;
+        }
+
+        public Pair GetPair(int id)
+        {
+            var pairList = JsonTools.LoadRecords<Pair>(pairsPath);
+            var result = pairList.Find(p => p.Id == id);
+            if(result != null)
+            {
+                return result;
+            }
+            throw new BadPairException("can not find the pair", id);
+        }
+
+        public Pair GetPair(int studFromIsraelId, int studFromWorldId)
+        {
+            var pairList = JsonTools.LoadRecords<Pair>(pairsPath);
+            var result = pairList.Find(p => p.StudentFromIsraelId == studFromIsraelId
+                && p.StudentFromWorldId == studFromWorldId);
+            if (result != null)
+            {
+                return result;
+            }
+            throw new BadPairException("can not find the pair", studFromWorldId, studFromIsraelId);
         }
         #endregion
 

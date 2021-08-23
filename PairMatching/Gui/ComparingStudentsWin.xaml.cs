@@ -57,11 +57,17 @@ namespace Gui
             {
                 if(Messages.MessageBoxConfirmation("האם להתאים ולחזור לעמוד הראשי?"))
                 {
-                    await bl.MatchAsync(_fromIsrael, _fromWolrd);
+                    int id = await bl.MatchAsync(_fromIsrael, _fromWolrd);
 
                     var mainWin = Application.Current.MainWindow as MainWindow;
                     mainWin.RefreshMyStudentsView();
                     mainWin.RefreshMyPairView();
+                    var newPair = mainWin.PairsList.FirstOrDefault(p => p.Id == id);
+                    if (newPair != null)
+                    {
+                        await bl.SendEmailToPairAsync(newPair, EmailTypes.YouGotPair);
+                        await bl.SendEmailToPairAsync(newPair, EmailTypes.ToSecretaryNewPair);
+                    }
                     Close();
                 }
             }

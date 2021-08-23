@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using DataLayer;
 
@@ -125,11 +126,41 @@ namespace LogicLayer
                    select s;
         }
 
-        public void RemoveStudent(int id)
+        public async Task RemoveStudentAsync(int id)
         {
             try
             {
+                var matchPairOfThisStud = GetStudent(s => s.MatchTo == id);
+                if(matchPairOfThisStud != null)
+                {
+                    DO.Pair pairToRem;
+                    if (matchPairOfThisStud.IsFromIsrael)
+                    {
+                        pairToRem = dal.GetPair(matchPairOfThisStud.Id, id);
+                    }
+                    else
+                    {
+                        pairToRem = dal.GetPair(id, matchPairOfThisStud.Id);
+                    }
+                    dal.RemovePair(pairToRem);
+                    await UpdateAsync();
+                }
+                StudentList.Remove(GetStudent(id));
                 dal.RemoveStudent(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public void AddStudent(BO.Student student)
+        {
+            try
+            {
+                StudentList.Add(student);
+                var studDO = student.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
+                dal.AddStudent(studDO);
             }
             catch (Exception ex)
             {
@@ -159,8 +190,12 @@ namespace LogicLayer
         /// </summary>
         /// <param name="first">student from israel</param>
         /// <param name="seconde">student from the world</param>
-        public async Task MatchAsync(BO.Student first, BO.Student seconde)
+        public async Task<int> MatchAsync(BO.Student first, BO.Student seconde)
         {
+            if(first.IsFromIsrael && seconde.IsFromIsrael)
+            {
+                throw new Exception("!אי אפשר לחבר בין שני משתתפים מישראל");
+            }
             try
             {
                 first.MatchTo = seconde.Id;
@@ -172,17 +207,29 @@ namespace LogicLayer
                 dal.UpdateStudent(firstDo);
                 dal.UpdateStudent(secondeDo);
 
-                dal.AddPair(new DO.Pair()
+                DO.Pair pairToAdd = new DO.Pair 
                 {
-                    StudentFromIsraelId = first.IsFromIsrael ? first.Id : seconde.Id,
-                    StudentFromWorldId = !seconde.IsFromIsrael ? seconde.Id : first.Id,
                     DateOfCreate = DateTime.Now,
                     PrefferdTracks = GetPrefferdTrackOfPair(firstDo, secondeDo),
                     IsDeleted = false
-                });
+                };
+
+                if (first.IsFromIsrael)
+                {
+                    pairToAdd.StudentFromIsraelId = first.Id;
+                    pairToAdd.StudentFromWorldId = seconde.Id;
+                }
+                else
+                {
+                    pairToAdd.StudentFromIsraelId = seconde.Id;
+                    pairToAdd.StudentFromWorldId = first.Id;
+                }
+
+                int id = dal.AddPair(pairToAdd);
                 // update the students from the data base
                 // after making one match we need to calculate evereting agien
                 await UpdateAsync();
+                return id;
             }
             catch (DO.BadPairException)
             {
@@ -312,7 +359,17 @@ namespace LogicLayer
             {
                 throw ex;
             }
-        } 
+        }
+
+        public async Task SendOpenEmailAsync(string to, string subject, string body, string fileAttachment = "")
+        {
+            await sendEmail
+                .To(to)
+                .Subject(subject)
+                .Template(new StringBuilder().Append(body))
+                .SendOpenMailAsync(fileAttachment);
+        }
+
         #endregion
 
         #region Build all the students and find a suggests students for each one
@@ -329,7 +386,10 @@ namespace LogicLayer
             {
                 // copy the propertis to BO student
                 var studBO = studDO.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
-
+                if (studBO.IsNotForMathc)
+                {
+                    return studBO;
+                }
                 // create a dictionary of the open Q&A for the student 
                 studBO.OpenQuestionsDict = new Dictionary<string, string>();
                 foreach (var o in studDO.OpenQuestions)
@@ -351,7 +411,14 @@ namespace LogicLayer
             // find matcing student for each one
             foreach (var s in StudentList)
             {
-                temp.Add(BuildStudent(s));
+                if (!s.IsNotForMathc)
+                {
+                    temp.Add(BuildStudent(s));
+                }
+                else
+                {
+                    temp.Add(s);
+                }
             }
             StudentList = new ObservableCollection<BO.Student>(temp);
         }
@@ -383,7 +450,9 @@ namespace LogicLayer
             if (student.IsFromIsrael)
             {
                 var studList = from s in StudentList
-                               where !s.IsFromIsrael && s.MatchTo == 0
+                               where !s.IsFromIsrael 
+                               && s.MatchTo == 0 
+                               && !s.IsNotForMathc 
                                select s;
                 foreach (var studFromWorld in studList)
                 {
@@ -418,7 +487,9 @@ namespace LogicLayer
             else
             {
                 var studList = from s in StudentList
-                               where s.IsFromIsrael && s.MatchTo == 0
+                               where s.IsFromIsrael 
+                               && s.MatchTo == 0
+                               && !s.IsNotForMathc
                                select s;
                 foreach (var studFromIsreal in studList)
                 {
