@@ -205,9 +205,10 @@ namespace LogicLayer
                     return MoreLanguages.YES;
                 case "No":
                     return MoreLanguages.NO;
-                default:
+                case "I don't know English but I can learn in other languages":
                     return MoreLanguages.NOT_ENGLISH;
             }
+            return MoreLanguages.NO;
         }
 
         public int GetPrefferdNumberOfMatchs(string value)

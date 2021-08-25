@@ -21,7 +21,7 @@ namespace BO
         /// </summary>
         public bool IsDeleted { get; set; }
 
-        public bool IsNotForMathc { get; set; } = false;
+        public bool IsSimpleStudent { get; set; } = false;
 
         /// <summary>
         /// the name of the student
@@ -50,7 +50,7 @@ namespace BO
 
         public string GenderShow { get => Dictionaries.GendersDict[Gender]; }
 
-        public bool IsMatch { get => MatchTo != 0; }
+        public bool IsMatch { get => MatchTo.Any(m => m != 0); }
 
         /// <summary>
         /// Desired learning time and day
@@ -61,7 +61,7 @@ namespace BO
         {
             get
             {
-                if (IsNotForMathc)
+                if (IsSimpleStudent)
                 {
                     return "";
                 }
@@ -86,10 +86,15 @@ namespace BO
         /// </summary>
         public IEnumerable<PrefferdTracks> PrefferdTracks { get; set; }
 
-        public string PrefferdTracksShow => IsNotForMathc ? "" : string.Join(",\n", from p in PrefferdTracks
+        public string PrefferdTracksShow => IsSimpleStudent ? "" : string.Join(",\n", from p in PrefferdTracks
                                                                                     select Dictionaries.PrefferdTracksDict[p]);
 
         public bool IsSelected { get; set; }
+
+        public bool IsOpenToMatch
+        {
+            get => !IsSimpleStudent && (MatchTo.Count() < PrefferdNumberOfMatchs);
+        }
 
         /// <summary>
         /// the prefferd gender to lern with
@@ -159,11 +164,13 @@ namespace BO
         /// <summary>
         /// the id of the student that match to this.
         /// </summary>
-        public int MatchTo { get; set; }
+        public List<int> MatchTo { get; set; } = new List<int>();
+
+        public string MatchToShow { get; set; }
 
         public int PrefferdNumberOfMatchs { get; set; }
 
-        public string InfoAbout { get; set; }
+        public string InfoAbout { get; set; } = "";
 
         public bool IsCompereWin { get; set; }
 
@@ -176,7 +183,7 @@ namespace BO
 
         public MoreLanguages MoreLanguages { get; set; }
 
-        public bool IsKnowMoreLanguages { get => Languages != null && Languages.Count() > 0; }
+        public bool IsKnowMoreLanguages { get => Languages.Count() > 0; }
 
         public IEnumerable<SuggestStudent> FirstSuggestStudents { get; set; }
 
@@ -211,11 +218,6 @@ namespace BO
                 return true;
             }
             return false;
-        }
-
-        public bool IsOpenToMatch()
-        {
-            return !IsNotForMathc && (!IsMatch || PrefferdNumberOfMatchs > 1);
         }
 
         public bool Equals(Student other)

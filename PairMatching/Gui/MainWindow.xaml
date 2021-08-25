@@ -23,7 +23,6 @@
     WindowState="Maximized"
     mc:Ignorable="d">
     <Window.Resources>
-        <local:BooleanAndConverter x:Key="booleanAndConverter" />
         <Style
             x:Key="disableEnableWhileLoaded"
             BasedOn="{StaticResource MaterialDesignOutlinedButton}"
@@ -54,9 +53,38 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style
+            x:Key="visiblStudentsUi"
+            BasedOn="{StaticResource hideWheneLoadingSp}"
+            TargetType="StackPanel">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsStudentsUi, ElementName=Main}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsStudentsUi, ElementName=Main}" Value="False">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style
+            x:Key="visiblPairsUi"
+            BasedOn="{StaticResource hideWheneLoadingSp}"
+            TargetType="StackPanel">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsPairsUi, ElementName=Main}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsPairsUi, ElementName=Main}" Value="False">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
         <Style x:Key="hideWheneLoadingStudentControl" TargetType="local:StudentControl">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Path=IsLoaded, ElementName=Main}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsPairUi, ElementName=Main}" Value="True">
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
             </Style.Triggers>
@@ -85,6 +113,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="20" />
         </Grid.RowDefinitions>
+
         <!--#region Menue-->
         <StackPanel
             Grid.Row="1"
@@ -126,6 +155,7 @@
                 Style="{StaticResource disableEnableWhileLoaded}" />
         </StackPanel>
         <!--#endregion-->
+
         <!--#region Students-->
         <StackPanel
             x:Name="spAllStudents"
@@ -133,8 +163,7 @@
             Grid.Column="1"
             Grid.ColumnSpan="2"
             HorizontalAlignment="Left"
-            Style="{StaticResource hideWheneLoadingSp}"
-            Visibility="Collapsed">
+            Style="{StaticResource visiblStudentsUi}">
             <StackPanel Orientation="Horizontal">
                 <Grid VerticalAlignment="Bottom">
                     <Grid.ColumnDefinitions>
@@ -149,10 +178,7 @@
                         x:Name="searchBtn"
                         Click="searchBtn_Click"
                         Style="{DynamicResource MaterialDesignToolButton}">
-                        <materialDesign:PackIcon
-                            IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
-                            Kind="Search"
-                            Opacity=".56" />
+                        <materialDesign:PackIcon Kind="Search" Opacity=".56" />
                     </Button>
                     <TextBox
                         x:Name="tbSearch"
@@ -162,13 +188,21 @@
                         materialDesign:HintAssist.Hint="חיפוש"
                         materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
                         BorderBrush="#28a7e7"
-                        FlowDirection="RightToLeft"
-                        IsEnabled="{Binding ElementName=cbUpdateForEnable, Path=IsChecked}"
                         KeyDown="tbSearch_KeyDown" />
                     <TextBlock
                         x:Name="tbIsThereResultOfSearcing"
                         Grid.Row="1"
-                        Grid.Column="1" />
+                        Grid.Column="1">
+                        <TextBlock.Style>
+                            <Style BasedOn="{StaticResource MaterialDesignBody1TextBlock}" TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=IsLoaded, ElementName=Main}" Value="True">
+                                        <Setter Property="Text" Value="string.Empty" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </Grid>
                 <Button
                     x:Name="manualMatchBtn"
@@ -235,10 +269,10 @@
                                 </GridViewColumn.HeaderContainerStyle>
                                 <GridViewColumn.HeaderTemplate>
                                     <DataTemplate>
-                                        <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" ToolTip="שלח מייל לכל המסומנים">
-                                            <ComboBoxItem IsSelected="True">
-                                                <materialDesign:PackIcon Kind="EmailSend" />
-                                            </ComboBoxItem>
+                                        <ComboBox
+                                            materialDesign:HintAssist.Hint="{materialDesign:PackIcon Kind=EmailSend}"
+                                            Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                            ToolTip="שלח מייל לכל המסומנים">
                                             <ComboBoxItem>
                                                 <Button
                                                     x:Name="sendEmaileForAllStudentsBtn"
@@ -269,12 +303,48 @@
                             <GridViewColumn Width="60" HeaderContainerStyle="{StaticResource HeadersStyle}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button
-                                            x:Name="editStudentBtn"
-                                            Style="{StaticResource MaterialDesignIconButton}"
-                                            ToolTip="ערוך תלמיד זה">
-                                            <materialDesign:PackIcon Kind="Pencil" />
-                                        </Button>
+                                        <materialDesign:DialogHost
+                                            Background="Gray"
+                                            CloseOnClickAway="True"
+                                            Identifier="infoAboutDialog">
+                                            <materialDesign:DialogHost.DialogContent>
+                                                <StackPanel Margin="15" HorizontalAlignment="Center">
+                                                    <TextBox
+                                                        x:Name="tbInfoAbout"
+                                                        Width="300"
+                                                        Height="250"
+                                                        Margin="0,0,0,10"
+                                                        materialDesign:HintAssist.Hint="הוסף הערות"
+                                                        AcceptsReturn="True"
+                                                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                                        Text="{Binding Path=InfoAbout, Mode=TwoWay}" />
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition />
+                                                        </Grid.ColumnDefinitions>
+                                                        <Button
+                                                            x:Name="editStudentBtn"
+                                                            Grid.Column="0"
+                                                            Width="100"
+                                                            Click="editStudentBtn_Click"
+                                                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                                            Content="החל" />
+                                                        <Button
+                                                            Grid.Column="1"
+                                                            Width="100"
+                                                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                                            Content="סגור" />
+                                                    </Grid>
+                                                </StackPanel>
+                                            </materialDesign:DialogHost.DialogContent>
+                                            <Button
+                                                Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                                                Style="{StaticResource MaterialDesignIconButton}"
+                                                ToolTip="ערוך תלמיד זה">
+                                                <materialDesign:PackIcon Kind="Pencil" />
+                                            </Button>
+                                        </materialDesign:DialogHost>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -297,14 +367,14 @@
             </ListView>
         </StackPanel>
         <!--#endregion-->
+
         <!--#region Pairs-->
         <StackPanel
             x:Name="spAllPairs"
             Grid.Row="2"
             Grid.Column="1"
             Grid.ColumnSpan="7"
-            Style="{StaticResource hideWheneLoadingSp}"
-            Visibility="Collapsed">
+            Style="{StaticResource visiblPairsUi}">
             <ListView
                 x:Name="lvPairs"
                 Height="500"
@@ -403,10 +473,27 @@
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn
-                                Width="80"
+                                Width="100"
                                 DisplayMemberBinding="{Binding Path=PrefferdTracksShow}"
-                                Header="מסלול"
-                                HeaderContainerStyle="{StaticResource HeadersStyle}" />
+                                HeaderContainerStyle="{StaticResource HeadersStyle}">
+                                <GridViewColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <ComboBox
+                                            x:Name="cbTracks"
+                                            materialDesign:HintAssist.HelperTextStyle="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                            materialDesign:HintAssist.Hint="מסלול"
+                                            SelectionChanged="cbTracks_SelectionChanged">
+                                            <ComboBoxItem Content="תניא" />
+                                            <ComboBoxItem Content="פרשה" />
+                                            <ComboBoxItem Content="גמרא" />
+                                            <ComboBoxItem Content="פרקי אבות" />
+                                            <ComboBoxItem Content="תפילה" />
+                                            <ComboBoxItem Content="לא משנה לי" />
+                                            <ComboBoxItem Content="הכל" />
+                                        </ComboBox>
+                                    </DataTemplate>
+                                </GridViewColumn.HeaderTemplate>
+                            </GridViewColumn>
                             <GridViewColumn Width="60">
                                 <GridViewColumn.HeaderContainerStyle>
                                     <Style BasedOn="{StaticResource MaterialDesignIconButton}" TargetType="{x:Type GridViewColumnHeader}">
@@ -479,6 +566,7 @@
             </ListView>
         </StackPanel>
         <!--#endregion-->
+
         <local:StudentControl
             x:Name="studentControl"
             Grid.Row="2"
@@ -487,15 +575,16 @@
             Margin="50,0,0,0"
             Style="{StaticResource hideWheneLoadingStudentControl}"
             Visibility="Collapsed" />
+
         <ProgressBar
             x:Name="pbUpdate"
             Grid.Row="2"
-            Grid.Column="2"
-            Grid.ColumnSpan="7"
-            Width="500"
-            Margin="123.667,105.667,448.333,528.333"
+            Grid.Column="3"
+            Grid.ColumnSpan="3"
+            Width="400"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
             IsIndeterminate="True"
-            Style="{StaticResource progBarStyle}"
-            Visibility="Collapsed" />
+            Style="{StaticResource progBarStyle}" />
     </Grid>
 </Window>

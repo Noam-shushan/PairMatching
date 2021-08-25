@@ -45,7 +45,7 @@ namespace DO
         /// </summary>
         public Genders Gender { get; set; }
 
-        public bool IsNotForMathc { get; set; } = false;
+        public bool IsSimpleStudent { get; set; } = false;
 
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}
@@ -88,9 +88,9 @@ namespace DO
         public TimeSpan UtcOffset { get; set; }
 
         /// <summary>
-        /// the id of the student that match to this.
+        /// the id of the students that match to this.
         /// </summary>
-        public int MatchTo { get; set; }
+        public List<int> MatchTo { get; set; } = new List<int>();
 
         /// <summary>
         /// Desired learning time and day
@@ -101,7 +101,7 @@ namespace DO
 
         public int PrefferdNumberOfMatchs { get; set; }
 
-        public string InfoAbout { get; set; }
+        public string InfoAbout { get; set; } = "";
 
         public MoreLanguages MoreLanguages { get; set; }
 

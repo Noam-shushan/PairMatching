@@ -186,8 +186,6 @@ namespace LogicLayer
                         PrefferdNumberOfMatchs = studentDescriptor
                             .GetPrefferdNumberOfMatchs(row[indexHebSheet["PrefferdNumberOfMatchs"]])
                     }) ;
-                    //AddLearningTime(id, row, studentDescriptor);
-                    //QandAheb(id, row);
                 }
                 catch (Exception ex)
                 {
@@ -227,8 +225,6 @@ namespace LogicLayer
                             .GetPrefferdNumberOfMatchs(row[indexEngSheet["PrefferdNumberOfMatchs"]])
 
                     });
-                    //AddLearningTime(id, row, studentDescriptor);
-                    //QandAeng(id, row);
                 }
                 catch (Exception ex)
                 {

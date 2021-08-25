@@ -263,8 +263,16 @@ namespace DalMongo
         {
             try
             {
-                return db
+                var lastDate = db
                     .LoadeRecordById<LastDataOfSpredsheet>(countersAndLastDataOfSpredsheetTable, _lastDateOfSheets.Id);
+                if(lastDate is null)
+                {
+                    return _lastDateOfSheets;
+                }
+                lastDate.EnglishSheets = lastDate.EnglishSheets.ToLocalTime();
+                lastDate.HebrewSheets = lastDate.HebrewSheets.ToLocalTime();
+                _lastDateOfSheets = lastDate;
+                return lastDate;
             }
             catch (Exception ex)
             {

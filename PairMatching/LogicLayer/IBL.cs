@@ -33,6 +33,8 @@ namespace LogicLayer
 
         void AddStudent(BO.Student student);
 
+        void UpdateStudent(BO.Student student);
+
         /// <summary>
         /// Update all the data from the google sheets
         /// </summary>
@@ -42,6 +44,8 @@ namespace LogicLayer
         /// the students list which wiil use in the Gui layer
         /// </summary>
         ObservableCollection<BO.Student> StudentList { get; set; }
+
+        ObservableCollection<BO.Pair> PairList { get; set; }
 
         /// <summary>
         /// making the match between the tow students
@@ -68,5 +72,7 @@ namespace LogicLayer
         Task SendOpenEmailAsync(string to, string subject, string body, string fileAttachment = "");
 
         void UpdatePair(BO.Pair pair);
+
+        IEnumerable<BO.Pair> FilterPairsByTrack(string track);
     }
 }

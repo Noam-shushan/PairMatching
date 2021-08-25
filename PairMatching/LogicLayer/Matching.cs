@@ -56,6 +56,23 @@ namespace LogicLayer
         /// <returns>true is there is a match in the critical desires of the tow students</returns>
         public bool IsMatchingStudentsCritical(BO.Student israelStudent, BO.Student other)
         {
+            bool matchLenguage =
+                ((israelStudent.MoreLanguages == DO.MoreLanguages.NO || 
+                    israelStudent.MoreLanguages == DO.MoreLanguages.YES) 
+                    && (other.MoreLanguages == DO.MoreLanguages.YES
+                        || other.MoreLanguages == DO.MoreLanguages.NO))
+                ||
+                (israelStudent.MoreLanguages == DO.MoreLanguages.NOT_ENGLISH
+                    && israelStudent.Languages
+                        .Select(l => l)
+                        .Intersect(other.Languages)
+                        .Any()) 
+                || (other.MoreLanguages == DO.MoreLanguages.NOT_ENGLISH
+                    && other.Languages
+                        .Select(l => l)
+                        .Intersect(israelStudent.Languages)
+                        .Any());
+            
             bool matchEnglishLevel = other.DesiredEnglishLevel == DO.EnglishLevels.DONT_MATTER 
                                     || other.DesiredEnglishLevel <= israelStudent.EnglishLevel;
 
@@ -77,6 +94,7 @@ namespace LogicLayer
             return matchTrack
                 && matchEnglishLevel
                 && matchGender
+                && matchLenguage
                 && IsMatchingHours(israelStudent, other);
         }
 

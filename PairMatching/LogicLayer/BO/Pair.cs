@@ -53,7 +53,7 @@ namespace BO
 
         public DateTime DateOfDelete { get; set; }
 
-        public string InfoAbout { get; set; }
+        public string InfoAbout { get; set; } = "";
 
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}

@@ -29,6 +29,12 @@ namespace LogicLayer
         public ObservableCollection<BO.Student> StudentList { get; set; } = 
             new ObservableCollection<BO.Student>();
 
+        /// <summary>
+        /// the students list that keep all the data of the students
+        /// </summary>
+        public ObservableCollection<BO.Pair> PairList { get; set; } =
+            new ObservableCollection<BO.Pair>();
+
 
         #region Singelton referens of the logic layer
         public static IBL Instance { get; } = new LogicImplementaion();
@@ -46,10 +52,6 @@ namespace LogicLayer
             {
                 // get the last date of the update of the sheets to read from there
                 var lastDate = dal.GetLastDateOfSheets();
-                if (lastDate == null)
-                {
-                    lastDate = new DO.LastDataOfSpredsheet();
-                }
                 var oldDate = new DO.LastDataOfSpredsheet 
                 { 
                     EnglishSheets = lastDate.EnglishSheets, 
@@ -78,7 +80,7 @@ namespace LogicLayer
                 await dal.SaveAllDataFromSpredsheetAsync();
 
                 // update the last date of updating of the sheets
-                await Task.Run(() => dal.UpdateLastDateOfSheets(lastDate));
+                dal.UpdateLastDateOfSheets(lastDate);
             }
             catch (Exception ex)
             {
@@ -97,6 +99,7 @@ namespace LogicLayer
                 matcher.MatchingTimes.Clear();
                 StudentList = new ObservableCollection<BO.Student>(CreateAllStudents());
                 BuildAllStudents();
+                PairList = new ObservableCollection<BO.Pair>(GetAllPairs());
             });
         }
         #endregion
@@ -130,21 +133,25 @@ namespace LogicLayer
         {
             try
             {
-                var matchPairOfThisStud = GetStudent(s => s.MatchTo == id);
-                if(matchPairOfThisStud != null)
+                if(StudentList.Any(s => s.MatchTo.Contains(id)))
                 {
-                    DO.Pair pairToRem;
-                    if (matchPairOfThisStud.IsFromIsrael)
+                    var matchPairOfThisStud = GetStudent(id);
+                    if (matchPairOfThisStud != null)
                     {
-                        pairToRem = dal.GetPair(matchPairOfThisStud.Id, id);
+                        DO.Pair pairToRem;
+                        if (matchPairOfThisStud.IsFromIsrael)
+                        {
+                            pairToRem = dal.GetPair(matchPairOfThisStud.Id, id);
+                        }
+                        else
+                        {
+                            pairToRem = dal.GetPair(id, matchPairOfThisStud.Id);
+                        }
+                        dal.RemovePair(pairToRem);
+                        await UpdateAsync();
                     }
-                    else
-                    {
-                        pairToRem = dal.GetPair(id, matchPairOfThisStud.Id);
-                    }
-                    dal.RemovePair(pairToRem);
-                    await UpdateAsync();
                 }
+
                 StudentList.Remove(GetStudent(id));
                 dal.RemoveStudent(id);
             }
@@ -165,6 +172,19 @@ namespace LogicLayer
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+
+        public void UpdateStudent(BO.Student student)
+        {
+            try
+            {
+                var studDO = student.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
+                dal.UpdateStudent(studDO);
+            }
+            catch (Exception ex)
+            {
+                new Exception(ex.Message);
             }
         }
         #endregion
@@ -198,8 +218,8 @@ namespace LogicLayer
             }
             try
             {
-                first.MatchTo = seconde.Id;
-                seconde.MatchTo = first.Id;
+                first.MatchTo.Add(seconde.Id);
+                seconde.MatchTo.Add(first.Id);
 
                 var firstDo = first.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
                 var secondeDo = seconde.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
@@ -256,13 +276,13 @@ namespace LogicLayer
         {
             try
             {
-                var firstStudDO = dal.GetStudent(pair.StudentFromIsrael.Id);
-                var secondeStudDO = dal.GetStudent(pair.StudentFromWorld.Id);
+                var studFromIsraelDO = dal.GetStudent(pair.StudentFromIsrael.Id);
+                var studFromWorldDO = dal.GetStudent(pair.StudentFromWorld.Id);
                 
-                firstStudDO.MatchTo = 0;
-                secondeStudDO.MatchTo = 0;
-                dal.UpdateStudent(firstStudDO);
-                dal.UpdateStudent(secondeStudDO);
+                studFromIsraelDO.MatchTo.Remove(studFromWorldDO.Id);
+                studFromWorldDO.MatchTo.Remove(studFromIsraelDO.Id);
+                dal.UpdateStudent(studFromIsraelDO);
+                dal.UpdateStudent(studFromWorldDO);
 
                 var pairDO = pair.CopyPropertiesToNew(typeof(DO.Pair)) as DO.Pair;
                 
@@ -277,6 +297,14 @@ namespace LogicLayer
             {
                 throw ex;
             }
+        }
+
+        public IEnumerable<BO.Pair> FilterPairsByTrack(string track)
+        {
+            return track == "הכל" ? PairList :
+                from p in PairList
+                where p.PrefferdTracksShow == track
+                select p;
         }
         #endregion
 
@@ -375,26 +403,33 @@ namespace LogicLayer
         #region Build all the students and find a suggests students for each one
         private IEnumerable<BO.Student> CreateAllStudents()
         {
-            return from s in dal.GetAllStudents()
-                   let sBO = CreateStudent(s)
+            var studentList = dal.GetAllStudents();
+            return from s in studentList
+                   let sBO = CreateStudent(s, studentList)
                    select sBO;
         }
 
-        private BO.Student CreateStudent(DO.Student studDO)
+        private BO.Student CreateStudent(DO.Student studDO, IEnumerable<DO.Student> studentsList)
         {
             try
             {
                 // copy the propertis to BO student
                 var studBO = studDO.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
-                if (studBO.IsNotForMathc)
+                
+                studBO.MatchToShow = string.Join(", ", from s in studentsList
+                                                       where studBO.MatchTo.Contains(s.Id)
+                                                       select s.Name);
+
+                if (studBO.IsSimpleStudent)
                 {
                     return studBO;
                 }
+                
                 // create a dictionary of the open Q&A for the student 
                 studBO.OpenQuestionsDict = new Dictionary<string, string>();
                 foreach (var o in studDO.OpenQuestions)
                 {
-                    studBO.OpenQuestionsDict.Add(o.Question, o.Answer.SpliceText());
+                    studBO.OpenQuestionsDict.Add(o.Question, o.Answer.SpliceText(10));
                 }
 
                 return studBO;
@@ -411,7 +446,7 @@ namespace LogicLayer
             // find matcing student for each one
             foreach (var s in StudentList)
             {
-                if (!s.IsNotForMathc)
+                if (s.IsOpenToMatch)
                 {
                     temp.Add(BuildStudent(s));
                 }
@@ -450,9 +485,7 @@ namespace LogicLayer
             if (student.IsFromIsrael)
             {
                 var studList = from s in StudentList
-                               where !s.IsFromIsrael 
-                               && s.MatchTo == 0 
-                               && !s.IsNotForMathc 
+                               where !s.IsFromIsrael && s.IsOpenToMatch 
                                select s;
                 foreach (var studFromWorld in studList)
                 {
@@ -487,9 +520,7 @@ namespace LogicLayer
             else
             {
                 var studList = from s in StudentList
-                               where s.IsFromIsrael 
-                               && s.MatchTo == 0
-                               && !s.IsNotForMathc
+                               where s.IsFromIsrael && s.IsOpenToMatch
                                select s;
                 foreach (var studFromIsreal in studList)
                 {

@@ -220,9 +220,10 @@ namespace LogicLayer
                     return MoreLanguages.YES;
                 case "לא": case "":
                     return MoreLanguages.NO;
-                default :
+                case "אינני יודע אנגלית אך אני יכול ללמוד בשפות אחרות":
                     return MoreLanguages.NOT_ENGLISH;
             }
+            return MoreLanguages.NO;
         }
 
         public int GetPrefferdNumberOfMatchs(string value)

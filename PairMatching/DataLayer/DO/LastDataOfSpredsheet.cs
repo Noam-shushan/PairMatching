@@ -24,7 +24,7 @@ namespace DO
             if (ReferenceEquals(this, other)) 
                 return true;
 
-            return HebrewSheets == other.EnglishSheets 
+            return HebrewSheets == other.HebrewSheets 
                 && EnglishSheets == other.EnglishSheets;
         }
 

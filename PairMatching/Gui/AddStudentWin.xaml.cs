@@ -45,7 +45,7 @@ namespace Gui
                     Country = tbCountry.Text,
                     Email = tbEmail.Text,
                     PhoneNumber = tbPhone.Text,
-                    IsNotForMathc = true
+                    IsSimpleStudent = true
                 });
                 var mainWin = Application.Current.MainWindow as MainWindow;
                 mainWin.RefreshMyStudentsView();
