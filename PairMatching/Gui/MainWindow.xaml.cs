@@ -27,8 +27,7 @@ namespace Gui
     {
         private static readonly IBL bl = BlFactory.GetBL();
 
-        
-
+        #region Dependency Properties
         public event PropertyChangedEventHandler PropertyChanged;
 
         private bool _isPairsUi;
@@ -83,7 +82,7 @@ namespace Gui
         {
             get => _isLoaded;
             set
-            {               
+            {
                 _isLoaded = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsLoaded"));
                 if (_isLoaded)
@@ -92,13 +91,11 @@ namespace Gui
                     IsPairsUi = false;
                 }
             }
-        }
+        } 
+        #endregion
 
         public MainWindow()
         {
-            // TODO: create data template for the info of student and change that by the country
-            // TODO: make a better solution for the Visablity of the panels, maybe using trigers 
-            // and data tamplates
             InitializeComponent();
         }
 
@@ -108,9 +105,14 @@ namespace Gui
             try
             {
                 IsLoaded = true;
-                //await bl.ReadDataFromSpredsheetAsync();
+                await bl.ReadDataFromSpredsheetAsync();
                 await bl.UpdateAsync();
                 IsLoaded = false;
+                if (bl.StudentWithUnvalidEmail.Count > 0)
+                {
+                    var result = string.Join(", ", from s in bl.StudentWithUnvalidEmail select s.Name);
+                    Messages.MessageBoxWarning($"הכתובות מייל של התלמידים הבאים {result}");
+                }
             }
             catch (Exception ex)
             {
@@ -231,6 +233,12 @@ namespace Gui
             tbIsThereResultOfSearcing.Text = string.Empty;
         }
 
+        private void cbTracksFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var track = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
+            lvPairs.ItemsSource = bl.FilterPairsByTrack(track);
+        }
+
         public void RefreshMyPairView()
         {
             lvPairs.ItemsSource = bl.PairList;
@@ -248,18 +256,24 @@ namespace Gui
             var seconde = bl.StudentList.FirstOrDefault(s => s.Id == selectedPair.StudentFromWorld.Id);
             if (first.IsFromIsrael)
             {
-                new ComparingStudentsWin(first, seconde).Show();
+                new ComparingStudentsWin(first, seconde) 
+                {
+                    IsPair = true
+                }.Show();
             }
             else
             {
-                new ComparingStudentsWin(seconde, first).Show();
+                new ComparingStudentsWin(seconde, first)
+                {
+                    IsPair = true
+                }.Show();
             }
         }
         #endregion
         #endregion
 
         #region Pair operation
-        private async void removePairBtn_Click(object sender, RoutedEventArgs e)
+        private async void removeMenyPairBtn_Click(object sender, RoutedEventArgs e)
         {
             var selectedPairs = bl.PairList.Where(p => p.IsSelected);
             int numOfPairsToRem = selectedPairs.Count();
@@ -274,9 +288,11 @@ namespace Gui
                 {
                     if (Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את {numOfPairsToRem} החברותות שבחרת?"))
                     {
-                        foreach (var p in selectedPairs)
+                        foreach (var pair in selectedPairs)
                         {
-                            await bl.RemovePairAsync(p);
+                            await bl.RemovePairAsync(pair);
+                            await bl.SendEmailToPairAsync(pair, EmailTypes.PairBroke);
+                            await bl.SendEmailToPairAsync(pair, EmailTypes.ToSecretaryPairBroke);
                         }
                         RefreshMyPairView();
                         RefreshMyStudentsView();
@@ -286,7 +302,10 @@ namespace Gui
                 {
                     if (Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את החברותא {selectedPairs.First()} ?"))
                     {
-                        await bl.RemovePairAsync(selectedPairs.First());
+                        var pair = selectedPairs.First();
+                        await bl.RemovePairAsync(pair);
+                        await bl.SendEmailToPairAsync(pair, EmailTypes.PairBroke);
+                        await bl.SendEmailToPairAsync(pair, EmailTypes.ToSecretaryPairBroke);
                         RefreshMyPairView();
                         RefreshMyStudentsView();
                     }
@@ -349,20 +368,96 @@ namespace Gui
             lvPairs.Items.Refresh();
         }
 
-        private async void sendEmailToThePairBtn_Click(object sender, RoutedEventArgs e)
+        private void sendEmailToManyPairBtn_Click(object sender, RoutedEventArgs e)
         {
             var selectedPair = bl.PairList.Where(p => p.IsSelected);
             int numOfPairs = selectedPair.Count();
-            if (numOfPairs == 0 || numOfPairs > 1)
+            if (numOfPairs == 0)
             {
-                Messages.MessageBoxWarning("בחר חברותא אחת");
+                Messages.MessageBoxWarning("בחר חברותא אחת או יותר");
                 return;
             }
+            new SendOpenEmail()
+            {
+                StudentName = string.Join(", ", from p in selectedPair
+                                         select p.StudentFromIsrael.Name),
+                Email = string.Join(", ", from p in selectedPair
+                                          select p.StudentFromIsrael.Email)
+            }.Show();
+            new SendOpenEmail()
+            {
+                StudentName = string.Join(", ", from p in selectedPair
+                                         select p.StudentFromWorld.Name),
+                Email = string.Join(", ", from p in selectedPair
+                                          select p.StudentFromWorld.Email)
+            }.Show();
+        }
 
+        private void sendEmaileToPairBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedPair = (sender as Button).DataContext as Pair;
+            if (selectedPair != null)
+            {
+                new SendOpenEmail()
+                {
+                    StudentName = selectedPair.StudentFromIsrael.Name,
+                    Email = selectedPair.StudentFromIsrael.Email
+                }.Show();
+                new SendOpenEmail()
+                {
+                    StudentName = selectedPair.StudentFromWorld.Name,
+                    Email = selectedPair.StudentFromWorld.Email
+                }.Show();
+            }
+        }
+
+        static string _trackForEditPair = "";
+        private void cbTracksEdit_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var track = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
+            _trackForEditPair = track;
+        }
+
+        private void editPairBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedPair = (sender as Button).DataContext as Pair;
             try
             {
-                await bl.SendEmailToPairAsync(selectedPair.First(), EmailTypes.YouGotPair);
-                MessageBox.Show("המייל נשלח בהצלחה!");
+                if (selectedPair != null)
+                {
+                    var pairToUpdate = bl.PairList.FirstOrDefault(p => p.Id == selectedPair.Id);
+                    if (_trackForEditPair != "")
+                    {
+                        pairToUpdate.EditPrefferdTracks(_trackForEditPair);
+                        _trackForEditPair = "";
+                    }
+                    lvPairs.Items.Refresh();
+                    
+                    bl.UpdatePair(pairToUpdate);
+                }
+            }
+            catch (Exception ex)
+            {
+                Messages.MessageBoxError(ex.Message);
+            }
+        }
+
+        private async void deletePairBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedPair = (sender as Button).DataContext as Pair;
+            try
+            {
+                if (selectedPair != null)
+                {
+                    if(Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את החברותא {selectedPair}?"))
+                    {
+                        await bl.RemovePairAsync(selectedPair);
+                        await bl.SendEmailToPairAsync(selectedPair, EmailTypes.PairBroke);
+                        await bl.SendEmailToPairAsync(selectedPair, EmailTypes.ToSecretaryPairBroke);
+                        RefreshMyPairView();
+                        RefreshMyStudentsView();
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -472,13 +567,6 @@ namespace Gui
             {
                 Messages.MessageBoxError(ex.Message);
             }
-        }
-
-        private void cbTracks_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var track = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
-            lvPairs.ItemsSource = bl.FilterPairsByTrack(track);
-
         }
     }
     #endregion

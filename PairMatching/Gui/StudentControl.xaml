@@ -40,6 +40,9 @@
                 <DataTrigger Binding="{Binding IsMatch}" Value="False">
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
+                <DataTrigger Binding="{Binding IsMatch}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
             </Style.Triggers>
         </Style>
         <Style

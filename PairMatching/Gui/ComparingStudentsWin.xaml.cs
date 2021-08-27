@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,18 +20,32 @@ namespace Gui
     /// <summary>
     /// Interaction logic for ComparingStudentsWin.xaml
     /// </summary>
-    public partial class ComparingStudentsWin : Window
+    public partial class ComparingStudentsWin : Window, INotifyPropertyChanged
     {
         private readonly IBL bl = BlFactory.GetBL();
 
         Student _fromIsrael;
         Student _fromWolrd;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private bool _isPair;
+        public bool IsPair
+        {
+            get => _isPair;
+            set
+            {
+                _isPair = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsMatchd"));
+            }
+        }
+
         public ComparingStudentsWin(Student fromIsrael, Student fromWolrd)
         {
             InitializeComponent();
             _fromIsrael = fromIsrael.Clone();
             _fromWolrd = fromWolrd.Clone();
+
             
             _fromIsrael.IsCompereWin = true;
             _fromWolrd.IsCompereWin = true;

@@ -13,6 +13,7 @@ bin
 obj
 packages
 client_secret.json
+pairmatching.json
 *.TokenResponse-user
 *.config
 

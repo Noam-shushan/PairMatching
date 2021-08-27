@@ -9,6 +9,16 @@ namespace LogicLayer
 {
     public interface IBL
     {
+
+        /// <summary>
+        /// the students list which wiil use in the Gui layer
+        /// </summary>
+        ObservableCollection<BO.Student> StudentList { get; set; }
+
+        ObservableCollection<BO.Pair> PairList { get; set; }
+
+        List<BO.SimpleStudent> StudentWithUnvalidEmail { get; set; }
+
         /// <summary>
         /// Get all the students by some predicate from the data source
         /// </summary>
@@ -39,13 +49,6 @@ namespace LogicLayer
         /// Update all the data from the google sheets
         /// </summary>
         Task ReadDataFromSpredsheetAsync();
-
-        /// <summary>
-        /// the students list which wiil use in the Gui layer
-        /// </summary>
-        ObservableCollection<BO.Student> StudentList { get; set; }
-
-        ObservableCollection<BO.Pair> PairList { get; set; }
 
         /// <summary>
         /// making the match between the tow students

@@ -43,6 +43,6 @@ namespace DO
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}
         /// </summary>
-        public IEnumerable<PrefferdTracks> PrefferdTracks { get; set; }
+        public PrefferdTracks PrefferdTracks { get; set; }
     }
 }

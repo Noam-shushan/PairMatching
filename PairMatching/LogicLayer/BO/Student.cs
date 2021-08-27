@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using DO;
 using LogicLayer;
+using RazorEngine.Templating;
 
 namespace BO
 {
@@ -50,7 +51,7 @@ namespace BO
 
         public string GenderShow { get => Dictionaries.GendersDict[Gender]; }
 
-        public bool IsMatch { get => MatchTo.Any(m => m != 0); }
+        public bool IsMatch { get => MatchTo.Count() > 0; }
 
         /// <summary>
         /// Desired learning time and day

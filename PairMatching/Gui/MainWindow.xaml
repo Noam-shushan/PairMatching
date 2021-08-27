@@ -95,6 +95,7 @@
             TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="HorizontalContentAlignment" Value="Left" />
         </Style>
+
     </Window.Resources>
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -479,10 +480,10 @@
                                 <GridViewColumn.HeaderTemplate>
                                     <DataTemplate>
                                         <ComboBox
-                                            x:Name="cbTracks"
+                                            x:Name="cbTracksFilter"
                                             materialDesign:HintAssist.HelperTextStyle="{StaticResource MaterialDesignFloatingHintComboBox}"
                                             materialDesign:HintAssist.Hint="מסלול"
-                                            SelectionChanged="cbTracks_SelectionChanged">
+                                            SelectionChanged="cbTracksFilter_SelectionChanged">
                                             <ComboBoxItem Content="תניא" />
                                             <ComboBoxItem Content="פרשה" />
                                             <ComboBoxItem Content="גמרא" />
@@ -494,6 +495,22 @@
                                     </DataTemplate>
                                 </GridViewColumn.HeaderTemplate>
                             </GridViewColumn>
+                            <GridViewColumn Width="auto" Header="הערות">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ToggleButton x:Name="infoAboutTBtn" Style="{StaticResource MaterialDesignVerticalHeaderStyle}">
+                                            <Popup IsOpen="{Binding Path=IsChecked, ElementName=infoAboutTBtn}">
+                                                <Border Background="AliceBlue" BorderThickness="1">
+                                                    <TextBlock
+                                                        Margin="15"
+                                                        Background="White"
+                                                        Text="{Binding Path=InfoAbout}" />
+                                                </Border>
+                                            </Popup>
+                                        </ToggleButton>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                             <GridViewColumn Width="60">
                                 <GridViewColumn.HeaderContainerStyle>
                                     <Style BasedOn="{StaticResource MaterialDesignIconButton}" TargetType="{x:Type GridViewColumnHeader}">
@@ -504,6 +521,7 @@
                                     <DataTemplate>
                                         <Button
                                             x:Name="sendEmaileForAllPairsBtn"
+                                            Click="sendEmailToManyPairBtn_Click"
                                             Style="{StaticResource MaterialDesignIconButton}"
                                             ToolTip="שלח מייל לכל המסומנים">
                                             <materialDesign:PackIcon Kind="EmailSend" />
@@ -514,6 +532,7 @@
                                     <DataTemplate>
                                         <Button
                                             x:Name="sendEmaileToPairBtn"
+                                            Click="sendEmaileToPairBtn_Click"
                                             Style="{StaticResource MaterialDesignIconButton}"
                                             ToolTip="שלח מייל לחברותא">
                                             <materialDesign:PackIcon Kind="EmailSend" />
@@ -524,12 +543,60 @@
                             <GridViewColumn Width="60" HeaderContainerStyle="{StaticResource HeadersStyle}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button
-                                            x:Name="editPairBtn"
-                                            Style="{StaticResource MaterialDesignIconButton}"
-                                            ToolTip="ערוך חברותא">
-                                            <materialDesign:PackIcon Kind="Pencil" />
-                                        </Button>
+                                        <materialDesign:DialogHost
+                                            Background="Gray"
+                                            CloseOnClickAway="True"
+                                            Identifier="infoAboutDialog">
+                                            <materialDesign:DialogHost.DialogContent>
+                                                <StackPanel Margin="15" HorizontalAlignment="Center">
+                                                    <ComboBox
+                                                        x:Name="cbTracksEdit"
+                                                        Margin="0,10,0,20"
+                                                        materialDesign:HintAssist.HelperTextStyle="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                                        materialDesign:HintAssist.Hint="שנה מסלול"
+                                                        SelectionChanged="cbTracksEdit_SelectionChanged">
+                                                        <ComboBoxItem Content="תניא" />
+                                                        <ComboBoxItem Content="פרשה" />
+                                                        <ComboBoxItem Content="גמרא" />
+                                                        <ComboBoxItem Content="פרקי אבות" />
+                                                        <ComboBoxItem Content="תפילה" />
+                                                    </ComboBox>
+                                                    <TextBox
+                                                        x:Name="tbInfoAboutForPair"
+                                                        Width="300"
+                                                        Height="250"
+                                                        Margin="0,0,0,10"
+                                                        materialDesign:HintAssist.Hint="הוסף הערות על החבורתא"
+                                                        AcceptsReturn="True"
+                                                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                                        Text="{Binding Path=InfoAbout, Mode=TwoWay}" />
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition />
+                                                        </Grid.ColumnDefinitions>
+                                                        <Button
+                                                            x:Name="editPairBtn"
+                                                            Grid.Column="0"
+                                                            Width="100"
+                                                            Click="editPairBtn_Click"
+                                                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                                            Content="החל" />
+                                                        <Button
+                                                            Grid.Column="1"
+                                                            Width="100"
+                                                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                                            Content="סגור" />
+                                                    </Grid>
+                                                </StackPanel>
+                                            </materialDesign:DialogHost.DialogContent>
+                                            <Button
+                                                Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                                                Style="{StaticResource MaterialDesignIconButton}"
+                                                ToolTip="ערוך חברותא">
+                                                <materialDesign:PackIcon Kind="Pencil" />
+                                            </Button>
+                                        </materialDesign:DialogHost>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -543,6 +610,7 @@
                                     <DataTemplate>
                                         <Button
                                             x:Name="deleteAllPairBtn"
+                                            Click="removeMenyPairBtn_Click"
                                             Style="{StaticResource MaterialDesignIconButton}"
                                             ToolTip="מחק חברותות מסומנות">
                                             <materialDesign:PackIcon Kind="Delete" />
@@ -553,6 +621,7 @@
                                     <DataTemplate>
                                         <Button
                                             x:Name="deletePairBtn"
+                                            Click="deletePairBtn_Click"
                                             Style="{StaticResource MaterialDesignIconButton}"
                                             ToolTip="מחק חברותא">
                                             <materialDesign:PackIcon Kind="Delete" />
@@ -560,6 +629,10 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
+                            <GridViewColumn
+                                Width="30"
+                                CellTemplate="{StaticResource ResourceKey=OrdinalColumnDataTemplate}"
+                                Header="#" />
                         </GridView.Columns>
                     </GridView>
                 </ListView.View>

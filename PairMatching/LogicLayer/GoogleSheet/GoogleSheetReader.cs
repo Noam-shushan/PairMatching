@@ -24,22 +24,23 @@ namespace LogicLayer
 
         public GoogleSheetReader()
         {
-            UserCredential credential;
-            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "client_secret.json");
+            GoogleCredential credential;
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "pairmatching.json");
             try
             {
                 using (var stream =
-            new FileStream(path, FileMode.Open, FileAccess.Read))
+            new FileStream(path, FileMode.Open))
                 {
                     // The file token.json stores the user's access and refresh tokens, and is created
                     // automatically when the authorization flow completes for the first time.
                     string credPath = "token.json";
-                    credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                        GoogleClientSecrets.FromStream(stream).Secrets,
-                        scopes,
-                        "user",
-                        CancellationToken.None,
-                        new FileDataStore(credPath, true)).Result;
+                    credential = GoogleCredential.FromStream(stream).CreateScoped(scopes);
+                        //GoogleWebAuthorizationBroker.AuthorizeAsync(
+                        //GoogleClientSecrets.FromStream(stream).Secrets,
+                        //scopes,
+                        //"user",
+                        //CancellationToken.None,
+                        //new FileDataStore(credPath, true)).Result;
                 }
                 
                 service = new SheetsService(new BaseClientService.Initializer()

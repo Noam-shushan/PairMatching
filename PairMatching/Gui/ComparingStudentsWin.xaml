@@ -1,48 +1,79 @@
-﻿<Window x:Class="Gui.ComparingStudentsWin"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Gui"
-        mc:Ignorable="d"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        TextElement.FontWeight="Regular"
-        TextElement.FontSize="13"
-        TextOptions.TextFormattingMode="Ideal"
-        TextOptions.TextRenderingMode="Auto"
-        WindowState="Maximized"
-        Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}"
-        FontSize="15"
-        Title="ComparingStudentsWin" Height="800" Width="1200">
+﻿<Window
+    x:Class="Gui.ComparingStudentsWin"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Gui"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="CompWin"
+    Title="ComparingStudentsWin"
+    Width="1200"
+    Height="800"
+    Background="{DynamicResource MaterialDesignPaper}"
+    FontFamily="{DynamicResource MaterialDesignFont}"
+    FontSize="15"
+    TextElement.FontSize="13"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
+    WindowState="Maximized"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <Style
+            x:Key="IsPairBtnVis"
+            BasedOn="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+            TargetType="Button">
+            <Setter Property="FontSize" Value="15" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsPair, ElementName=CompWin}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Setter Property="IsEnabled" Value="False" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid FlowDirection="RightToLeft">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10"/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition Width="10" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition Height="10"/>
+            <RowDefinition Height="10" />
+            <RowDefinition Height="50" />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="10" />
         </Grid.RowDefinitions>
         <Button
             x:Name="matchBtn"
-            Content="התאם"
-            VerticalAlignment="Top"
-            Grid.Column="1" Grid.Row="1"
+            Grid.Row="1"
+            Grid.Column="1"
             Grid.ColumnSpan="2"
             Width="100"
-            Click="matchBtn_Click"/>
-        <GroupBox Grid.Column="1" Grid.Row="2" Grid.RowSpan="2" Header="תלמיד מישראל" Margin="0,0,5,0" BorderBrush="BlueViolet">
-            <local:StudentControl x:Name="studentFromIsreal"/>
+            VerticalAlignment="Top"
+            Click="matchBtn_Click"
+            Content="התאם"
+            Style="{StaticResource IsPairBtnVis}" />
+        <GroupBox
+            Grid.Row="2"
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Margin="0,0,5,0"
+            BorderBrush="BlueViolet"
+            Header="תלמיד מישראל">
+            <local:StudentControl x:Name="studentFromIsreal" />
         </GroupBox>
-        <GroupBox Grid.Column="2" Grid.Row="2" Grid.RowSpan="2" Header="תלמיד מהתפוצות" BorderBrush="BlueViolet">
-            <local:StudentControl x:Name="studentFromWorld"/>
+        <GroupBox
+            Grid.Row="2"
+            Grid.RowSpan="2"
+            Grid.Column="2"
+            BorderBrush="BlueViolet"
+            Header="תלמיד מהתפוצות">
+            <local:StudentControl x:Name="studentFromWorld" />
         </GroupBox>
     </Grid>
 </Window>

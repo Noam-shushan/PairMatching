@@ -21,7 +21,7 @@ namespace LogicLayer
         /// </summary>
         private Matching matcher = new Matching();
 
-        private readonly SendEmail sendEmail = new SendEmail();
+        private readonly SendEmail sendEmail = SendEmail.Instance;
 
         /// <summary>
         /// the students list that keep all the data of the students
@@ -35,6 +35,8 @@ namespace LogicLayer
         public ObservableCollection<BO.Pair> PairList { get; set; } =
             new ObservableCollection<BO.Pair>();
 
+        public List<BO.SimpleStudent> StudentWithUnvalidEmail { get; set; } =
+             new List<BO.SimpleStudent>();
 
         #region Singelton referens of the logic layer
         public static IBL Instance { get; } = new LogicImplementaion();
@@ -79,6 +81,8 @@ namespace LogicLayer
                 // save all new data from the spredsheet to the DB
                 await dal.SaveAllDataFromSpredsheetAsync();
 
+                await SendRegesterEmailForNewStudent();
+
                 // update the last date of updating of the sheets
                 dal.UpdateLastDateOfSheets(lastDate);
             }
@@ -101,6 +105,42 @@ namespace LogicLayer
                 BuildAllStudents();
                 PairList = new ObservableCollection<BO.Pair>(GetAllPairs());
             });
+        }
+
+        async Task SendRegesterEmailForNewStudent()
+        {
+            foreach(var s in DataSource.StudentsList)
+            {
+                try
+                {
+                    if (s.Country == "Israel")
+                    {
+                        await sendEmail
+                            .To(s.Email)
+                            .SendAsync(s, Templates.SuccessfullyRegisteredHebrew);
+                    }
+                    else
+                    {
+                        await sendEmail
+                            .To(s.Email)
+                            .SendAsync(s, Templates.SuccessfullyRegisteredEnglish);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if(ex.Message == "Email address not valid")
+                    {
+                        StudentWithUnvalidEmail.Add(new BO.SimpleStudent
+                        {
+                            Id = s.Id,
+                            Name = s.Name,
+                            Email = s.Email
+                        });
+                        return;
+                    }
+                    throw new Exception(ex.Message);
+                }
+            }
         }
         #endregion
 
@@ -196,7 +236,7 @@ namespace LogicLayer
             var pairDo = pair.CopyPropertiesToNew(typeof(DO.Pair)) as DO.Pair;
 
             try
-            {
+            { 
                 dal.UpdatePair(pairDo);
             }
             catch (DO.BadPairException)
@@ -334,6 +374,16 @@ namespace LogicLayer
                             .To(pair.StudentFromWorld.Email)
                             .SendAsync(pair, Templates.PairBrokeEnglish);
                         break;
+                    case EmailTypes.ToSecretaryNewPair:
+                        await sendEmail
+                            .To(sendEmail.FromMail.Address)
+                            .SendAsync(pair, Templates.ToSecretaryNewPair);
+                        break;
+                    case EmailTypes.ToSecretaryPairBroke:
+                        await sendEmail
+                            .To(sendEmail.FromMail.Address)
+                            .SendAsync(pair, Templates.ToSecretaryPairBroke);
+                        break;
 
                     default:
                         break;
@@ -405,20 +455,16 @@ namespace LogicLayer
         {
             var studentList = dal.GetAllStudents();
             return from s in studentList
-                   let sBO = CreateStudent(s, studentList)
+                   let sBO = CreateStudent(s)
                    select sBO;
         }
 
-        private BO.Student CreateStudent(DO.Student studDO, IEnumerable<DO.Student> studentsList)
+        private BO.Student CreateStudent(DO.Student studDO)
         {
             try
             {
                 // copy the propertis to BO student
                 var studBO = studDO.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
-                
-                studBO.MatchToShow = string.Join(", ", from s in studentsList
-                                                       where studBO.MatchTo.Contains(s.Id)
-                                                       select s.Name);
 
                 if (studBO.IsSimpleStudent)
                 {
@@ -444,15 +490,18 @@ namespace LogicLayer
         {
             var temp = new List<BO.Student>();
             // find matcing student for each one
-            foreach (var s in StudentList)
+            foreach (var stud in StudentList)
             {
-                if (s.IsOpenToMatch)
+                stud.MatchToShow = string.Join(", ", from s in StudentList
+                                                    where stud.MatchTo.Contains(s.Id)
+                                                    select s.Name);
+                if (stud.IsOpenToMatch)
                 {
-                    temp.Add(BuildStudent(s));
+                    temp.Add(BuildStudent(stud));
                 }
                 else
                 {
-                    temp.Add(s);
+                    temp.Add(stud);
                 }
             }
             StudentList = new ObservableCollection<BO.Student>(temp);
@@ -559,10 +608,10 @@ namespace LogicLayer
         #endregion
 
         #region Pairs helper functions
-        private IEnumerable<DO.PrefferdTracks> GetPrefferdTrackOfPair(DO.Student firstStud, DO.Student secondeStud)
+        private DO.PrefferdTracks GetPrefferdTrackOfPair(DO.Student firstStud, DO.Student secondeStud)
         {
             return firstStud.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER) ?
-                secondeStud.PrefferdTracks : firstStud.PrefferdTracks;
+                secondeStud.PrefferdTracks.First() : firstStud.PrefferdTracks.First();
         }
 
         private BO.SimpleStudent GetSimpleStudent(int id)

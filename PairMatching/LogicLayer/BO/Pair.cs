@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DO;
 using LogicLayer;
+using RazorEngine.Templating;
 
 namespace BO
 {
@@ -19,6 +20,11 @@ namespace BO
             res.StudentFromIsrael = createSimpleStudentFunc(pairDo.StudentFromIsraelId);
             res.StudentFromWorld = createSimpleStudentFunc(pairDo.StudentFromWorldId);
             return res;
+        }
+
+        public void EditPrefferdTracks(string track)
+        {
+            PrefferdTracks = Dictionaries.PrefferdTracksDictInverse[track];
         }
 
         public int Id { get; set; }
@@ -58,15 +64,11 @@ namespace BO
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}
         /// </summary>
-        public IEnumerable<PrefferdTracks> PrefferdTracks { get; set; }
+        public PrefferdTracks PrefferdTracks { get; set; }
 
         public string PrefferdTracksShow
         {
-            get
-            {
-                return string.Join(", ", from p in PrefferdTracks
-                                         select Dictionaries.PrefferdTracksDict[p]);
-            }
+            get => Dictionaries.PrefferdTracksDict[PrefferdTracks];
         }
 
         public bool IsSelected { get; set; }

@@ -47,6 +47,9 @@ namespace BO
             {DO.PrefferdTracks.DONT_MATTER, "לא משנה לי" }
         };
 
+        internal static Dictionary<string, DO.PrefferdTracks> PrefferdTracksDictInverse =
+            PrefferdTracksDict.ToDictionary((i) => i.Value, (i) => i.Key);
+
         internal static Dictionary<DO.Days, string> DaysDict = new Dictionary<DO.Days, string>()
         {
             {DO.Days.SUNDAY, "ראשון" },

@@ -161,6 +161,9 @@
     </Content>
     <None Include="Gui_TemporaryKey.pfx" />
     <None Include="packages.config" />
+    <Content Include="pairmatching.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

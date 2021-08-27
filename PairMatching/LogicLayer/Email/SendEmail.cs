@@ -12,19 +12,21 @@ using System.Net.Configuration;
 using System.IO;
 using RazorEngine;
 using RazorEngine.Templating;
+using System.Net.Mime;
 
 namespace LogicLayer
 {
     public class SendEmail
     {
-        private readonly MailAddress fromMail;
+        public readonly MailAddress FromMail;
         private string _to = "";
         private string _subject = "";
         private StringBuilder _template = new StringBuilder();
         private readonly SmtpSection smtp;
 
+        public static SendEmail Instance { get; } = new SendEmail();
 
-        public SendEmail()
+        private SendEmail()
         {
             Configuration oConfig = ConfigurationManager
                 .OpenExeConfiguration(ConfigurationUserLevel.None);
@@ -37,7 +39,7 @@ namespace LogicLayer
             }
             smtp = mailSettings.Smtp;
 
-            fromMail = new MailAddress(mailSettings.Smtp.From, 
+            FromMail = new MailAddress(mailSettings.Smtp.From, 
                 mailSettings.Smtp.Network.UserName);
         }
 
@@ -67,7 +69,7 @@ namespace LogicLayer
             };
             try
             {
-                using (var messege = new MailMessage(fromMail.Address, 
+                using (var messege = new MailMessage(FromMail.Address, 
                     _to, _subject, _template.ToString()))
                 {
                     if (fileAttachment != "")
@@ -119,8 +121,10 @@ namespace LogicLayer
             
             try
             {
-                using (var messege = new MailMessage(fromMail.Address, _to, _subject, _template.ToString()))
+                using (var messege = new MailMessage(FromMail.Address, _to, _subject, _template.ToString()))
                 {
+                    //AlternateView alternateView = 
+                    //    AlternateView.CreateAlternateViewFromString(_template.ToString(), model, MediaTypeNames.Text.Html);
                     messege.IsBodyHtml = true;
                     await Task.Run(() => clientToTest.Send(messege));
                 }
@@ -138,8 +142,9 @@ namespace LogicLayer
         public async Task SendAsync<T>(T model, MailTemplate template)
         {
             var result = Engine.Razor
-                            .RunCompile(template.Template.ToString(), 
+                            .RunCompile(template.Template.ToString(),
                             template.Subject, null, model);
+
             var temp = new StringBuilder()
                 .Append(result);
             await Subject(template.Subject)
