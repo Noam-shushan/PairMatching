@@ -1,17 +1,10 @@
 ﻿using LogicLayer;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
 
 namespace Gui
 {
@@ -25,11 +18,29 @@ namespace Gui
         public AddStudentWin()
         {
             InitializeComponent();
+            cbCountry.ItemsSource = GetCountryList();
+        }
+
+        public List<string> GetCountryList()
+        {
+            List<string> cultureList = new List<string>();
+            
+            CultureInfo[] cultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
+
+            foreach (CultureInfo culture in cultures)
+            {
+                RegionInfo region = new RegionInfo(culture.LCID);
+                if (!cultureList.Contains(region.EnglishName))
+                {
+                    cultureList.Add(region.EnglishName);
+                }
+            }
+            return cultureList;
         }
 
         private void AddBtn_Click(object sender, RoutedEventArgs e)
         {
-            if(string.IsNullOrEmpty(tbCountry.Text) 
+            if(cbCountry.SelectedItem == null 
                 || string.IsNullOrEmpty(tbEmail.Text)
                 || string.IsNullOrEmpty(tbName.Text)
                 || string.IsNullOrEmpty(tbPhone.Text))
@@ -42,7 +53,7 @@ namespace Gui
                 bl.AddStudent(new BO.Student
                 {
                     Name = tbName.Text,
-                    Country = tbCountry.Text,
+                    Country = cbCountry.Text,
                     Email = tbEmail.Text,
                     PhoneNumber = tbPhone.Text,
                     IsSimpleStudent = true

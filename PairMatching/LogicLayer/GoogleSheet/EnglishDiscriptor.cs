@@ -2,15 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Configuration;
 
 namespace LogicLayer
 {
     public class EnglishDiscriptor : IStudentDescriptor
     {
-        public string SpreadsheetId => "1s8JObwXhv9kCdAEX6e_m4SV6N0_RRRgmoeyoG1oR82c";
+        public string SpreadsheetId { get; }
 
         public string Range => "A2:Z";
 
@@ -21,6 +20,7 @@ namespace LogicLayer
         public EnglishDiscriptor(LastDataOfSpredsheet lastDateOfUpdate)
         {
             LastUpdate = lastDateOfUpdate.EnglishSheets;
+            SpreadsheetId = ConfigurationManager.AppSettings["english spreadsheet id"];
         }
 
         public EnglishLevels GetEnglishLevel(string value)

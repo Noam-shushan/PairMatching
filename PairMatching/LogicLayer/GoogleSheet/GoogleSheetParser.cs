@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DataLayer;
 
@@ -168,6 +166,7 @@ namespace LogicLayer
                     int id = dal.GetNewStudentId();
                     DataSource.StudentsList.Add(new DO.Student
                     {
+                        DateOfRegistered = DateTime.Parse(row[0]),
                         Id = id,
                         Name = row[indexHebSheet["Name"]],
                         DesiredLearningTime = GetLearningTime(row, studentDescriptor),
@@ -205,6 +204,7 @@ namespace LogicLayer
                     int id = dal.GetNewStudentId();
                     DataSource.StudentsList.Add(new DO.Student
                     {
+                        DateOfRegistered = DateTime.Parse(row[0]),
                         Id = id,
                         Name = row[indexEngSheet["Name"]],
                         DesiredLearningTime = GetLearningTime(row, studentDescriptor),

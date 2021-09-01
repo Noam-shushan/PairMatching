@@ -28,19 +28,11 @@ namespace LogicLayer
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "pairmatching.json");
             try
             {
-                using (var stream =
-            new FileStream(path, FileMode.Open))
+                using (var stream = new FileStream(path, FileMode.Open))
                 {
-                    // The file token.json stores the user's access and refresh tokens, and is created
-                    // automatically when the authorization flow completes for the first time.
-                    string credPath = "token.json";
-                    credential = GoogleCredential.FromStream(stream).CreateScoped(scopes);
-                        //GoogleWebAuthorizationBroker.AuthorizeAsync(
-                        //GoogleClientSecrets.FromStream(stream).Secrets,
-                        //scopes,
-                        //"user",
-                        //CancellationToken.None,
-                        //new FileDataStore(credPath, true)).Result;
+                    credential = GoogleCredential
+                        .FromStream(stream)
+                        .CreateScoped(scopes);
                 }
                 
                 service = new SheetsService(new BaseClientService.Initializer()
@@ -57,17 +49,24 @@ namespace LogicLayer
 
         public IList<IList<object>> ReadEntries(string spreadsheetId, string range)
         {
-            var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
-
-            var response = request.Execute();
-            
-            var values = response.Values;
-
-            if (values != null && values.Count > 0)
+            try
             {
-                return values;
+                var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
+
+                var response = request.Execute();
+
+                var values = response.Values;
+
+                if (values != null && values.Count > 0)
+                {
+                    return values;
+                }
+                return null;
             }
-            return null;
+            catch (Exception ex)
+            {
+                throw new Exception("can not read the google sheets\n" + ex.Message);
+            }
         }
 
         public IList<IList<object>> ReadEntries(IStudentDescriptor studentDescriptor)

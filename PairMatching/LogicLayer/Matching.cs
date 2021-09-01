@@ -1,31 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogicLayer
 {
     public class Matching
     {
-        private static readonly Dictionary<DO.TimesInDay, TimeInterval> BoundryOfTimeInDay =
-            new Dictionary<DO.TimesInDay, TimeInterval>()
+        public BO.SuggestStudent CurrentForIsraeliSuggest { get; set; }
+        public BO.SuggestStudent CurrentForWorldSuggest = new BO.SuggestStudent();
+        public bool IsMatch { get; set; }
+
+        public void BuildMatch(BO.Student israelStudent, BO.Student other)
+        {
+            CurrentForWorldSuggest = new BO.SuggestStudent
             {
-                {DO.TimesInDay.MORNING,
-                    new TimeInterval(TimeSpan.Parse("05:00"), TimeSpan.Parse("12:00"))},
-                
-                {DO.TimesInDay.NOON,
-                    new TimeInterval(TimeSpan.Parse("12:00"), TimeSpan.Parse("18:00"))},
-                
-                {DO.TimesInDay.EVENING,
-                    new TimeInterval(TimeSpan.Parse("18:00"), TimeSpan.Parse("21:00"))},
-                
-                {DO.TimesInDay.NIGHT,
-                    new TimeInterval(TimeSpan.Parse("21:00"), TimeSpan.Parse("02:00"))}
+                ThisStudentId = other.Id,
+                SuggestStudentId = israelStudent.Id,
+                MatcingScore = 0,
+                SuggestStudenCountry = israelStudent.Country,
+                SuggestStudentName = israelStudent.Name,
             };
+            CurrentForIsraeliSuggest = new BO.SuggestStudent
+            {
+                ThisStudentId = israelStudent.Id,
+                SuggestStudentId = other.Id,
+                MatcingScore = 0,
+                SuggestStudenCountry = other.Country,
+                SuggestStudentName = other.Name,
+            };
+        }
+
+        private void AddScores()
+        {
+            CurrentForIsraeliSuggest.AddScore();
+            CurrentForWorldSuggest.AddScore();
+        }
 
         public List<MatchingTime> MatchingTimes { get; } =
-            new List<MatchingTime>();
+                new List<MatchingTime>();
 
         /// <summary>
         /// Cheack if tow student is a match from first degree 
@@ -72,10 +84,19 @@ namespace LogicLayer
                         .Select(l => l)
                         .Intersect(israelStudent.Languages)
                         .Any());
-            
+
+            if (other.DesiredEnglishLevel <= israelStudent.EnglishLevel)
+            {
+                AddScores();
+            }
             bool matchEnglishLevel = other.DesiredEnglishLevel == DO.EnglishLevels.DONT_MATTER 
                                     || other.DesiredEnglishLevel <= israelStudent.EnglishLevel;
 
+            if(israelStudent.PrefferdGender == other.Gender 
+                && israelStudent.Gender == other.PrefferdGender)
+            {
+                AddScores();
+            }
             bool matchGender = israelStudent.PrefferdGender == other.PrefferdGender
                                || (other.PrefferdGender == DO.Genders.DONT_MATTER
                                     && israelStudent.PrefferdGender == other.Gender)
@@ -84,19 +105,64 @@ namespace LogicLayer
                                || (israelStudent.PrefferdGender == other.Gender
                                     && other.PrefferdGender == israelStudent.Gender);
             
+            if(israelStudent.PrefferdTracks
+                                  .Where(p => p != DO.PrefferdTracks.DONT_MATTER)
+                                  .Intersect(other.PrefferdTracks)
+                                  .Any())
+            {
+                AddScores();
+            }
+
             bool matchTrack = israelStudent.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER)
                               || other.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER) 
                               || israelStudent.PrefferdTracks
                                   .Select(p => p)
                                   .Intersect(other.PrefferdTracks)
                                   .Any();
- 
-            return matchTrack
+
+            IsMatch = matchTrack
                 && matchEnglishLevel
                 && matchGender
                 && matchLenguage
                 && IsMatchingHours(israelStudent, other);
+
+            if (IsMatch)
+            {
+                OrderMatchingLearningTime(CurrentForIsraeliSuggest);
+                OrderMatchingLearningTime(CurrentForWorldSuggest);
+
+            }
+
+            return IsMatch;
         }
+
+        private void OrderMatchingLearningTime(BO.SuggestStudent suggestStudent)
+        {
+            suggestStudent.MatchingLearningTime
+                = (from m in suggestStudent.MatchingLearningTime
+                   group m.TimeInDay.First() by m.Day into times
+                   select new DO.LearningTime
+                   {
+                       Day = times.Key,
+                       TimeInDay = times.Distinct()
+                   }).ToList();
+                }
+
+        private static readonly Dictionary<DO.TimesInDay, TimeInterval> BoundryOfTimeInDay =
+            new Dictionary<DO.TimesInDay, TimeInterval>()
+            {
+                        {DO.TimesInDay.MORNING,
+                            new TimeInterval(TimeSpan.Parse("05:00"), TimeSpan.Parse("12:00"))},
+
+                        {DO.TimesInDay.NOON,
+                            new TimeInterval(TimeSpan.Parse("12:00"), TimeSpan.Parse("18:00"))},
+
+                        {DO.TimesInDay.EVENING,
+                            new TimeInterval(TimeSpan.Parse("18:00"), TimeSpan.Parse("21:00"))},
+
+                        {DO.TimesInDay.NIGHT,
+                            new TimeInterval(TimeSpan.Parse("21:00"), TimeSpan.Parse("02:00"))}
+            };
 
         /// <summary>
         /// ceack for equivalent houers between the tow students
@@ -171,6 +237,12 @@ namespace LogicLayer
                             StudentFromIsraelId = israeliStudent.Id,
                             StudentFromWorldId = worldStudentId
                         });
+                        CurrentForIsraeliSuggest.MatchingLearningTime.Add(ltToAddFromWorld);
+                        CurrentForWorldSuggest.MatchingLearningTime.Add(new DO.LearningTime
+                        {
+                            Day = lt.Day,
+                            TimeInDay = new List<DO.TimesInDay> { t }
+                        });
                         found = true;
                         continue;
                     }
@@ -190,6 +262,12 @@ namespace LogicLayer
                                 MatchingLearningTimeInWorld = ltToAddFromWorld,
                                 StudentFromIsraelId = israeliStudent.Id,
                                 StudentFromWorldId = worldStudentId
+                            });
+                            CurrentForIsraeliSuggest.MatchingLearningTime.Add(ltToAddFromWorld);
+                            CurrentForWorldSuggest.MatchingLearningTime.Add(new DO.LearningTime
+                            {
+                                Day = lt.Day,
+                                TimeInDay = new List<DO.TimesInDay> { t }
                             });
                             found = true;
                             continue;
@@ -212,6 +290,12 @@ namespace LogicLayer
                                 StudentFromIsraelId = israeliStudent.Id,
                                 StudentFromWorldId = worldStudentId
                             });
+                            CurrentForIsraeliSuggest.MatchingLearningTime.Add(ltToAddFromWorld);
+                            CurrentForWorldSuggest.MatchingLearningTime.Add(new DO.LearningTime
+                            {
+                                Day = lt.Day,
+                                TimeInDay = new List<DO.TimesInDay> { t }
+                            });
                             found = true;
                             continue;
                         }
@@ -233,6 +317,12 @@ namespace LogicLayer
                             MatchingLearningTimeInWorld = ltToAddFromWorld,
                             StudentFromIsraelId = israeliStudent.Id,
                             StudentFromWorldId = worldStudentId
+                        });
+                        CurrentForIsraeliSuggest.MatchingLearningTime.Add(ltToAddFromWorld);
+                        CurrentForWorldSuggest.MatchingLearningTime.Add(new DO.LearningTime
+                        {
+                            Day = lt.Day,
+                            TimeInDay = new List<DO.TimesInDay> { t }
                         });
                         found = true;
                         continue;

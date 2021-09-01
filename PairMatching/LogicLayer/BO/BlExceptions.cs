@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace BO
 {
     public class BadPairException : Exception
@@ -19,5 +14,15 @@ namespace BO
         }
 
         public override string ToString() => base.ToString() + $": {FirstStudentName}, {SecondeStudentName}";
+    }
+
+    public class BadStudentException : Exception
+    {
+        public int StudnetId { get; set; }
+
+        public BadStudentException(string message, int id) : base(message) => StudnetId = id;
+
+
+        public override string ToString() => base.ToString();
     }
 }

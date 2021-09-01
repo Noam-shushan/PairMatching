@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using LogicLayer;
 using BO;
 using System.Globalization;
@@ -41,7 +34,7 @@ namespace Gui
                 if (_isPairsUi)
                 {
                     IsStudentsUi = false;
-                    studentControl.Visibility = Visibility.Collapsed;
+                    IsStatisticsUi = false;
                 }
             }
         }
@@ -57,6 +50,11 @@ namespace Gui
                 if (_isStudentsUi)
                 {
                     IsPairsUi = false;
+                    IsStatisticsUi = false;
+                }
+                else
+                {
+                    studentControl.Visibility = Visibility.Collapsed;
                 }
             }
 
@@ -77,21 +75,38 @@ namespace Gui
             }
         }
 
-        bool _isLoaded;
-        public bool IsLoaded
+        bool _isLoadedData;
+        public bool IsLoadedData
         {
-            get => _isLoaded;
+            get => _isLoadedData;
             set
             {
-                _isLoaded = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsLoaded"));
-                if (_isLoaded)
+                _isLoadedData = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsLoadedData"));
+                if (_isLoadedData)
+                {
+                    IsStudentsUi = false;
+                    IsPairsUi = false;
+                    IsStatisticsUi = false;
+                }
+            }
+        }
+
+        bool _isStatisticsUi;
+        public bool IsStatisticsUi
+        {
+            get => _isStatisticsUi;
+            set
+            {
+                _isStatisticsUi = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsStatisticsUi"));
+                if (_isStatisticsUi)
                 {
                     IsStudentsUi = false;
                     IsPairsUi = false;
                 }
             }
-        } 
+        }
         #endregion
 
         public MainWindow()
@@ -104,25 +119,29 @@ namespace Gui
         {
             try
             {
-                IsLoaded = true;
+                IsLoadedData = true;
                 await bl.ReadDataFromSpredsheetAsync();
                 await bl.UpdateAsync();
-                IsLoaded = false;
+
                 if (bl.StudentWithUnvalidEmail.Count > 0)
                 {
-                    var result = string.Join(", ", from s in bl.StudentWithUnvalidEmail select s.Name);
-                    Messages.MessageBoxWarning($"הכתובות מייל של התלמידים הבאים {result}");
+                    var result = string.Join(",\n", from s in bl.StudentWithUnvalidEmail select s.Name);
+                    Messages.MessageBoxWarning($"הכתובות מייל של התלמידים הבאים:\n {result} אינן חוקיות");
                 }
             }
             catch (Exception ex)
             {
                 Messages.MessageBoxError(ex.Message);
             }
+            finally
+            {
+                IsLoadedData = false;
+            }
         }
 
         private async void updateBtn_Click(object sender, RoutedEventArgs e)
         {
-            IsLoaded = true;
+            IsLoadedData = true;
             try
             {
                 await bl.ReadDataFromSpredsheetAsync();
@@ -134,17 +153,23 @@ namespace Gui
             }
             finally
             {
-                IsLoaded = false;
+                IsLoadedData = false;
             }
-        } 
+        }
         #endregion
 
         #region UI Visibility
+        private void statisticsBtn_Click(object sender, RoutedEventArgs e)
+        {
+            IsStatisticsUi = true;
+            spStatistics.DataContext = bl.Statistics;
+        }
         #region Students UI
         private void allStudentBtn_Click(object sender, RoutedEventArgs e)
         {
             IsStudentWitoutPairUi = false;
             IsStudentsUi = true;
+            bl.StudentListFilter = s => !s.IsDeleted;
             lvStudents.ItemsSource = bl.StudentList;
             tbIsThereResultOfSearcing.Text = string.Empty;
         }
@@ -152,7 +177,8 @@ namespace Gui
         private void allStudentWithoutPairBtn_Click(object sender, RoutedEventArgs e)
         {
             IsStudentWitoutPairUi = true;
-            lvStudents.ItemsSource = new ObservableCollection<Student>(bl.GetAllStudentsBy(s => s.IsOpenToMatch));
+            bl.StudentListFilter = s => s.IsOpenToMatch;
+            lvStudents.ItemsSource = bl.StudentList;
 
             tbIsThereResultOfSearcing.Text = string.Empty;
         }
@@ -172,22 +198,31 @@ namespace Gui
         private void allStudentFromWorldBtn_Click(object sender, RoutedEventArgs e)
         {
             IsStudentsUi = true;
-            lvStudents.ItemsSource = new ObservableCollection<Student>(bl.GetAllStudentsBy(s => !s.IsFromIsrael));
+            bl.StudentListFilter = s => !s.IsFromIsrael;
+            lvStudents.ItemsSource = bl.StudentList;
             tbIsThereResultOfSearcing.Text = string.Empty;
         }
 
         private void allStudentFromIsraelBtn_Click(object sender, RoutedEventArgs e)
         {
             IsStudentsUi = true;
-            lvStudents.ItemsSource = new ObservableCollection<Student>(bl.GetAllStudentsBy(s => s.IsFromIsrael));
+            bl.StudentListFilter = s => s.IsFromIsrael;
+            lvStudents.ItemsSource = bl.StudentList;
             tbIsThereResultOfSearcing.Text = string.Empty;
         }
 
         public void RefreshMyStudentsView()
         {
-            lvStudents.ItemsSource = IsStudentWitoutPairUi ?
-                new ObservableCollection<Student>(bl.GetAllStudentsBy(s => s.IsOpenToMatch))
-                : bl.StudentList;
+            if (IsStudentWitoutPairUi)
+            {
+                bl.StudentListFilter = s => s.IsOpenToMatch;
+            }
+            else 
+            {
+                bl.StudentListFilter = s => !s.IsDeleted; 
+            }
+            lvStudents.ItemsSource = bl.StudentList;
+            studentControl.Visibility = Visibility.Collapsed;
             tbIsThereResultOfSearcing.Text = string.Empty;
         }
 
@@ -210,7 +245,8 @@ namespace Gui
             tbIsThereResultOfSearcing.Text = string.Empty;
             if (tbSearch.Text != string.Empty)
             {
-                lvStudents.ItemsSource = new ObservableCollection<Student>(bl.SearchStudents(tbSearch.Text));
+                bl.SearchStudents(tbSearch.Text);
+                lvStudents.ItemsSource = bl.StudentList;
                 if (lvStudents.Items.IsEmpty)
                 {
                     tbIsThereResultOfSearcing.Text = "אין תוצאות";
@@ -220,6 +256,7 @@ namespace Gui
             }
             else
             {
+                bl.StudentListFilter = s => !s.IsDeleted;
                 lvStudents.ItemsSource = bl.StudentList;
             }
         } 
@@ -229,18 +266,35 @@ namespace Gui
         private void allPairsBtn_Click(object sender, RoutedEventArgs e)
         {
             IsPairsUi = true;
+            bl.PairListFilter = p => !p.IsDeleted;
             lvPairs.ItemsSource = bl.PairList;
-            tbIsThereResultOfSearcing.Text = string.Empty;
+        }
+
+        private void allActivePairBtn_Click(object sender, RoutedEventArgs e)
+        {
+            IsPairsUi = true;
+            bl.PairListFilter = p => p.IsActive;
+            lvPairs.ItemsSource = bl.PairList;
+
+        }
+
+        private void allStandbyPairBtn_Click(object sender, RoutedEventArgs e)
+        {
+            IsPairsUi = true;
+            bl.PairListFilter = p => !p.IsActive;
+            lvPairs.ItemsSource = bl.PairList;
         }
 
         private void cbTracksFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var track = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
-            lvPairs.ItemsSource = bl.FilterPairsByTrack(track);
+            bl.FilterPairsByTrack(track);
+            lvPairs.ItemsSource = bl.PairList;
         }
 
         public void RefreshMyPairView()
         {
+            bl.PairListFilter = p => !p.IsDeleted;
             lvPairs.ItemsSource = bl.PairList;
             tbIsThereResultOfSearcing.Text = string.Empty;
         }
@@ -290,9 +344,10 @@ namespace Gui
                     {
                         foreach (var pair in selectedPairs)
                         {
+                            await bl.SendEmailToPairAsync(pair, EmailTypes.ToSecretaryPairBroke);
                             await bl.RemovePairAsync(pair);
                             await bl.SendEmailToPairAsync(pair, EmailTypes.PairBroke);
-                            await bl.SendEmailToPairAsync(pair, EmailTypes.ToSecretaryPairBroke);
+
                         }
                         RefreshMyPairView();
                         RefreshMyStudentsView();
@@ -335,12 +390,6 @@ namespace Gui
                     int id = await bl.MatchAsync(first, second);
                     RefreshMyStudentsView();
                     RefreshMyPairView();
-                    var newPair = bl.PairList.FirstOrDefault(p => p.Id == id);
-                    if (newPair != null)
-                    {
-                        await bl.SendEmailToPairAsync(newPair, EmailTypes.YouGotPair);
-                        await bl.SendEmailToPairAsync(newPair, EmailTypes.ToSecretaryNewPair);
-                    }
                 }
             }
             catch (Exception ex)
@@ -452,14 +501,30 @@ namespace Gui
                     if(Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את החברותא {selectedPair}?"))
                     {
                         await bl.RemovePairAsync(selectedPair);
-                        await bl.SendEmailToPairAsync(selectedPair, EmailTypes.PairBroke);
-                        await bl.SendEmailToPairAsync(selectedPair, EmailTypes.ToSecretaryPairBroke);
                         RefreshMyPairView();
                         RefreshMyStudentsView();
                     }
                 }
             }
             catch (Exception ex)
+            {
+                Messages.MessageBoxError(ex.Message);
+            }
+        }
+
+        private async void activePairBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedPair = (sender as Button).DataContext as Pair;
+            try
+            {
+                if(selectedPair != null)
+                {
+                    await bl.ActivatePairAsync(selectedPair);
+                    RefreshMyPairView();
+                    RefreshMyStudentsView();
+                }
+            }
+            catch(Exception ex)
             {
                 Messages.MessageBoxError(ex.Message);
             }
@@ -545,11 +610,20 @@ namespace Gui
                 return;
             }
             List<Task> tasks = new List<Task>();
-            foreach (var s in selectedStudents)
+            try
             {
-                tasks.Add(bl.SendEmailToStudentAsync(s, EmailTypes.StatusQuiz));
+                foreach (var s in selectedStudents)
+                {
+                    tasks.Add(bl.SendEmailToStudentAsync(s, EmailTypes.StatusQuiz));
+                }
+                await Task.WhenAll(tasks);
+                Messages.MessageBoxSimple("המיילים נשלחו בהצלחה!");
             }
-            await Task.WhenAll(tasks);
+            catch (Exception ex)
+            {
+                Messages.MessageBoxError(ex.Message);
+            }
+
         }
 
         private void editStudentBtn_Click(object sender, RoutedEventArgs e)

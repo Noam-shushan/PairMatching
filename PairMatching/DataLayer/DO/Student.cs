@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DO
 {
+
     public class Student
     {
         /// <summary>
@@ -45,12 +43,17 @@ namespace DO
         /// </summary>
         public Genders Gender { get; set; }
 
+        public DateTime DateOfRegistered { get; set; }
+
         public bool IsSimpleStudent { get; set; } = false;
 
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}
         /// </summary>
         public IEnumerable<PrefferdTracks> PrefferdTracks { get; set; }
+
+        public List<StudentMatchingHistory> MatchingHistories { get; set; } =
+            new List<StudentMatchingHistory>();
 
         /// <summary>
         /// the prefferd gender to lern with

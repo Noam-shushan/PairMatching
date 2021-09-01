@@ -18,7 +18,6 @@ namespace DalMongo
             var connectionString = ConfigurationManager.ConnectionStrings["mongoDB"].ConnectionString;
             var settings = MongoClientSettings.FromConnectionString(connectionString);
             var client = new MongoClient(settings);
-            //var client = new MongoClient();
             db = client.GetDatabase(databaseName);
         }
 

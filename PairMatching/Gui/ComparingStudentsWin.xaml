@@ -7,7 +7,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="CompWin"
-    Title="ComparingStudentsWin"
+    Title="השווה משתתפים"
     Width="1200"
     Height="800"
     Background="{DynamicResource MaterialDesignPaper}"
@@ -65,7 +65,7 @@
             Margin="0,0,5,0"
             BorderBrush="BlueViolet"
             Header="תלמיד מישראל">
-            <local:StudentControl x:Name="studentFromIsreal" />
+            <local:StudentControl x:Name="studentFromIsrael" />
         </GroupBox>
         <GroupBox
             Grid.Row="2"

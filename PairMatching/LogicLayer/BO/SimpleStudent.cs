@@ -41,7 +41,7 @@ namespace BO
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}
         /// </summary>
-        public IEnumerable<PrefferdTracks> PrefferdTracks { get; set; }
+        public IEnumerable<PrefferdTracks> PrefferdTracks { get; set; } = new List<PrefferdTracks>(); 
 
         public bool IsFromIsrael { get => Country == "Israel"; }
 

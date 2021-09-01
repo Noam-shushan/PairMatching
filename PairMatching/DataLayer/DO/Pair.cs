@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DO
 {
@@ -37,6 +33,8 @@ namespace DO
         public DateTime DateOfUpdate { get; set; }
 
         public DateTime DateOfDelete { get; set; }
+
+        public bool IsActive { get; set; } = false;
 
         public string InfoAbout { get; set; } = "";
 

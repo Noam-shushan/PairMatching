@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LogicLayer
 {
     public interface IBL
     {
+        Predicate<BO.Student> StudentListFilter { get; set; }
+
+        BO.Statistics Statistics { get; }
 
         /// <summary>
         /// the students list which wiil use in the Gui layer
         /// </summary>
         ObservableCollection<BO.Student> StudentList { get; set; }
+
+        Predicate<BO.Pair> PairListFilter { get; set; }
 
         ObservableCollection<BO.Pair> PairList { get; set; }
 
@@ -66,7 +69,7 @@ namespace LogicLayer
 
         Task RemovePairAsync(BO.Pair pair);
 
-        IEnumerable<BO.Student> SearchStudents(string preifxName);
+        void SearchStudents(string preifxName);
 
         Task SendEmailToPairAsync(BO.Pair pair, EmailTypes emailTypes);
 
@@ -76,6 +79,8 @@ namespace LogicLayer
 
         void UpdatePair(BO.Pair pair);
 
-        IEnumerable<BO.Pair> FilterPairsByTrack(string track);
+        Task ActivatePairAsync(BO.Pair pair);
+
+        void FilterPairsByTrack(string track);
     }
 }

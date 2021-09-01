@@ -18,5 +18,4 @@ namespace DO
     public enum LearningStyles { DEEP_AND_SLOW, PROGRESSED_FLOWING, TEXTUALL_CENTERED, FREE, DONT_MATTER }
     public enum MatchingDegrees { FIRST, SECONDE}
     public enum MoreLanguages { YES, NO, NOT_ENGLISH }
-
 }

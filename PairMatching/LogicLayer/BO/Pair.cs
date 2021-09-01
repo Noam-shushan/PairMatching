@@ -59,6 +59,8 @@ namespace BO
 
         public DateTime DateOfDelete { get; set; }
 
+        public bool IsActive { get; set; } = false;
+
         public string InfoAbout { get; set; } = "";
 
         /// <summary>

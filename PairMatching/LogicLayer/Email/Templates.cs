@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using System.IO;
+﻿using System.Text;
 using LogicLayer.Properties;
 
 namespace LogicLayer
@@ -55,7 +53,7 @@ namespace LogicLayer
 
         public static MailTemplate ToSecretaryNewPair { get; } = new MailTemplate
         {
-            Subject = "ToSecretaryNewPair",
+            Subject = "חברותא חדשה",
             Template = new StringBuilder()
                     .Append(Resources.ToSecretaryNewPair)
         };

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BO
 {
@@ -15,8 +13,24 @@ namespace BO
         public string SuggestStudentName { get; set; }
         
         public string SuggestStudenCountry { get; set; }
-        
-        public IEnumerable<DO.LearningTime> MatchingLearningTime { get; set; }
+
+        public List<DO.LearningTime> MatchingLearningTime { get; set; }
+            = new List<DO.LearningTime>(); 
+
+        private int _matcingScore;
+        /// <summary>
+        /// Indicates how suitable the proposed student is for the student
+        /// </summary>
+        public int MatcingScore
+        {
+            get { return _matcingScore; }
+            set { _matcingScore = value; }
+        }
+
+        public void AddScore()
+        {
+            MatcingScore = _matcingScore + 1;
+        }
 
         public bool Equals(SuggestStudent other)
         {

@@ -24,4 +24,14 @@ namespace DO
 
         public override string ToString() => base.ToString();
     }
+
+    public class BadStudentException : Exception
+    {
+        public int StudnetId { get; set; }
+
+        public BadStudentException(string message, int id) : base(message) => StudnetId = id;
+
+
+        public override string ToString() => base.ToString();
+    }
 }

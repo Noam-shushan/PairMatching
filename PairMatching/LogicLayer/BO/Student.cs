@@ -56,7 +56,7 @@ namespace BO
         /// <summary>
         /// Desired learning time and day
         /// </summary>
-        public IEnumerable<LearningTime> DesiredLearningTime { get; set; }
+        public IEnumerable<LearningTime> DesiredLearningTime { get; set; } = new List<LearningTime>();
 
         public string DesiredLearningTimeShow
         {
@@ -85,10 +85,18 @@ namespace BO
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}
         /// </summary>
-        public IEnumerable<PrefferdTracks> PrefferdTracks { get; set; }
+        public IEnumerable<PrefferdTracks> PrefferdTracks { get; set; } = new List<PrefferdTracks>();
 
         public string PrefferdTracksShow => IsSimpleStudent ? "" : string.Join(",\n", from p in PrefferdTracks
                                                                                     select Dictionaries.PrefferdTracksDict[p]);
+        public DateTime DateOfRegistered { get; set; }
+        public string DateOfRegisteredShow { get => DateOfRegistered.ToString("d"); }
+
+        public List<StudentMatchingHistory> MatchingHistories { get; set; } =
+                new List<StudentMatchingHistory>();
+
+        public List<StudentMatchingHistoryShow> MatchingHistoriesShow { get; set; } =
+        new List<StudentMatchingHistoryShow>();
 
         public bool IsSelected { get; set; }
 

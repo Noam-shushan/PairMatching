@@ -5,13 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using BO;
 using LogicLayer;
 
@@ -36,7 +29,7 @@ namespace Gui
             set
             {
                 _isPair = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsMatchd"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsPair"));
             }
         }
 
@@ -51,8 +44,8 @@ namespace Gui
             _fromWolrd.IsCompereWin = true;
             SetLayoutOfOpenQ(_fromIsrael);
             SetLayoutOfOpenQ(_fromWolrd);
-            
-            studentFromIsreal.DataContext = _fromIsrael;
+
+            studentFromIsrael.DataContext = _fromIsrael;
             studentFromWorld.DataContext = _fromWolrd;
         }
 
@@ -77,12 +70,6 @@ namespace Gui
                     var mainWin = Application.Current.MainWindow as MainWindow;
                     mainWin.RefreshMyStudentsView();
                     mainWin.RefreshMyPairView();
-                    var newPair = bl.PairList.FirstOrDefault(p => p.Id == id);
-                    if (newPair != null)
-                    {
-                        await bl.SendEmailToPairAsync(newPair, EmailTypes.YouGotPair);
-                        await bl.SendEmailToPairAsync(newPair, EmailTypes.ToSecretaryNewPair);
-                    }
                     Close();
                 }
             }

@@ -5,14 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using System.Net;
 using System.Configuration;
 using System.Net.Configuration;
 using System.IO;
 using RazorEngine;
 using RazorEngine.Templating;
-using System.Net.Mime;
 
 namespace LogicLayer
 {
@@ -43,7 +41,7 @@ namespace LogicLayer
                 mailSettings.Smtp.Network.UserName);
         }
 
-        public async Task SendOpenMailAsync(string fileAttachment = "")
+        public async Task SendOpenMailAsync(string fileAttachment = "", int countForRecoration = 0)
         {
             if (_to == string.Empty)
             {
@@ -86,7 +84,7 @@ namespace LogicLayer
             }
             catch (FormatException)
             {
-                throw new Exception("Email address not valid");
+                throw new FormatException($"The Email address {_to} is not valid");
             }
             catch (Exception ex)
             {
@@ -123,15 +121,13 @@ namespace LogicLayer
             {
                 using (var messege = new MailMessage(FromMail.Address, _to, _subject, _template.ToString()))
                 {
-                    //AlternateView alternateView = 
-                    //    AlternateView.CreateAlternateViewFromString(_template.ToString(), model, MediaTypeNames.Text.Html);
                     messege.IsBodyHtml = true;
                     await Task.Run(() => clientToTest.Send(messege));
                 }
             }
             catch (FormatException)
             {
-                throw new Exception("Email address not valid");
+                throw new FormatException($"The Email address {_to} is not valid");
             }
             catch(Exception ex)
             {
@@ -141,10 +137,18 @@ namespace LogicLayer
 
         public async Task SendAsync<T>(T model, MailTemplate template)
         {
-            var result = Engine.Razor
-                            .RunCompile(template.Template.ToString(),
-                            template.Subject, null, model);
+            string result = "";
+            try
+            {
+                result = Engine.Razor
+                        .RunCompile(template.Template.ToString(),
+                        template.Subject, null, model);
 
+            }
+            catch (TemplateCompilationException)
+            {
+                throw new Exception("בעיה בשליחת המייל רצוי לשלוח מייל פתוח");
+            }
             var temp = new StringBuilder()
                 .Append(result);
             await Subject(template.Subject)

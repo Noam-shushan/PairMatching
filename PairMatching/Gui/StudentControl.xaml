@@ -50,7 +50,7 @@
             BasedOn="{StaticResource myStackPanelStyle}"
             TargetType="StackPanel">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsNotForMathc}" Value="True">
+                <DataTrigger Binding="{Binding IsSimpleStudent}" Value="True">
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
             </Style.Triggers>
@@ -112,14 +112,21 @@
         </Style>
         <Style BasedOn="{StaticResource MaterialDesignListBox}" TargetType="ListBox">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsNotForMathc}" Value="True">
+                <DataTrigger Binding="{Binding IsSimpleStudent}" Value="True">
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style
+            x:Key="HeadersStyle"
+            BasedOn="{StaticResource MaterialDesignFlatButton}"
+            TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+        </Style>
     </UserControl.Resources>
     <Grid FlowDirection="RightToLeft">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
@@ -133,6 +140,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
+
         <StackPanel
             Grid.Row="0"
             Grid.RowSpan="4"
@@ -194,13 +202,14 @@
                 <TextBlock Text="{Binding Path=LanguagesShow}" />
             </StackPanel>
         </StackPanel>
+
         <ListBox
             Grid.Row="4"
             Grid.RowSpan="3"
             Grid.Column="0"
             Grid.ColumnSpan="3"
             Width="550"
-            Height="200"
+            Height="180"
             HorizontalAlignment="Left"
             VerticalAlignment="Top">
             <Expander HorizontalAlignment="Stretch">
@@ -268,6 +277,7 @@
                 </StackPanel>
             </Expander>
         </ListBox>
+
         <Expander
             Grid.Row="0"
             Grid.RowSpan="3"
@@ -357,6 +367,98 @@
                 </StackPanel>
             </GroupBox>
         </Expander>
+
+        <materialDesign:PopupBox
+            Grid.Row="0"
+            Grid.Column="3"
+            ToolTip="היסטוריה">
+            <materialDesign:PopupBox.ToggleContent>
+                <materialDesign:PackIcon
+                    Width="30"
+                    Height="30"
+                    Kind="History" />
+            </materialDesign:PopupBox.ToggleContent>
+            <StackPanel>
+                <StackPanel
+                    Margin="0,0,0,10"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal">
+                    <TextBlock
+                        FontSize="15"
+                        Style="{StaticResource headersDetails}"
+                        Text="תאריך הרשמה:   " />
+                    <TextBlock FontSize="15" Text="{Binding Path=DateOfRegisteredShow}" />
+                </StackPanel>
+                <ListView
+                    x:Name="lvHistory"
+                    Height="250"
+                    ItemsSource="{Binding MatchingHistoriesShow}">
+                    <ListView.View>
+                        <GridView>
+                            <GridView.Columns>
+                                <GridViewColumn
+                                    DisplayMemberBinding="{Binding Path=DateOfMatchShow}"
+                                    Header="תאריך התאמה"
+                                    HeaderContainerStyle="{StaticResource HeadersStyle}" />
+                                <GridViewColumn
+                                    Width="130"
+                                    DisplayMemberBinding="{Binding Path=MatchStudentName}"
+                                    Header="הותאם ל"
+                                    HeaderContainerStyle="{StaticResource HeadersStyle}" />
+                                <GridViewColumn Header="חברותא פעילה?" HeaderContainerStyle="{StaticResource HeadersStyle}">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                                <TextBlock.Style>
+                                                    <Style BasedOn="{StaticResource MaterialDesignBody1TextBlock}" TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                                <Setter Property="Text" Value="כן" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                                                <Setter Property="Text" Value="לא" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="חברותא נמחקה?" HeaderContainerStyle="{StaticResource HeadersStyle}">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                                <TextBlock.Style>
+                                                    <Style BasedOn="{StaticResource MaterialDesignBody1TextBlock}" TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsUnMatch}" Value="True">
+                                                                <Setter Property="Text" Value="כן" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding IsUnMatch}" Value="False">
+                                                                <Setter Property="Text" Value="לא" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn
+                                    DisplayMemberBinding="{Binding Path=DateOfUnMatchShow}"
+                                    Header="תאריך מחיקה"
+                                    HeaderContainerStyle="{StaticResource HeadersStyle}" />
+                                <GridViewColumn
+                                    DisplayMemberBinding="{Binding Path=TracksHistoryShow}"
+                                    Header="היסטורית מסלולים"
+                                    HeaderContainerStyle="{StaticResource HeadersStyle}" />
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
+        </materialDesign:PopupBox>
 
     </Grid>
 </UserControl>

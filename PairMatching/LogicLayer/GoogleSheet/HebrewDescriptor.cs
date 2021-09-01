@@ -1,9 +1,7 @@
 ﻿using DO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Configuration;
 
 namespace LogicLayer
 {
@@ -11,8 +9,7 @@ namespace LogicLayer
     {
         public string Range { get => "A2:Z"; }
 
-        public string SpreadsheetId { get => "17gvL05Ar-0nCAKvLtAj_HUXDCmXs5L61qk_lkBSUIFo"; }
-
+        public string SpreadsheetId { get; }
         public string SheetName { get => "טופס רישום שלהבת תשפ\"א (תגובות)"; }
 
         public DateTime LastUpdate { get; set; }
@@ -20,6 +17,7 @@ namespace LogicLayer
         public HebrewDescriptor(LastDataOfSpredsheet lastDateOfUpdate)
         {
             LastUpdate = lastDateOfUpdate.HebrewSheets;
+            SpreadsheetId = ConfigurationManager.AppSettings["hebrew spreadsheet id"];
         }
 
         public EnglishLevels GetEnglishLevel(string value)

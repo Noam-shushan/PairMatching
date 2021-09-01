@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DataLayer;
 using DO;
@@ -69,29 +68,40 @@ namespace DalMongo
 
         public void RemoveStudent(int id)
         {
+            Student student;
             try
             {
-                var student = db.LoadeRecordById<Student>(studentsTable, id);
-                student.IsDeleted = true;
-                db.UpsertRecord(studentsTable, id, student);
+                student = db.LoadeRecordById<Student>(studentsTable, id);
+                if (student != null && !student.IsDeleted)
+                {
+                    student.IsDeleted = true;
+                    db.UpsertRecord(studentsTable, id, student);
+                    return;
+                }
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
+            throw new BadStudentException($"can not find studet number {id} or this student is deletet", id);
         }
 
         public Student GetStudent(int id)
         {
+            Student student;
             try
             {
-                var student = db.LoadeRecordById<Student>(studentsTable, id);
-                return student;
+                student = db.LoadeRecordById<Student>(studentsTable, id);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
+            if (student != null && !student.IsDeleted)
+            {
+                return student;
+            }
+            throw new BadStudentException($"can not find studet number {id} or this student is deletet", id);
         }
 
         public IEnumerable<Student> GetAllStudents()
@@ -99,7 +109,9 @@ namespace DalMongo
             try
             {
                 var students = db.LoadeRecords<Student>(studentsTable);
-                return students;
+                return from s in students
+                       where !s.IsDeleted
+                       select s;
             }
             catch (Exception ex)
             { 
@@ -113,7 +125,7 @@ namespace DalMongo
             {
                 var students = db.LoadeRecords<Student>(studentsTable);
                 return from s in students
-                       where predicate(s)
+                       where predicate(s) && !s.IsDeleted
                        select s;
             }
             catch (Exception ex)
@@ -213,34 +225,46 @@ namespace DalMongo
 
         public Pair GetPair(int id)
         {
+            Pair pair;
             try
             {
-                var result = db.LoadeRecordById<Pair>(pairsTable, id);
-                return result;
+                pair = db.LoadeRecordById<Pair>(pairsTable, id);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
+            if(pair != null && !pair.IsDeleted)
+            {
+                return pair;
+            }
+            if(pair == null)
+            {
+                throw new BadPairException("can not find the pair", 0, 0);
+            }
+            throw new BadPairException("can not find the pair of is removed", 
+                pair.StudentFromIsraelId, pair.StudentFromWorldId);
+
         }
 
         public Pair GetPair(int studFromIsraelId, int studFromWorldId)
         {
+            Pair pair;
             try
             {
-                var result = GetAllPairsBy(p => p.StudentFromIsraelId == studFromIsraelId
+                pair = GetAllPairsBy(p => p.StudentFromIsraelId == studFromIsraelId
                     && p.StudentFromWorldId == studFromWorldId)
                     .FirstOrDefault();
-                if(result != null)
-                {
-                    return result;
-                }
-                throw new BadPairException("can not find the pair", studFromWorldId, studFromIsraelId);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message); 
             }
+            if (pair != null)
+            {
+                return pair;
+            }
+            throw new BadPairException("can not find the pair", studFromWorldId, studFromIsraelId);
         }
         #endregion
 
