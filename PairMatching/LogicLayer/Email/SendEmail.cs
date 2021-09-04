@@ -79,7 +79,7 @@ namespace LogicLayer
                         Attachment attachment = new Attachment(fileAttachment);
                         messege.Attachments.Add(attachment);
                     }
-                    await Task.Run(() => clientToTest.Send(messege));
+                    await Task.Run(() => client.Send(messege));
                 }
             }
             catch (FormatException)
@@ -122,7 +122,7 @@ namespace LogicLayer
                 using (var messege = new MailMessage(FromMail.Address, _to, _subject, _template.ToString()))
                 {
                     messege.IsBodyHtml = true;
-                    await Task.Run(() => clientToTest.Send(messege));
+                    await Task.Run(() => client.Send(messege));
                 }
             }
             catch (FormatException)

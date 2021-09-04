@@ -218,6 +218,14 @@
                 </Expander.Header>
                 <StackPanel Style="{StaticResource contentOfOpenQ}">
                     <TextBlock Text="{Binding DesiredLearningTimeShow}" />
+                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
+                        <materialDesign:PopupBox.ToggleContent>
+                            <materialDesign:PackIcon Kind="Eye" />
+                        </materialDesign:PopupBox.ToggleContent>
+                        <StackPanel Margin="20">
+                            <TextBlock Text="{Binding DesiredLearningTimeShow}" />
+                        </StackPanel>
+                    </materialDesign:PopupBox>
                 </StackPanel>
             </Expander>
             <Expander HorizontalAlignment="Stretch">
@@ -226,6 +234,14 @@
                 </Expander.Header>
                 <StackPanel Style="{StaticResource contentOfOpenQ}">
                     <TextBlock Text="{Binding OpenQuestionsDict[Personal information]}" />
+                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
+                        <materialDesign:PopupBox.ToggleContent>
+                            <materialDesign:PackIcon Kind="Eye" />
+                        </materialDesign:PopupBox.ToggleContent>
+                        <StackPanel Margin="20">
+                            <TextBlock Text="{Binding OpenQuestionsDict[Personal information]}" />
+                        </StackPanel>
+                    </materialDesign:PopupBox>
                 </StackPanel>
             </Expander>
             <Expander HorizontalAlignment="Stretch">
@@ -234,6 +250,14 @@
                 </Expander.Header>
                 <StackPanel Style="{StaticResource contentOfOpenQ}">
                     <TextBlock Text="{Binding OpenQuestionsDict[Personality trates]}" />
+                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
+                        <materialDesign:PopupBox.ToggleContent>
+                            <materialDesign:PackIcon Kind="Eye" />
+                        </materialDesign:PopupBox.ToggleContent>
+                        <StackPanel Margin="20">
+                            <TextBlock Text="{Binding OpenQuestionsDict[Personality trates]}" />
+                        </StackPanel>
+                    </materialDesign:PopupBox>
                 </StackPanel>
             </Expander>
             <Expander HorizontalAlignment="Stretch">
@@ -242,6 +266,14 @@
                 </Expander.Header>
                 <StackPanel Style="{StaticResource contentOfOpenQ}">
                     <TextBlock Text="{Binding OpenQuestionsDict[What are your hopes and expectations from this program]}" />
+                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
+                        <materialDesign:PopupBox.ToggleContent>
+                            <materialDesign:PackIcon Kind="Eye" />
+                        </materialDesign:PopupBox.ToggleContent>
+                        <StackPanel Margin="20">
+                            <TextBlock Text="{Binding OpenQuestionsDict[What are your hopes and expectations from this program]}" />
+                        </StackPanel>
+                    </materialDesign:PopupBox>
                 </StackPanel>
             </Expander>
             <Expander HorizontalAlignment="Stretch">
@@ -250,6 +282,14 @@
                 </Expander.Header>
                 <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
                     <TextBlock Text="{Binding OpenQuestionsDict[Additional information]}" />
+                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
+                        <materialDesign:PopupBox.ToggleContent>
+                            <materialDesign:PackIcon Kind="Eye" />
+                        </materialDesign:PopupBox.ToggleContent>
+                        <StackPanel Margin="20">
+                            <TextBlock Text="{Binding OpenQuestionsDict[Additional information]}" />
+                        </StackPanel>
+                    </materialDesign:PopupBox>
                 </StackPanel>
             </Expander>
             <Expander HorizontalAlignment="Stretch">
@@ -258,6 +298,14 @@
                 </Expander.Header>
                 <StackPanel Style="{StaticResource contentOfOpenQ}">
                     <TextBlock Text="{Binding OpenQuestionsDict[Who introduced you to this program]}" />
+                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
+                        <materialDesign:PopupBox.ToggleContent>
+                            <materialDesign:PackIcon Kind="Eye" />
+                        </materialDesign:PopupBox.ToggleContent>
+                        <StackPanel Margin="20">
+                            <TextBlock Text="{Binding OpenQuestionsDict[Who introduced you to this program]}" />
+                        </StackPanel>
+                    </materialDesign:PopupBox>
                 </StackPanel>
             </Expander>
             <Expander HorizontalAlignment="Stretch" Style="{StaticResource hideExpenderForStudentFromIsrael}">
@@ -266,6 +314,14 @@
                 </Expander.Header>
                 <StackPanel Style="{StaticResource contentOfOpenQ}">
                     <TextBlock Text="{Binding OpenQuestionsDict[Country and City of residence]}" />
+                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
+                        <materialDesign:PopupBox.ToggleContent>
+                            <materialDesign:PackIcon Kind="Eye" />
+                        </materialDesign:PopupBox.ToggleContent>
+                        <StackPanel Margin="20">
+                            <TextBlock Text="{Binding OpenQuestionsDict[Country and City of residence]}" />
+                        </StackPanel>
+                    </materialDesign:PopupBox>
                 </StackPanel>
             </Expander>
             <Expander HorizontalAlignment="Stretch">
@@ -274,6 +330,14 @@
                 </Expander.Header>
                 <StackPanel Style="{StaticResource contentOfOpenQ}">
                     <TextBlock Text="{Binding InfoAbout}" />
+                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
+                        <materialDesign:PopupBox.ToggleContent>
+                            <materialDesign:PackIcon Kind="Eye" />
+                        </materialDesign:PopupBox.ToggleContent>
+                        <StackPanel Margin="20">
+                            <TextBlock Text="{Binding InfoAbout}" />
+                        </StackPanel>
+                    </materialDesign:PopupBox>
                 </StackPanel>
             </Expander>
         </ListBox>

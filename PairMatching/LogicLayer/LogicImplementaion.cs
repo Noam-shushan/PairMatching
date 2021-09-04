@@ -300,6 +300,7 @@ namespace LogicLayer
         #endregion
 
         #region Pair matching
+
         public void UpdatePair(BO.Pair pair)
         {
             var pairDo = pair.CopyPropertiesToNew(typeof(DO.Pair)) as DO.Pair;
@@ -313,8 +314,9 @@ namespace LogicLayer
 
                 var matchHistFromIsrael = studFromIsrael
                     .MatchingHistories
-                    .Find(mh => mh.MatchStudentId == studFromWorld.Id);              
-                if(matchHistFromIsrael != null && matchHistFromIsrael
+                    .Find(mh => mh.MatchStudentId == studFromWorld.Id 
+                    && !mh.IsUnMatch);
+                if (matchHistFromIsrael != null && matchHistFromIsrael
                     .TracksHistory
                     .Find(t => t.Item2 == pair.PrefferdTracks) == null)
                 {
@@ -325,7 +327,8 @@ namespace LogicLayer
 
                 var matchHistFromWorld = studFromWorld
                     .MatchingHistories
-                    .Find(mh => mh.MatchStudentId == studFromIsrael.Id);
+                    .Find(mh => mh.MatchStudentId == studFromIsrael.Id
+                            && !mh.IsUnMatch);
                 if (matchHistFromWorld != null && matchHistFromWorld
                     .TracksHistory
                     .Find(t => t.Item2 == pair.PrefferdTracks) == null)
@@ -357,12 +360,14 @@ namespace LogicLayer
 
                 var matchHistFromIsrael = studFromIsrael
                     .MatchingHistories
-                    .Find(mh => mh.MatchStudentId == studFromWorld.Id);
+                    .Find(mh => mh.MatchStudentId == studFromWorld.Id
+                    && !mh.IsUnMatch);
                 matchHistFromIsrael.IsActive = true;
 
                 var matchHistFromWorld = studFromWorld
                     .MatchingHistories
-                    .Find(mh => mh.MatchStudentId == studFromIsrael.Id);
+                    .Find(mh => mh.MatchStudentId == studFromIsrael.Id
+                    && !mh.IsUnMatch);
                 matchHistFromWorld.IsActive = true;
 
                 UpdateStudent(studFromIsrael);
@@ -403,29 +408,9 @@ namespace LogicLayer
 
                 var metchTrack = GetPrefferdTrackOfPair(first, seconde);
 
-                var matchHistoryFirst = new DO.StudentMatchingHistory
-                {
-                    DateOfMatch = DateTime.Now,
-                    IsUnMatch = false,
-                    MatchStudentName = seconde.Name,
-                    MatchStudentId = seconde.Id
-                };
-                matchHistoryFirst
-                    .TracksHistory
-                    .Add(new Tuple<DateTime, DO.PrefferdTracks>(DateTime.Now, metchTrack));
-                first.MatchingHistories.Add(matchHistoryFirst);
+                first.MatchingHistories.Add(GetNewMatchingHistory(seconde, metchTrack));
 
-                var matchHistorySeconde = new DO.StudentMatchingHistory
-                {
-                    DateOfMatch = DateTime.Now,
-                    IsUnMatch = false,
-                    MatchStudentName = first.Name,
-                    MatchStudentId = first.Id
-                };
-                matchHistorySeconde
-                    .TracksHistory
-                    .Add(new Tuple<DateTime, DO.PrefferdTracks>(DateTime.Now, metchTrack));
-                seconde.MatchingHistories.Add(matchHistorySeconde);
+                seconde.MatchingHistories.Add(GetNewMatchingHistory(first, metchTrack));
 
                 var firstDo = first.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
                 var secondeDo = seconde.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
@@ -467,6 +452,21 @@ namespace LogicLayer
             }
         }
 
+        private DO.StudentMatchingHistory GetNewMatchingHistory(BO.Student secondeStudent, DO.PrefferdTracks track)
+        {
+            var matchHistoryFirst = new DO.StudentMatchingHistory
+            {
+                DateOfMatch = DateTime.Now,
+                IsUnMatch = false,
+                MatchStudentName = secondeStudent.Name,
+                MatchStudentId = secondeStudent.Id
+            };
+            matchHistoryFirst
+                .TracksHistory
+                .Add(new Tuple<DateTime, DO.PrefferdTracks>(DateTime.Now, track));
+            return matchHistoryFirst;
+        }
+
         /// <summary>
         /// Get all pairs from the data base
         /// </summary>
@@ -489,12 +489,14 @@ namespace LogicLayer
                 studFromWorldDO.MatchTo.Remove(studFromIsraelDO.Id);
 
                 var matchHisIsrael = studFromIsraelDO.MatchingHistories
-                    .Find(mh => mh.MatchStudentId == studFromWorldDO.Id);
+                    .Find(mh => mh.MatchStudentId == studFromWorldDO.Id
+                    && !mh.IsUnMatch);
                 matchHisIsrael.IsUnMatch = true;
                 matchHisIsrael.DateOfUnMatch = DateTime.Now;
 
                 var matchHisWorld = studFromWorldDO.MatchingHistories
-                    .Find(mh => mh.MatchStudentId == studFromIsraelDO.Id);
+                    .Find(mh => mh.MatchStudentId == studFromIsraelDO.Id
+                    && !mh.IsUnMatch);
                 matchHisWorld.IsUnMatch = true;
                 matchHisWorld.DateOfUnMatch = DateTime.Now;
 
