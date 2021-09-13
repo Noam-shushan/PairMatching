@@ -306,8 +306,8 @@ namespace Gui
             {
                 return;
             }
-            var first = bl.StudentList.FirstOrDefault(s => s.Id == selectedPair.StudentFromIsrael.Id);
-            var seconde = bl.StudentList.FirstOrDefault(s => s.Id == selectedPair.StudentFromWorld.Id);
+            var first = bl.GetStudent(s => s.Id == selectedPair.StudentFromIsrael.Id);
+            var seconde = bl.GetStudent(s => s.Id == selectedPair.StudentFromWorld.Id);
             if (first.IsFromIsrael)
             {
                 new ComparingStudentsWin(first, seconde) 
@@ -474,7 +474,7 @@ namespace Gui
             {
                 if (selectedPair != null)
                 {
-                    var pairToUpdate = bl.PairList.FirstOrDefault(p => p.Id == selectedPair.Id);
+                    var pairToUpdate = bl.GetPair(selectedPair.Id);
                     if (_trackForEditPair != "")
                     {
                         pairToUpdate.EditPrefferdTracks(_trackForEditPair);

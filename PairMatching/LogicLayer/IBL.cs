@@ -79,6 +79,10 @@ namespace LogicLayer
 
         void UpdatePair(BO.Pair pair);
 
+        BO.Pair GetPair(Predicate<BO.Pair> predicate);
+
+        BO.Pair GetPair(int pairId);
+
         Task ActivatePairAsync(BO.Pair pair);
 
         void FilterPairsByTrack(string track);

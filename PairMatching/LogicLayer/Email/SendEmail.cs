@@ -41,7 +41,7 @@ namespace LogicLayer
                 mailSettings.Smtp.Network.UserName);
         }
 
-        public async Task SendOpenMailAsync(string fileAttachment = "", int countForRecoration = 0)
+        public async Task SendOpenMailAsync(string fileAttachment = "")
         {
             if (_to == string.Empty)
             {

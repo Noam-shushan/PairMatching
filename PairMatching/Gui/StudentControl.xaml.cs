@@ -104,10 +104,5 @@ namespace Gui
                 Messages.MessageBoxError(ex.Message);
             }
         }
-
-        private void Expander_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-
-        }
     }
 }

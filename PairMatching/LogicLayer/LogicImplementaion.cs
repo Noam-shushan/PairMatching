@@ -24,23 +24,24 @@ namespace LogicLayer
 
         private readonly SendEmail sendEmail = SendEmail.Instance;
 
+        #region Properties
         public event PropertyChangedEventHandler PropertyChanged;
 
         public static Predicate<BO.Student> BaseStudentsFilter = s => !s.IsDeleted;
         Predicate<BO.Student> _studentListFilter = BaseStudentsFilter;
-        public Predicate<BO.Student> StudentListFilter 
+        public Predicate<BO.Student> StudentListFilter
         {
             get => _studentListFilter;
             set
             {
                 _studentListFilter = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("StudentListFilter"));
-            } 
+            }
         }
 
-        public BO.Statistics Statistics 
+        public BO.Statistics Statistics
         {
-            get 
+            get
             {
                 return new BO.Statistics
                 {
@@ -59,9 +60,9 @@ namespace LogicLayer
         /// <summary>
         /// the students list that keep all the data of the students
         /// </summary>
-        public ObservableCollection<BO.Student> StudentList 
+        public ObservableCollection<BO.Student> StudentList
         {
-            get 
+            get
             {
                 if (StudentListFilter != BaseStudentsFilter)
                 {
@@ -72,18 +73,18 @@ namespace LogicLayer
                 {
                     return _studentList;
                 }
-            } 
+            }
             set
             {
                 _studentList = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("StudentList"));
-            } 
+            }
         }
 
         public static Predicate<BO.Pair> BasePairsFilter = p => !p.IsDeleted;
         Predicate<BO.Pair> _pairListFilter = BasePairsFilter;
-        public Predicate<BO.Pair> PairListFilter 
-        { 
+        public Predicate<BO.Pair> PairListFilter
+        {
             get => _pairListFilter;
             set
             {
@@ -96,11 +97,11 @@ namespace LogicLayer
         /// <summary>
         /// the students list that keep all the data of the students
         /// </summary>
-        public ObservableCollection<BO.Pair> PairList 
+        public ObservableCollection<BO.Pair> PairList
         {
             get
             {
-                if(PairListFilter != BasePairsFilter)
+                if (PairListFilter != BasePairsFilter)
                 {
                     return new ObservableCollection<BO.Pair>(_pairList.Where(p => PairListFilter(p)));
                 }
@@ -108,18 +109,19 @@ namespace LogicLayer
                 {
                     return _pairList;
                 }
-               
+
             }
             set
             {
                 _pairList = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PairList"));
-            } 
+            }
         }
-            
+
 
         public List<BO.SimpleStudent> StudentWithUnvalidEmail { get; set; } =
-             new List<BO.SimpleStudent>();
+             new List<BO.SimpleStudent>(); 
+        #endregion
 
         #region Singelton referens of the logic layer
         public static IBL Instance { get; } = new LogicImplementaion();
@@ -133,16 +135,24 @@ namespace LogicLayer
         /// </summary>
         public async Task ReadDataFromSpredsheetAsync()
         {
+            DO.LastDataOfSpredsheet lastDate, oldDate;
             try
             {
                 // get the last date of the update of the sheets to read from there
-                var lastDate = dal.GetLastDateOfSheets();
-                var oldDate = new DO.LastDataOfSpredsheet 
-                { 
-                    EnglishSheets = lastDate.EnglishSheets, 
-                    HebrewSheets = lastDate.HebrewSheets 
+                lastDate = dal.GetLastDateOfSheets();
+                oldDate = new DO.LastDataOfSpredsheet
+                {
+                    EnglishSheets = lastDate.EnglishSheets,
+                    HebrewSheets = lastDate.HebrewSheets
                 };
-
+            }
+            catch (Exception ex1)
+            {
+                await sendEmail.Error(ex1);
+                throw new Exception("באג לא ידוע, פרטים על הבאג נשלחו למפתח");
+            }
+            try
+            {
                 // create parser for the spradsheets
                 GoogleSheetParser parser = new GoogleSheetParser();
                 // read the english sheet
@@ -165,14 +175,16 @@ namespace LogicLayer
                 await dal.SaveAllDataFromSpredsheetAsync();
 
                 await SendRegesterEmailForNewStudent();
-
-                // update the last date of updating of the sheets
-                dal.UpdateLastDateOfSheets(lastDate);
             }
             catch (Exception ex)
             {
                 await sendEmail.Error(ex);
                 throw new Exception("באג לא ידוע, פרטים על הבאג נשלחו למפתח");
+            }
+            finally
+            {
+                // update the last date of updating of the sheets
+                dal.UpdateLastDateOfSheets(lastDate);
             }
         }
 
@@ -300,6 +312,15 @@ namespace LogicLayer
         #endregion
 
         #region Pair matching
+        public BO.Pair GetPair(Predicate<BO.Pair> predicate)
+        {
+            return _pairList.FirstOrDefault(p => predicate(p));
+        }
+
+        public BO.Pair GetPair(int pairId)
+        {
+            return _pairList.FirstOrDefault(p => p.Id == pairId);
+        }
 
         public void UpdatePair(BO.Pair pair)
         {
