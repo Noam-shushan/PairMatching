@@ -9,8 +9,6 @@
 *.user
 *.userosscache
 *.sln.docstates
-bin
-obj
 packages
 client_secret.json
 pairmatching.json

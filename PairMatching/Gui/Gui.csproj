@@ -151,9 +151,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Content Include="client_secret.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Gui_TemporaryKey.pfx" />
     <Content Include="pairmatching.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
