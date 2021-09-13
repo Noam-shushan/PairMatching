@@ -481,7 +481,6 @@ namespace Gui
                         _trackForEditPair = "";
                     }
                     lvPairs.Items.Refresh();
-                    
                     bl.UpdatePair(pairToUpdate);
                 }
             }
