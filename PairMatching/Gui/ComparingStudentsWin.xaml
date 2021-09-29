@@ -11,6 +11,7 @@
     Width="1200"
     Height="800"
     Background="{DynamicResource MaterialDesignPaper}"
+    FlowDirection="RightToLeft"
     FontFamily="{DynamicResource MaterialDesignFont}"
     FontSize="15"
     TextElement.FontSize="13"
@@ -23,7 +24,7 @@
     <Window.Resources>
         <Style
             x:Key="IsPairBtnVis"
-            BasedOn="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+            BasedOn="{StaticResource MaterialDesignFlatLightBgButton}"
             TargetType="Button">
             <Setter Property="FontSize" Value="15" />
             <Style.Triggers>
@@ -34,46 +35,26 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
-    <Grid FlowDirection="RightToLeft">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition Width="10" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="10" />
-            <RowDefinition Height="50" />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition Height="10" />
-        </Grid.RowDefinitions>
+    <StackPanel Margin="10">
         <Button
             x:Name="matchBtn"
-            Grid.Row="1"
-            Grid.Column="1"
-            Grid.ColumnSpan="2"
-            Width="100"
+            Margin="0,0,0,5"
+            HorizontalAlignment="Center"
             VerticalAlignment="Top"
             Click="matchBtn_Click"
             Content="התאם"
             Style="{StaticResource IsPairBtnVis}" />
-        <GroupBox
-            Grid.Row="2"
-            Grid.RowSpan="2"
-            Grid.Column="1"
-            Margin="0,0,5,0"
-            BorderBrush="BlueViolet"
-            Header="תלמיד מישראל">
-            <local:StudentControl x:Name="studentFromIsrael" />
-        </GroupBox>
-        <GroupBox
-            Grid.Row="2"
-            Grid.RowSpan="2"
-            Grid.Column="2"
-            BorderBrush="BlueViolet"
-            Header="תלמיד מהתפוצות">
-            <local:StudentControl x:Name="studentFromWorld" />
-        </GroupBox>
-    </Grid>
+
+        <StackPanel Orientation="Horizontal">
+            <GroupBox
+                Margin="0,0,10,0"
+                BorderBrush="BlueViolet"
+                Header="תלמיד מישראל">
+                <local:StudentControl x:Name="studentFromIsrael" />
+            </GroupBox>
+            <GroupBox BorderBrush="BlueViolet" Header="תלמיד מהתפוצות">
+                <local:StudentControl x:Name="studentFromWorld" />
+            </GroupBox>
+        </StackPanel>
+    </StackPanel>
 </Window>

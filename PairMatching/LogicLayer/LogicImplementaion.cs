@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataLayer;
+using LogicLayer.FindMatching;
 
 namespace LogicLayer
 {
@@ -20,7 +21,7 @@ namespace LogicLayer
         /// <summary>
         /// maching object to cheack all the condition to make a match
         /// </summary>
-        private Matching matcher = new Matching();
+        private Matching matcher = Matching.Instance;
 
         private readonly SendEmail sendEmail = SendEmail.Instance;
 
@@ -120,10 +121,10 @@ namespace LogicLayer
 
 
         public List<BO.SimpleStudent> StudentWithUnvalidEmail { get; set; } =
-             new List<BO.SimpleStudent>(); 
+             new List<BO.SimpleStudent>();
         #endregion
 
-        #region Singelton referens of the logic layer
+        #region Singleton referens of the logic layer
         public static IBL Instance { get; } = new LogicImplementaion();
 
         private LogicImplementaion() { }
@@ -771,6 +772,10 @@ namespace LogicLayer
                                                     select l.TimeInDay.Count()).Count()
                                                     descending
                                            select s;
+            if(student.FirstSuggestStudents.Count() == 0)
+            {
+                student.FirstSuggestStudents = GetMatchingStudents(student, matcher.IsFirstMatching, true);
+            }
 
             // find matching students from seconde rank to this one
             // and order them by the number of matcing houers
@@ -779,6 +784,10 @@ namespace LogicLayer
                                                       select l.TimeInDay.Count()).Count()
                                                     descending
                                              select s;
+            if(student.SecondeSuggestStudents.Count() == 0)
+            {
+                student.SecondeSuggestStudents = GetMatchingStudents(student, matcher.IsMatchingStudentsCritical, true);
+            }
 
             return student;
         }
@@ -802,7 +811,7 @@ namespace LogicLayer
         }
 
 
-        private IEnumerable<BO.SuggestStudent> GetMatchingStudents(BO.Student student, Func<BO.Student, BO.Student, bool> func)
+        private IEnumerable<BO.SuggestStudent> GetMatchingStudents(BO.Student student, Func<BO.Student, BO.Student, bool, bool> func, bool flagNotFound = false)
         {
             var result = new List<BO.SuggestStudent>();
             var studList = GetOptionalStudents(student);
@@ -811,7 +820,7 @@ namespace LogicLayer
                 if (student.IsFromIsrael)
                 {
                     matcher.BuildMatch(student, other);
-                    if (func(student, other))
+                    if (func(student, other, flagNotFound))
                     {
                         var matchingLearningTime = from mt in matcher.MatchingTimes
                                                     where mt.StudentFromIsraelId == student.Id
@@ -837,7 +846,7 @@ namespace LogicLayer
                 else
                 {
                     matcher.BuildMatch(other, student);
-                    if (func(other, student))
+                    if (func(other, student, flagNotFound))
                     {
                         var matchingLearningTime = from mt in matcher.MatchingTimes
                                                     where mt.StudentFromWorldId == student.Id

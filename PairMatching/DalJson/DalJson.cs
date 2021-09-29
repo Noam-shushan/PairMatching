@@ -248,7 +248,8 @@ namespace DalJson
 
         public LastDataOfSpredsheet GetLastDateOfSheets()
         {
-            return JsonTools.LoadOne<LastDataOfSpredsheet>(lastDateOfSheetsPath);
+            var result = JsonTools.LoadOne<LastDataOfSpredsheet>(lastDateOfSheetsPath);
+            return result != null ? result : new LastDataOfSpredsheet();
         }
         #endregion
     }

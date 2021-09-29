@@ -137,7 +137,7 @@ namespace LogicLayer
 
         public async Task SendAsync<T>(T model, MailTemplate template)
         {
-            string result = "";
+            string result;
             try
             {
                 result = Engine.Razor

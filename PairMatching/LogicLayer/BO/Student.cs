@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using DO;
 using LogicLayer;
+using LogicLayer.FindMatching;
 using RazorEngine.Templating;
 
 namespace BO
@@ -66,7 +67,8 @@ namespace BO
                 {
                     return "";
                 }
-                var diff = !IsFromIsrael ? $"\nהפרש זמן מישראל: {ReverseString(Matching.GetDifferenceUtc(UtcOffset).Hours.ToString())}" : "";
+                var diffVal = MatchinHouers.GetDifferenceUtc(UtcOffset).Hours;
+                var diff = !IsFromIsrael ? $"\nהפרש זמן מישראל: {Math.Abs(diffVal)} שעות " + (diffVal < 0 ? "אחורה" : "קדימה")  : "";
                 return string.Join("\n", from l in DesiredLearningTime
                               let day = Dictionaries.DaysDict[l.Day] + " : "
                               let time = string.Join(", ", from t in l.TimeInDay
@@ -75,11 +77,13 @@ namespace BO
             }
         }
 
-        string ReverseString(string s)
+        public Dictionary<string, string> OpenQuestionsHeaders
         {
-            char[] array = s.ToCharArray();
-            Array.Reverse(array);
-            return new string(array);
+            get
+            {
+                return IsFromIsrael ? Dictionaries.OpenQuestionsHeaderInHebrow :
+                    Dictionaries.OpenQuestionsHeaderInEnglish;
+            }
         }
 
         /// <summary>
@@ -183,7 +187,7 @@ namespace BO
 
         public bool IsCompereWin { get; set; }
 
-        public IEnumerable<string> Languages { get; set; } = new List<string>();
+        public List<string> Languages { get; set; } = new List<string>();
 
         public string LanguagesShow 
         {

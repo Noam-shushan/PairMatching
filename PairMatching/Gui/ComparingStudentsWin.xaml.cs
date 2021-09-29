@@ -38,25 +38,12 @@ namespace Gui
             InitializeComponent();
             _fromIsrael = fromIsrael.Clone();
             _fromWolrd = fromWolrd.Clone();
-
             
             _fromIsrael.IsCompereWin = true;
             _fromWolrd.IsCompereWin = true;
-            SetLayoutOfOpenQ(_fromIsrael);
-            SetLayoutOfOpenQ(_fromWolrd);
 
             studentFromIsrael.DataContext = _fromIsrael;
             studentFromWorld.DataContext = _fromWolrd;
-        }
-
-        private void SetLayoutOfOpenQ(Student student)
-        {
-            Dictionary<string, string> openQA = new Dictionary<string, string>();
-            foreach(var o in student.OpenQuestionsDict)
-            {
-                openQA.Add(o.Key, o.Value.SpliceText(6));
-            }
-            student.OpenQuestionsDict = openQA;
         }
 
         private async void matchBtn_Click(object sender, RoutedEventArgs e)

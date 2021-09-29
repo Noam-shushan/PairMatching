@@ -170,28 +170,20 @@ namespace Gui
             IsStudentWitoutPairUi = false;
             IsStudentsUi = true;
             bl.StudentListFilter = s => !s.IsDeleted;
-            lvStudents.ItemsSource = bl.StudentList;
-            tbIsThereResultOfSearcing.Text = string.Empty;
+            studentsListControl.SetItemsSource();
         }
 
         private void allStudentWithoutPairBtn_Click(object sender, RoutedEventArgs e)
         {
             IsStudentWitoutPairUi = true;
             bl.StudentListFilter = s => s.IsOpenToMatch;
-            lvStudents.ItemsSource = bl.StudentList;
-
-            tbIsThereResultOfSearcing.Text = string.Empty;
+            studentsListControl.SetItemsSource();
         }
 
-        private void lvStudents_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        public void ShowStudent(Student student)
         {
             IsStudentsUi = true;
-            var selectedStudent = lvStudents.SelectedItem as Student;
-            if (selectedStudent == null)
-            {
-                return;
-            }
-            studentControl.DataContext = selectedStudent;
+            studentControl.DataContext = student;
             studentControl.Visibility = Visibility.Visible;
         }
 
@@ -199,16 +191,14 @@ namespace Gui
         {
             IsStudentsUi = true;
             bl.StudentListFilter = s => !s.IsFromIsrael;
-            lvStudents.ItemsSource = bl.StudentList;
-            tbIsThereResultOfSearcing.Text = string.Empty;
+            studentsListControl.SetItemsSource();
         }
 
         private void allStudentFromIsraelBtn_Click(object sender, RoutedEventArgs e)
         {
             IsStudentsUi = true;
             bl.StudentListFilter = s => s.IsFromIsrael;
-            lvStudents.ItemsSource = bl.StudentList;
-            tbIsThereResultOfSearcing.Text = string.Empty;
+            studentsListControl.SetItemsSource();
         }
 
         public void RefreshMyStudentsView()
@@ -217,49 +207,13 @@ namespace Gui
             {
                 bl.StudentListFilter = s => s.IsOpenToMatch;
             }
-            else 
-            {
-                bl.StudentListFilter = s => !s.IsDeleted; 
-            }
-            lvStudents.ItemsSource = bl.StudentList;
-            studentControl.Visibility = Visibility.Collapsed;
-            tbIsThereResultOfSearcing.Text = string.Empty;
-        }
-
-
-        private void searchBtn_Click(object sender, RoutedEventArgs e)
-        {
-            Search();
-        }
-
-        private void tbSearch_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Return)
-            {
-                Search();
-            }
-        }
-
-        private void Search()
-        {
-            tbIsThereResultOfSearcing.Text = string.Empty;
-            if (tbSearch.Text != string.Empty)
-            {
-                bl.SearchStudents(tbSearch.Text);
-                lvStudents.ItemsSource = bl.StudentList;
-                if (lvStudents.Items.IsEmpty)
-                {
-                    tbIsThereResultOfSearcing.Text = "אין תוצאות";
-                    return;
-                }
-                lvStudents.Items.Refresh();
-            }
             else
             {
                 bl.StudentListFilter = s => !s.IsDeleted;
-                lvStudents.ItemsSource = bl.StudentList;
             }
-        } 
+            studentsListControl.SetItemsSource();
+            studentControl.Visibility = Visibility.Collapsed;
+        }
         #endregion
 
         #region Pair UI
@@ -296,7 +250,7 @@ namespace Gui
         {
             bl.PairListFilter = p => !p.IsDeleted;
             lvPairs.ItemsSource = bl.PairList;
-            tbIsThereResultOfSearcing.Text = string.Empty;
+            //tbIsThereResultOfSearcing.Text = string.Empty;
         }
 
         private void lvPairs_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -310,7 +264,7 @@ namespace Gui
             var seconde = bl.GetStudent(s => s.Id == selectedPair.StudentFromWorld.Id);
             if (first.IsFromIsrael)
             {
-                new ComparingStudentsWin(first, seconde) 
+                new ComparingStudentsWin(first, seconde)
                 {
                     IsPair = true
                 }.Show();
@@ -429,14 +383,14 @@ namespace Gui
             new SendOpenEmail()
             {
                 StudentName = string.Join(", ", from p in selectedPair
-                                         select p.StudentFromIsrael.Name),
+                                                select p.StudentFromIsrael.Name),
                 Email = string.Join(", ", from p in selectedPair
                                           select p.StudentFromIsrael.Email)
             }.Show();
             new SendOpenEmail()
             {
                 StudentName = string.Join(", ", from p in selectedPair
-                                         select p.StudentFromWorld.Name),
+                                                select p.StudentFromWorld.Name),
                 Email = string.Join(", ", from p in selectedPair
                                           select p.StudentFromWorld.Email)
             }.Show();
@@ -497,7 +451,7 @@ namespace Gui
             {
                 if (selectedPair != null)
                 {
-                    if(Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את החברותא {selectedPair}?"))
+                    if (Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את החברותא {selectedPair}?"))
                     {
                         await bl.RemovePairAsync(selectedPair);
                         RefreshMyPairView();
@@ -516,134 +470,20 @@ namespace Gui
             var selectedPair = (sender as Button).DataContext as Pair;
             try
             {
-                if(selectedPair != null)
+                if (selectedPair != null)
                 {
                     await bl.ActivatePairAsync(selectedPair);
                     RefreshMyPairView();
                     RefreshMyStudentsView();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Messages.MessageBoxError(ex.Message);
             }
         }
         #endregion
-
-        #region Student operetion
-        private void addStudent_Click(object sender, RoutedEventArgs e)
-        {
-            new AddStudentWin().Show();
-        }
-
-        private void selectAllStudentsCB_Checked(object sender, RoutedEventArgs e)
-        {
-            foreach (var s in bl.StudentList)
-            {
-                s.IsSelected = true;
-            }
-            lvStudents.Items.Refresh();
-        }
-
-        private void selectAllStudentsCB_Unchecked(object sender, RoutedEventArgs e)
-        {
-            foreach (var s in bl.StudentList)
-            {
-                s.IsSelected = false;
-            }
-            lvStudents.Items.Refresh();
-        }
-
-        private async void deleteStudent_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedStudent = (sender as Button).DataContext as Student;
-            try
-            {
-                if (Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את {selectedStudent.Name}?"))
-                {
-                    await bl.RemoveStudentAsync(selectedStudent.Id);
-                    RefreshMyStudentsView();
-                }
-            }
-            catch (Exception ex)
-            {
-                Messages.MessageBoxError(ex.Message);
-            }
-
-        }
-
-        private void sendEmaileToStudentsBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedStudent = (sender as Button).DataContext as Student;
-            new SendOpenEmail()
-            {
-                StudentName = selectedStudent.Name,
-                Email = selectedStudent.Email
-            }.Show();
-        }
-
-        private void sendEmaileForAllStudentsBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedStudents = bl.GetAllStudentsBy(s => s.IsSelected);
-            if (selectedStudents.Count() == 0)
-            {
-                Messages.MessageBoxWarning("בחר תלמיד אחד או יותר");
-                return;
-            }
-            new SendOpenEmail()
-            {
-                StudentName = selectedStudents.Count() > 5 ? "כל המסומנים" :
-                                string.Join(", ", from s in selectedStudents
-                                                  select s.Name),
-                Email = string.Join(", ", from s in selectedStudents
-                                          select s.Email)
-            }.Show();
-        }
-
-        private async void sendStatusEmailForAll_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedStudents = bl.GetAllStudentsBy(s => s.IsSelected);
-            if (selectedStudents.Count() == 0)
-            {
-                Messages.MessageBoxWarning("בחר תלמיד אחד או יותר");
-                return;
-            }
-            List<Task> tasks = new List<Task>();
-            try
-            {
-                foreach (var s in selectedStudents)
-                {
-                    tasks.Add(bl.SendEmailToStudentAsync(s, EmailTypes.StatusQuiz));
-                }
-                await Task.WhenAll(tasks);
-                Messages.MessageBoxSimple("המיילים נשלחו בהצלחה!");
-            }
-            catch (Exception ex)
-            {
-                Messages.MessageBoxError(ex.Message);
-            }
-
-        }
-
-        private void editStudentBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedStudent = (sender as Button).DataContext as Student;
-            try
-            {
-                if(selectedStudent != null)
-                {
-                    bl.UpdateStudent(selectedStudent);
-                    Messages.MessageBoxSimple($"המשתתף {selectedStudent.Name} עודכן בהצלחה");
-                }
-            }
-            catch(Exception ex)
-            {
-                Messages.MessageBoxError(ex.Message);
-            }
-        }
     }
-    #endregion
-
     /// <summary>
     /// Converter class for convert from ListViewItem to number of row 
     /// atending to display row number in the list that displays

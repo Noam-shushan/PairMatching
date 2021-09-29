@@ -5,6 +5,26 @@ namespace BO
 {
     public static class Dictionaries
     {
+        public static Dictionary<string, string> OpenQuestionsHeaderInHebrow = new Dictionary<string, string>
+        {
+            ["Personal information"] = "פרטים ביוגרפיים (גיל, מה עושה בחיים, רקע לימודי, השתייכות חברתית)",
+            ["Personality trates"] = "תכונות אישיות, ערכים חשובים בשבילך, תחביבים ותחומי עניין",
+            ["What are your hopes and expectations from this program"] = "מה מעניין אותך בהצטרפות לשלהבת?",
+            ["Additional information"] = "דברים נוספים שהיית רוצה שנדע, או דברים שהיית רוצה לבקש מאיתנו?",
+            ["Who introduced you to this program"] = "דרך מי (או דרך מה) הגעת לתכנית?"
+        };
+
+        public static Dictionary<string, string> OpenQuestionsHeaderInEnglish = new Dictionary<string, string>
+        {
+            ["Personal information"] = "Personal information (age, job, Jewish & community affiliation...)",
+            ["Personality trates"] = "Personality traits, personal values, interests, hobbies",
+            ["What are your hopes and expectations from this program"] = "What are your hopes and expectations from this program?",
+            ["Additional information"] = "Additional information you would like us to know about you, or requests you have?",
+            ["Who introduced you to this program"] = "Who introduced you to this program? Where did you hear about Shalhevet?",
+            ["Country and City of residence"] = "Country & City of residence",
+            ["Anything else you would like to tell us"] = "Anything else you would like to tell us?"
+        };
+
         internal static Dictionary<DO.LearningStyles, string> LearningStylesDict = new
             Dictionary<DO.LearningStyles, string>()
         {

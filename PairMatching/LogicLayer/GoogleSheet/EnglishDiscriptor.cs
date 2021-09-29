@@ -190,11 +190,8 @@ namespace LogicLayer
 
         public IEnumerable<string> GetLanguages(string value)
         {
-            var result = value
-                .Split(',')
-                .ToList();
-            result.ForEach(l => l.Replace(",", "").Trim());
-            return result;
+            return from l in value.Split(',')
+                   select l.Replace(",", "").Trim();
         }
 
         public MoreLanguages GetMoreLanguages(string value)
