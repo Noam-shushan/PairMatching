@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace DO
@@ -42,5 +43,7 @@ namespace DO
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}
         /// </summary>
         public PrefferdTracks PrefferdTracks { get; set; }
+
+        public List<Note> Notes { get; set; } = new List<Note>();
     }
 }

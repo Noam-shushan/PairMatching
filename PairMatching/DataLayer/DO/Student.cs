@@ -110,6 +110,8 @@ namespace DO
 
         public IEnumerable<string> Languages { get; set; }
 
+        public List<Note> Notes { get; set; } = new List<Note>();
+
         public override string ToString()
         {
             return $"Name: {Name}\n" +

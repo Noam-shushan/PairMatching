@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Collections.ObjectModel;
 using BO;
 using LogicLayer;
 
@@ -28,6 +29,11 @@ namespace Gui
         public StudentControl()
         {
             InitializeComponent();
+        }
+
+        public void SetNotes(Student student)
+        {
+            notes.Student = student;
         }
 
         private void clearCBFirstMatchBtn_Click(object sender, RoutedEventArgs e)
@@ -103,6 +109,12 @@ namespace Gui
             {
                 Messages.MessageBoxError(ex.Message);
             }
+        }
+
+        public void SetHeightOfOpenQA(int height = 345, int width = 600)
+        {
+            lbOpneQA.Height = height;
+            lbOpneQA.Width = width;
         }
     }
 }

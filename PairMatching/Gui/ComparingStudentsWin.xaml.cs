@@ -44,6 +44,9 @@ namespace Gui
 
             studentFromIsrael.DataContext = _fromIsrael;
             studentFromWorld.DataContext = _fromWolrd;
+
+            studentFromIsrael.SetHeightOfOpenQA();
+            studentFromWorld.SetHeightOfOpenQA();
         }
 
         private async void matchBtn_Click(object sender, RoutedEventArgs e)

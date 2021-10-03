@@ -48,6 +48,8 @@ namespace LogicLayer
 
         void UpdateStudent(BO.Student student);
 
+        void AddNoteToStudent(BO.Student student, BO.Note note);
+
         /// <summary>
         /// Update all the data from the google sheets
         /// </summary>
@@ -82,6 +84,8 @@ namespace LogicLayer
         BO.Pair GetPair(Predicate<BO.Pair> predicate);
 
         BO.Pair GetPair(int pairId);
+
+        void AddNoteToPair(BO.Pair pair, BO.Note note);
 
         Task ActivatePairAsync(BO.Pair pair);
 

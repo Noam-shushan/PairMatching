@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,8 +20,14 @@ namespace BO
             var res = pairDo.CopyPropertiesToNew(typeof(Pair)) as Pair;
             res.StudentFromIsrael = createSimpleStudentFunc(pairDo.StudentFromIsraelId);
             res.StudentFromWorld = createSimpleStudentFunc(pairDo.StudentFromWorldId);
+            foreach(var n in pairDo.Notes)
+            {
+                res.NotesBo.Add(n.CopyPropertiesToNew(typeof(Note)) as Note);
+            }
             return res;
         }
+
+        public ObservableCollection<Note> NotesBo { get; set; } = new ObservableCollection<Note>();
 
         public void EditPrefferdTracks(string track)
         {

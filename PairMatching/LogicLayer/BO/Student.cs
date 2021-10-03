@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -94,7 +95,6 @@ namespace BO
         public string PrefferdTracksShow => IsSimpleStudent ? "" : string.Join(",\n", from p in PrefferdTracks
                                                                                     select Dictionaries.PrefferdTracksDict[p]);
         public DateTime DateOfRegistered { get; set; }
-        public string DateOfRegisteredShow { get => DateOfRegistered.ToString("d"); }
 
         public List<StudentMatchingHistory> MatchingHistories { get; set; } =
                 new List<StudentMatchingHistory>();
@@ -205,6 +205,8 @@ namespace BO
         public Dictionary<string, string> OpenQuestionsDict { get; set; }
 
         public IEnumerable<OpenQuestion> OpenQuestions { get; set; }
+
+        public ObservableCollection<Note> NotesBo { get; set; } = new ObservableCollection<Note>();
 
         public override string ToString()
         {

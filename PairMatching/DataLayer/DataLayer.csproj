@@ -53,6 +53,7 @@
     <Compile Include="DO\Enums.cs" />
     <Compile Include="DO\LastDataOfSpredsheet.cs" />
     <Compile Include="DO\LearningTime.cs" />
+    <Compile Include="DO\Note.cs" />
     <Compile Include="DO\Pair.cs" />
     <Compile Include="DO\OpenQuestion.cs" />
     <Compile Include="DO\Student.cs" />

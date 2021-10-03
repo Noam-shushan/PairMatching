@@ -310,6 +310,22 @@ namespace LogicLayer
                 new Exception(ex.Message);
             }
         }
+
+        public void AddNoteToStudent(BO.Student student, BO.Note note)
+        {
+            student.NotesBo.Add(note);
+            var s = dal.GetStudent(student.Id);
+            s.Notes.Add(note.CopyPropertiesToNew(typeof(DO.Note)) as DO.Note);
+            dal.UpdateStudent(s);
+        }
+
+        public void AddNoteToPair(BO.Pair pair, BO.Note note)
+        {
+            pair.NotesBo.Add(note);
+            var p = dal.GetPair(pair.Id);
+            p.Notes.Add(note.CopyPropertiesToNew(typeof(DO.Note)) as DO.Note);
+            dal.UpdatePair(p);
+        }
         #endregion
 
         #region Pair matching
@@ -718,6 +734,11 @@ namespace LogicLayer
                 if (studBO.IsSimpleStudent)
                 {
                     return studBO;
+                }
+
+                foreach(var n in studDO.Notes)
+                {
+                    studBO.NotesBo.Add(n.CopyPropertiesToNew(typeof(BO.Note)) as BO.Note);
                 }
                 
                 // create a dictionary of the open Q&A for the student 

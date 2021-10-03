@@ -117,10 +117,18 @@ namespace Gui
         #region Update data
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            IsLoadedData = true;
             try
             {
-                IsLoadedData = true;
                 await bl.ReadDataFromSpredsheetAsync();
+            }
+            catch(Exception ex2)
+            {
+                Messages.MessageBoxError(ex2.Message);
+            }
+            try
+            {
+
                 await bl.UpdateAsync();
 
                 if (bl.StudentWithUnvalidEmail.Count > 0)
@@ -133,10 +141,7 @@ namespace Gui
             {
                 Messages.MessageBoxError(ex.Message);
             }
-            finally
-            {
-                IsLoadedData = false;
-            }
+            IsLoadedData = false;
         }
 
         private async void updateBtn_Click(object sender, RoutedEventArgs e)
@@ -151,10 +156,7 @@ namespace Gui
             {
                 Messages.MessageBoxError(ex.Message);
             }
-            finally
-            {
-                IsLoadedData = false;
-            }
+            IsLoadedData = false;
         }
         #endregion
 
@@ -164,6 +166,7 @@ namespace Gui
             IsStatisticsUi = true;
             spStatistics.DataContext = bl.Statistics;
         }
+
         #region Students UI
         private void allStudentBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -184,6 +187,8 @@ namespace Gui
         {
             IsStudentsUi = true;
             studentControl.DataContext = student;
+            studentControl.DataContext = student;
+            studentControl.SetHeightOfOpenQA(height:270, width: 700);
             studentControl.Visibility = Visibility.Visible;
         }
 
@@ -484,6 +489,7 @@ namespace Gui
         }
         #endregion
     }
+
     /// <summary>
     /// Converter class for convert from ListViewItem to number of row 
     /// atending to display row number in the list that displays

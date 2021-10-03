@@ -50,6 +50,7 @@
     <Compile Include="BlFactory.cs" />
     <Compile Include="BO\BlExceptions.cs" />
     <Compile Include="BO\Dictionaries.cs" />
+    <Compile Include="BO\Note.cs" />
     <Compile Include="BO\Pair.cs" />
     <Compile Include="BO\SimpleStudent.cs" />
     <Compile Include="BO\Statistics.cs" />

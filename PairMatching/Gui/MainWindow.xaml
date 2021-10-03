@@ -102,13 +102,6 @@
             </Style.Triggers>
         </Style>
 
-        <Style
-            x:Key="HeadersStyle"
-            BasedOn="{StaticResource MaterialDesignFlatButton}"
-            TargetType="{x:Type GridViewColumnHeader}">
-            <Setter Property="HorizontalContentAlignment" Value="Left" />
-        </Style>
-
     </Window.Resources>
     <DockPanel Margin="20">
         <!--#region Menue-->
@@ -361,22 +354,6 @@
                                         </DataTemplate>
                                     </GridViewColumn.HeaderTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Width="auto" Header="הערות">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <ToggleButton x:Name="infoAboutTBtn" Style="{StaticResource MaterialDesignVerticalHeaderStyle}">
-                                                <Popup IsOpen="{Binding Path=IsChecked, ElementName=infoAboutTBtn}">
-                                                    <Border Background="AliceBlue" BorderThickness="1">
-                                                        <TextBlock
-                                                            Margin="15"
-                                                            Background="White"
-                                                            Text="{Binding Path=InfoAbout}" />
-                                                    </Border>
-                                                </Popup>
-                                            </ToggleButton>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
                                 <GridViewColumn Width="60">
                                     <GridViewColumn.HeaderContainerStyle>
                                         <Style BasedOn="{StaticResource MaterialDesignIconButton}" TargetType="{x:Type GridViewColumnHeader}">
@@ -415,9 +392,16 @@
                                                 Identifier="infoAboutDialog">
                                                 <materialDesign:DialogHost.DialogContent>
                                                     <StackPanel Margin="15" HorizontalAlignment="Center">
+                                                        <local:NoteControl
+                                                            x:Name="notes"
+                                                            Width="800"
+                                                            Height="500"
+                                                            IsStudent="False" />
                                                         <ComboBox
                                                             x:Name="cbTracksEdit"
+                                                            Width="150"
                                                             Margin="0,10,0,20"
+                                                            HorizontalAlignment="Left"
                                                             materialDesign:HintAssist.HelperTextStyle="{StaticResource MaterialDesignFloatingHintComboBox}"
                                                             materialDesign:HintAssist.Hint="שנה מסלול"
                                                             SelectionChanged="cbTracksEdit_SelectionChanged">
@@ -427,33 +411,13 @@
                                                             <ComboBoxItem Content="פרקי אבות" />
                                                             <ComboBoxItem Content="תפילה" />
                                                         </ComboBox>
-                                                        <TextBox
-                                                            x:Name="tbInfoAboutForPair"
-                                                            Width="300"
-                                                            Height="250"
-                                                            Margin="0,0,0,10"
-                                                            materialDesign:HintAssist.Hint="הוסף הערות על החבורתא"
-                                                            AcceptsReturn="True"
-                                                            Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                                                            Text="{Binding Path=InfoAbout, Mode=TwoWay}" />
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition />
-                                                                <ColumnDefinition />
-                                                            </Grid.ColumnDefinitions>
-                                                            <Button
-                                                                x:Name="editPairBtn"
-                                                                Grid.Column="0"
-                                                                Width="100"
-                                                                Click="editPairBtn_Click"
-                                                                Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                                                                Content="החל" />
-                                                            <Button
-                                                                Grid.Column="1"
-                                                                Width="100"
-                                                                Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                                                                Content="סגור" />
-                                                        </Grid>
+                                                        <Button
+                                                            x:Name="editPairBtn"
+                                                            Grid.Column="0"
+                                                            Width="100"
+                                                            Click="editPairBtn_Click"
+                                                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                                            Content="החל" />
                                                     </StackPanel>
                                                 </materialDesign:DialogHost.DialogContent>
                                                 <Button

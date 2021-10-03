@@ -57,7 +57,7 @@ namespace LogicLayer.FindMatching
 
         private bool IsMatchingStudentsNotCritical(BO.Student israelStudent, BO.Student other)
         {
-            return (israelStudent.DesiredSkillLevel <= other.SkillLevel
+            return ((israelStudent.DesiredSkillLevel <= other.SkillLevel && other.SkillLevel != DO.SkillLevels.DONT_MATTER) 
                 || israelStudent.DesiredSkillLevel == DO.SkillLevels.DONT_MATTER)
                 && (israelStudent.LearningStyle == other.LearningStyle
                 || israelStudent.LearningStyle == DO.LearningStyles.DONT_MATTER

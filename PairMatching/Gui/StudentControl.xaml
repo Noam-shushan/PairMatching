@@ -133,12 +133,6 @@
             </Style.Triggers>
         </Style>
 
-        <Style
-            x:Key="HeadersStyle"
-            BasedOn="{StaticResource MaterialDesignFlatButton}"
-            TargetType="{x:Type GridViewColumnHeader}">
-            <Setter Property="HorizontalContentAlignment" Value="Left" />
-        </Style>
     </UserControl.Resources>
     <StackPanel FlowDirection="RightToLeft">
 
@@ -162,7 +156,7 @@
                                     FontSize="15"
                                     Style="{StaticResource headersDetails}"
                                     Text="תאריך הרשמה:   " />
-                                <TextBlock FontSize="15" Text="{Binding Path=DateOfRegisteredShow}" />
+                                <TextBlock FontSize="15" Text="{Binding Path=DateOfRegistered, StringFormat='yyyy/MM/dd'}" />
                             </StackPanel>
                             <ListView
                                 x:Name="lvHistory"
@@ -172,7 +166,7 @@
                                     <GridView>
                                         <GridView.Columns>
                                             <GridViewColumn
-                                                DisplayMemberBinding="{Binding Path=DateOfMatchShow}"
+                                                DisplayMemberBinding="{Binding Path=DateOfMatch, StringFormat='yyyy/MM/dd'}"
                                                 Header="תאריך התאמה"
                                                 HeaderContainerStyle="{StaticResource HeadersStyle}" />
                                             <GridViewColumn
@@ -221,7 +215,7 @@
                                                 </GridViewColumn.CellTemplate>
                                             </GridViewColumn>
                                             <GridViewColumn
-                                                DisplayMemberBinding="{Binding Path=DateOfUnMatchShow}"
+                                                DisplayMemberBinding="{Binding Path=DateOfUnMatch, StringFormat='yyyy/MM/dd'}"
                                                 Header="תאריך מחיקה"
                                                 HeaderContainerStyle="{StaticResource HeadersStyle}" />
                                             <GridViewColumn
@@ -234,6 +228,23 @@
                             </ListView>
                         </StackPanel>
                     </materialDesign:PopupBox>
+                    <materialDesign:DialogHost CloseOnClickAway="True">
+                        <materialDesign:DialogHost.DialogContent>
+                            <local:NoteControl
+                                x:Name="notes"
+                                Width="800"
+                                IsStudent="True" />
+                        </materialDesign:DialogHost.DialogContent>
+                        <Button
+                            Width="25"
+                            Height="25"
+                            Margin="0,0,10,0"
+                            Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                            Style="{StaticResource MaterialDesignIconButton}"
+                            ToolTip="ערוך תלמיד זה">
+                            <materialDesign:PackIcon Kind="Pencil" />
+                        </Button>
+                    </materialDesign:DialogHost>
                     <TextBlock FontSize="20" Text="{Binding Path=Name}" />
                 </StackPanel>
                 <StackPanel>
@@ -303,7 +314,7 @@
             <Expander
                 Width="300"
                 Height="300"
-                Margin="10,0,0,0"
+                Margin="20,0,0,0"
                 Style="{StaticResource hideSuggestions}">
                 <Expander.Header>
                     <TextBlock
@@ -390,7 +401,8 @@
         </StackPanel>
 
         <ListBox
-            Width="600"
+            x:Name="lbOpneQA"
+            Width="700"
             Height="270"
             HorizontalAlignment="Left"
             VerticalAlignment="Top">
@@ -538,22 +550,6 @@
                             <TextBlock Text="{Binding OpenQuestionsDict[Country and City of residence]}" />
                         </StackPanel>
                     </materialDesign:PopupBox>
-                </StackPanel>
-            </Expander>
-            <Expander FlowDirection="RightToLeft" Style="{StaticResource expanderStyle}">
-                <Expander.Header>
-                    <TextBlock Style="{StaticResource headers}" Text="הערות על משתתף זה" />
-                </Expander.Header>
-                <StackPanel Style="{StaticResource contentOfOpenQ}">
-                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
-                        <materialDesign:PopupBox.ToggleContent>
-                            <materialDesign:PackIcon Kind="Eye" />
-                        </materialDesign:PopupBox.ToggleContent>
-                        <StackPanel Margin="20">
-                            <TextBlock Text="{Binding InfoAbout}" />
-                        </StackPanel>
-                    </materialDesign:PopupBox>
-                    <TextBlock Text="{Binding InfoAbout}" />
                 </StackPanel>
             </Expander>
         </ListBox>
