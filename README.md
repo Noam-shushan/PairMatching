@@ -1,20 +1,22 @@
 # PairMatching
-Finds a match between students from Israel and students from around the world so that they can study together at parallel hours and according to their needs.
-The source of the data is a Google Sheet that fills in after students fill out Google Forms.
-The software is divided into 3 layers:
-
-Database is implemented in two ways:
-- MongoDB in the Azure cloud
-- Saving files to disk in json format.
-
-Logic layer: 
-- Reading the data from the Google Sheets.
-- All the calculations and the matching.
-- Sending automatic and open email from the system.
-
-Display layer in WPF.
+Pair Matching (CRM and Marketing System) - A management system I built for Steinsaltz Center to help matching people from all around the world to study together Jewish sources.
+- Backend is written in C#  (with WPF as front) and it uses multithreading 
+- The software uses Google’s Sheet API 
+- The software uses MongoDB and connects to the cloud through Azure application
+- The system sends automatic mails (written in HTML and CSS)
+- Uses design patterns such as Singleton and Factory
 
 The program receives updates automatically from Azure clude.
 
-![image](https://user-images.githubusercontent.com/40955004/133081795-c1e2cec0-fc1f-45fc-8f1c-2328a1ae0f49.png)
+Matching window:
+![image](https://user-images.githubusercontent.com/40955004/135326359-0c999f6c-1b66-45f5-a271-da77adeee59a.png)
+
+
+statistics window:
+![image](https://user-images.githubusercontent.com/40955004/135335685-1e2f9655-fb93-4873-830c-73b35edd12cf.png)
+
+
+Open Email window:
+![image](https://user-images.githubusercontent.com/40955004/135335784-fc26d1fd-d380-4e68-938f-c41f4b441d2f.png)
+
 
