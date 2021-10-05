@@ -1,10 +1,10 @@
 ﻿using System.Text;
 using LogicLayer.Properties;
 
-namespace LogicLayer
+namespace LogicLayer.Eamil
 {
     /// <summary>
-    /// 
+    /// Email template.
     /// </summary>
     public class MailTemplate
     {
@@ -14,12 +14,12 @@ namespace LogicLayer
     }
 
     /// <summary>
-    /// 
+    /// Automatic email types enum
     /// </summary>
     public enum EmailTypes { SuccessfullyRegistered, YouGotPair, PairBroke , ToSecretaryNewPair, ToSecretaryPairBroke, StatusQuiz }
 
     /// <summary>
-    /// 
+    /// Automatic read only mail templates
     /// </summary>
     public static class Templates
     {

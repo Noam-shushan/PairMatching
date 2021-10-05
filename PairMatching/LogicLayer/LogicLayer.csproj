@@ -47,8 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlFactory.cs" />
-    <Compile Include="BO\BlExceptions.cs" />
+    <Compile Include="LogicFactory.cs" />
+    <Compile Include="BO\LogicExceptions.cs" />
     <Compile Include="BO\Dictionaries.cs" />
     <Compile Include="BO\Note.cs" />
     <Compile Include="BO\Pair.cs" />
@@ -64,7 +64,7 @@
     <Compile Include="GoogleSheet\GoogleSheetParser.cs" />
     <Compile Include="GoogleSheet\GoogleSheetReader.cs" />
     <Compile Include="GoogleSheet\HebrewDescriptor.cs" />
-    <Compile Include="IBL.cs" />
+    <Compile Include="ILogicLayer.cs" />
     <Compile Include="GoogleSheet\IStudentDescriptor.cs" />
     <Compile Include="LogicImplementaion.cs" />
     <Compile Include="FindMatching\Matching.cs" />

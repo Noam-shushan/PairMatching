@@ -15,19 +15,25 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using LogicLayer;
+using BO;
 
 namespace Gui
 {
     /// <summary>
-    /// Interaction logic for NoteControl.xaml
+    /// Notes view
+    /// Show all the notes of student or pair
+    /// Add or delete a note from a student or pair
     /// </summary>
     public partial class NoteControl : UserControl, INotifyPropertyChanged
     {
-        static readonly IBL bl = BlFactory.GetBL();
+        private readonly ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
 
-        public BO.Student Student { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private bool _isStudent;
+        /// <summary>
+        /// Determines if the note is for a student or a pair
+        /// </summary>
         public bool IsStudent
         {
             get { return _isStudent; }
@@ -38,8 +44,11 @@ namespace Gui
             }
         }
 
-        private BO.Note _newNote = new BO.Note();
-        public BO.Note NewNote 
+        private Note _newNote = new Note();
+        /// <summary>
+        /// The new note to add 
+        /// </summary>
+        public Note NewNote 
         {
             get => _newNote;
             set
@@ -54,23 +63,41 @@ namespace Gui
             InitializeComponent();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private void addNote_Click(object sender, RoutedEventArgs e)
         {
             NewNote.Date = DateTime.Now;
             if (IsStudent)
             {
-                bl.AddNoteToStudent(DataContext as BO.Student, NewNote);
+                logicLayer.AddNoteToStudent(DataContext as Student, NewNote);
             }
             else
             {
-                bl.AddNoteToPair(DataContext as BO.Pair, NewNote);
+                logicLayer.AddNoteToPair(DataContext as Pair, NewNote);
             }
 
             lvNotes.Items.Refresh();
             expder.IsExpanded = false;
-            NewNote = new BO.Note() { Author = "", Text = "", Date = new DateTime() };
+            NewNote = new Note() { Author = "", Text = "", Date = new DateTime() };
+        }
+
+        private void deleteNoteBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if(Messages.MessageBoxConfirmation("האם אתה בטוח שברצונך למחוק הערה זו?"))
+            {
+                var note = (sender as Button).DataContext as Note;
+                if (IsStudent)
+                {
+                    var student = DataContext as Student;
+                    logicLayer.RemoveNoteFromStudent(student, note);
+                }
+                else
+                {
+                    var pair = DataContext as Pair;
+                    logicLayer.RemoveNoteFromPair(pair, note);
+                }
+
+                lvNotes.Items.Refresh();
+            }
         }
     }
 }

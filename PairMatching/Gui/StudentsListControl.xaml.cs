@@ -16,20 +16,26 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using BO;
 using LogicLayer;
+using LogicLayer.Eamil;
 
 namespace Gui
 {
     /// <summary>
-    /// Interaction logic for StudentsListControl.xaml
+    /// Students list view.
+    /// Add, remove student.
+    /// Send Emails to singel or many students.
+    /// Search Students by their prefix name.
     /// </summary>
     public partial class StudentsListControl : UserControl, INotifyPropertyChanged
     {
-        private static readonly IBL bl = BlFactory.GetBL();
+        private static readonly ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         private bool _isSimpleView = false;
-
+        /// <summary>
+        /// Determines whether this is a view of the list only without actions
+        /// </summary>
         public bool IsSimpleView
         {
             get => _isSimpleView; 
@@ -46,9 +52,12 @@ namespace Gui
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Set the item source of the list view to the last filter of the student list
+        /// </summary>
         public void SetItemsSource()
         {
-            lvStudents.ItemsSource = bl.StudentList;
+            lvStudents.ItemsSource = logicLayer.StudentList;
             tbIsThereResultOfSearcing.Text = string.Empty;
         }
 
@@ -56,13 +65,13 @@ namespace Gui
         {
             if (student.IsFromIsrael)
             {
-                bl.StudentListFilter = s => !s.IsFromIsrael;
+                logicLayer.StudentListFilter = s => !s.IsFromIsrael;
             }
             else
             {
-                bl.StudentListFilter = s => s.IsFromIsrael;
+                logicLayer.StudentListFilter = s => s.IsFromIsrael;
             }
-            lvStudents.ItemsSource = bl.StudentList;
+            lvStudents.ItemsSource = logicLayer.StudentList;
             tbIsThereResultOfSearcing.Text = string.Empty;
         }
 
@@ -83,7 +92,7 @@ namespace Gui
 
         private async void manualMatchBtn_Click(object sender, RoutedEventArgs e)
         {
-            var selectedList = bl.GetAllStudentsBy(s => s.IsSelected);
+            var selectedList = logicLayer.GetAllStudentsBy(s => s.IsSelected);
             if (selectedList.Count() != 2)
             {
                 Messages.MessageBoxWarning("בחר 2 תלמידים מהרשימה על מנת לבצע התאמה");
@@ -96,7 +105,7 @@ namespace Gui
                 var second = selectedList.Last();
                 if (Messages.MessageBoxConfirmation($"בטוח שברצונך להתאים את {first.Name} ל- {second.Name}?"))
                 {
-                    int id = await bl.MatchAsync(first, second);
+                    int id = await logicLayer.MatchAsync(first, second);
                     var mainWin = Application.Current.MainWindow as MainWindow;
                     mainWin.RefreshMyStudentsView();
                     mainWin.RefreshMyPairView();
@@ -113,8 +122,8 @@ namespace Gui
             tbIsThereResultOfSearcing.Text = string.Empty;
             if (tbSearch.Text != string.Empty)
             {
-                bl.SearchStudents(tbSearch.Text);
-                lvStudents.ItemsSource = bl.StudentList;
+                logicLayer.SearchStudents(tbSearch.Text);
+                lvStudents.ItemsSource = logicLayer.StudentList;
                 if (lvStudents.Items.IsEmpty)
                 {
                     tbIsThereResultOfSearcing.Text = "אין תוצאות";
@@ -124,8 +133,8 @@ namespace Gui
             }
             else
             {
-                bl.StudentListFilter = s => !s.IsDeleted;
-                lvStudents.ItemsSource = bl.StudentList;
+                logicLayer.StudentListFilter = s => !s.IsDeleted;
+                lvStudents.ItemsSource = logicLayer.StudentList;
             }
         }
 
@@ -149,7 +158,7 @@ namespace Gui
 
         private void selectAllStudentsCB_Checked(object sender, RoutedEventArgs e)
         {
-            foreach (var s in bl.StudentList)
+            foreach (var s in logicLayer.StudentList)
             {
                 s.IsSelected = true;
             }
@@ -158,7 +167,7 @@ namespace Gui
 
         private void selectAllStudentsCB_Unchecked(object sender, RoutedEventArgs e)
         {
-            foreach (var s in bl.StudentList)
+            foreach (var s in logicLayer.StudentList)
             {
                 s.IsSelected = false;
             }
@@ -172,7 +181,7 @@ namespace Gui
             {
                 if (Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את {selectedStudent.Name}?"))
                 {
-                    await bl.RemoveStudentAsync(selectedStudent.Id);
+                    await logicLayer.RemoveStudentAsync(selectedStudent.Id);
                     var mainWin = Application.Current.MainWindow as MainWindow;
                     mainWin.RefreshMyStudentsView();
                 }
@@ -196,7 +205,7 @@ namespace Gui
 
         private void sendEmaileForAllStudentsBtn_Click(object sender, RoutedEventArgs e)
         {
-            var selectedStudents = bl.GetAllStudentsBy(s => s.IsSelected);
+            var selectedStudents = logicLayer.GetAllStudentsBy(s => s.IsSelected);
             if (selectedStudents.Count() == 0)
             {
                 Messages.MessageBoxWarning("בחר תלמיד אחד או יותר");
@@ -214,7 +223,7 @@ namespace Gui
 
         private async void sendStatusEmailForAll_Click(object sender, RoutedEventArgs e)
         {
-            var selectedStudents = bl.GetAllStudentsBy(s => s.IsSelected);
+            var selectedStudents = logicLayer.GetAllStudentsBy(s => s.IsSelected);
             if (selectedStudents.Count() == 0)
             {
                 Messages.MessageBoxWarning("בחר תלמיד אחד או יותר");
@@ -225,7 +234,7 @@ namespace Gui
             {
                 foreach (var s in selectedStudents)
                 {
-                    tasks.Add(bl.SendEmailToStudentAsync(s, EmailTypes.StatusQuiz));
+                    tasks.Add(logicLayer.SendEmailToStudentAsync(s, EmailTypes.StatusQuiz));
                 }
                 await Task.WhenAll(tasks);
                 Messages.MessageBoxSimple("המיילים נשלחו בהצלחה!");
@@ -244,7 +253,7 @@ namespace Gui
             {
                 if (selectedStudent != null)
                 {
-                    bl.UpdateStudent(selectedStudent);
+                    logicLayer.UpdateStudent(selectedStudent);
                     Messages.MessageBoxSimple($"המשתתף {selectedStudent.Name} עודכן בהצלחה");
                 }
             }

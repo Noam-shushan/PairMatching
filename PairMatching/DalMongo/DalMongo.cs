@@ -7,6 +7,7 @@ using DO;
 
 namespace DalMongo
 {
+    // TODO: add documentation
     public class DalMongo : IDataLayer
     {
         private static readonly MongoCrud db = new MongoCrud("Shalhevet");

@@ -2,13 +2,31 @@
 using System.Collections.Generic;
 using DO;
 
-namespace LogicLayer
+namespace LogicLayer.GoogleSheet
 {
+    /// <summary>
+    /// Interface for deciphering the values ​​on the columns for a student's properties
+    /// </summary>
     public interface IStudentDescriptor
     {
+        /// <summary>
+        /// The spreadsheet id
+        /// </summary>
         string SpreadsheetId { get; }
+
+        /// <summary>
+        /// The spreadsheet range of rows and colunms 
+        /// </summary>
         string Range { get; }
+
+        /// <summary>
+        /// The spreadsheet name
+        /// </summary>
         string SheetName { get; }
+
+        /// <summary>
+        /// The spreadsheet last date of update 
+        /// </summary>
         DateTime LastUpdate { get; set; }
 
         Genders GetGender(string row);

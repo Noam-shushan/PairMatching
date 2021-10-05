@@ -7,22 +7,23 @@ using System.Text;
 using System.Threading.Tasks;
 using DataLayer;
 using LogicLayer.FindMatching;
+using LogicLayer.Eamil;
+using LogicLayer.GoogleSheet;
 
 namespace LogicLayer
 {
     /// <summary>
     /// Logic implemention of the logic layer main inteface
     /// </summary>
-    internal class LogicImplementaion : IBL, INotifyPropertyChanged
+    internal class LogicImplementaion : ILogicLayer, INotifyPropertyChanged
     {
         // tha singelton of the data layer 
         private readonly IDataLayer dal = DalFactory.GetDal();
 
-        /// <summary>
-        /// maching object to cheack all the condition to make a match
-        /// </summary>
+        // maching object to cheack all the condition to make a match
         private Matching matcher = Matching.Instance;
 
+        // Email sender
         private readonly SendEmail sendEmail = SendEmail.Instance;
 
         #region Properties
@@ -125,14 +126,16 @@ namespace LogicLayer
         #endregion
 
         #region Singleton referens of the logic layer
-        public static IBL Instance { get; } = new LogicImplementaion();
+        public static ILogicLayer Instance { get; } = new LogicImplementaion();
 
         private LogicImplementaion() { }
         #endregion
 
-        #region Updating data from the Google Sheets and from the data base
+        #region Data reading and updating   
         /// <summary>
-        /// Update all the data from the google sheets
+        /// Read the new data of student from the google sheets
+        /// Seaving all the data to the database.
+        /// Sending automatic emails to the new studnts
         /// </summary>
         public async Task ReadDataFromSpredsheetAsync()
         {
@@ -175,6 +178,7 @@ namespace LogicLayer
                 // save all new data from the spredsheet to the DB
                 await dal.SaveAllDataFromSpredsheetAsync();
 
+                // send email for all new students
                 await SendRegesterEmailForNewStudent();
             }
             catch (Exception ex)
@@ -190,7 +194,7 @@ namespace LogicLayer
         }
 
         /// <summary>
-        /// Update the data from the data base
+        /// Update all the data from the database and find new matching students
         /// </summary>
         public async Task UpdateAsync()
         {
@@ -213,6 +217,11 @@ namespace LogicLayer
         #endregion
 
         #region Students
+        /// <summary>
+        /// Get all the students by some predicate from the database
+        /// </summary>
+        /// <param name="predicate">condition on Student</param>
+        /// <returns>all students thet is the condition</returns>
         public IEnumerable<BO.Student> GetAllStudentsBy(Predicate<BO.Student> predicate)
         {
             return from s in _studentList
@@ -220,21 +229,40 @@ namespace LogicLayer
                    select s;
         }
 
+        /// <summary>
+        /// Get Student from the database
+        /// </summary>
+        /// <param name="id">the student id</param>
+        /// <returns>the student match to the id</returns>
         public BO.Student GetStudent(int id)
         {
             return _studentList.FirstOrDefault(s => s.Id == id);
         }
 
+        /// <summary>
+        /// Get Student from the database
+        /// </summary>
+        /// <param name="predicate">predicate on the student propertiecs</param>
+        /// <returns>the student that match to the condition</returns>
         public BO.Student GetStudent(Predicate<BO.Student> predicate)
         {
             return _studentList.FirstOrDefault(s => predicate(s));
         }
 
+        /// <summary>
+        /// Search students by prefix of thire name 
+        /// </summary>
+        /// <param name="preifxName">The prefix that cams from the Gui</param>
         public void SearchStudents(string preifxName)
         {
             StudentListFilter = s => s.Name.StartsWith(preifxName, StringComparison.InvariantCultureIgnoreCase);
         }
 
+        /// <summary>
+        /// Remove student from the database
+        /// remove all the pairs of this student
+        /// </summary>
+        /// <param name="id">the student id</param>
         public async Task RemoveStudentAsync(int id)
         {
             try
@@ -274,6 +302,10 @@ namespace LogicLayer
             }
         }
 
+        /// <summary>
+        /// Add student to the database
+        /// </summary>
+        /// <param name="student">The new student to add</param>
         public void AddStudent(BO.Student student)
         {
             int id = 0;
@@ -294,6 +326,10 @@ namespace LogicLayer
             }
         }
 
+        /// <summary>
+        /// Update student in the database
+        /// </summary>
+        /// <param name="student">The student to updata</param>
         public void UpdateStudent(BO.Student student)
         {
             try
@@ -311,6 +347,11 @@ namespace LogicLayer
             }
         }
 
+        /// <summary>
+        /// Add note to student
+        /// </summary>
+        /// <param name="student">The student to add note to</param>
+        /// <param name="note">The note to add to the student</param>
         public void AddNoteToStudent(BO.Student student, BO.Note note)
         {
             student.NotesBo.Add(note);
@@ -319,6 +360,46 @@ namespace LogicLayer
             dal.UpdateStudent(s);
         }
 
+        /// <summary>
+        /// Remove note from student
+        /// </summary>
+        /// <param name="student">The student to remove the note from</param>
+        /// <param name="note">The note to remove from the student</param>
+        public void RemoveNoteFromStudent(BO.Student student, BO.Note note)
+        {
+            student.NotesBo.Remove(note);
+            var s = dal.GetStudent(student.Id);
+            s.Notes.Remove(note.CopyPropertiesToNew(typeof(DO.Note)) as DO.Note);
+            dal.UpdateStudent(s);
+        }
+        #endregion
+
+        #region Pair matching
+        /// <summary>
+        /// Get pair from the pair list by predicte
+        /// </summary>
+        /// <param name="predicate">the predicate</param>
+        /// <returns></returns>
+        public BO.Pair GetPair(Predicate<BO.Pair> predicate)
+        {
+            return _pairList.FirstOrDefault(p => predicate(p));
+        }
+
+        /// <summary>
+        /// Get pair from the pair list by id
+        /// </summary>
+        /// <param name="pairId">The pair id</param>
+        /// <returns></returns>
+        public BO.Pair GetPair(int pairId)
+        {
+            return _pairList.FirstOrDefault(p => p.Id == pairId);
+        }
+
+        /// <summary>
+        /// Add note to pair
+        /// </summary>
+        /// <param name="pair">The pair to add note to</param>
+        /// <param name="note">The note to add to the pair</param>
         public void AddNoteToPair(BO.Pair pair, BO.Note note)
         {
             pair.NotesBo.Add(note);
@@ -326,17 +407,18 @@ namespace LogicLayer
             p.Notes.Add(note.CopyPropertiesToNew(typeof(DO.Note)) as DO.Note);
             dal.UpdatePair(p);
         }
-        #endregion
 
-        #region Pair matching
-        public BO.Pair GetPair(Predicate<BO.Pair> predicate)
+        /// <summary>
+        /// Remove note from pair
+        /// </summary>
+        /// <param name="pair">The pair to remove note from</param>
+        /// <param name="note">The note to remove from the pair</param>
+        public void RemoveNoteFromPair(BO.Pair pair, BO.Note note)
         {
-            return _pairList.FirstOrDefault(p => predicate(p));
-        }
-
-        public BO.Pair GetPair(int pairId)
-        {
-            return _pairList.FirstOrDefault(p => p.Id == pairId);
+            pair.NotesBo.Remove(note);
+            var p = dal.GetPair(pair.Id);
+            p.Notes.Remove(note.CopyPropertiesToNew(typeof(DO.Note)) as DO.Note);
+            dal.UpdatePair(p);
         }
 
         public void UpdatePair(BO.Pair pair)
@@ -388,6 +470,12 @@ namespace LogicLayer
             }
         }
 
+        /// <summary>
+        /// Active pair from standby status to active pair.
+        /// recalculating finding suggestions for matching
+        /// </summary>
+        /// <param name="pair">The pair to activete</param>
+        /// <returns></returns>
         public async Task ActivatePairAsync(BO.Pair pair)
         {
             pair.IsActive = true;
@@ -506,9 +594,9 @@ namespace LogicLayer
         }
 
         /// <summary>
-        /// Get all pairs from the data base
+        /// Get all pairs from the database
         /// </summary>
-        /// <returns>list of all pairs in a tuple of tow students</returns>
+        /// <returns>list of all pairs</returns>
         public IEnumerable<BO.Pair> GetAllPairs()
         {
             return from p in dal.GetAllPairs()
@@ -516,6 +604,12 @@ namespace LogicLayer
                     .CreateFromDO(p, GetSimpleStudent);
         }
 
+        /// <summary>
+        /// Remove pair from the database.
+        /// after the remove recalculating finding suggestions for matching
+        /// </summary>
+        /// <param name="pair">The pair to renove</param>
+        /// <returns></returns>
         public async Task RemovePairAsync(BO.Pair pair)
         {
             try
@@ -564,6 +658,10 @@ namespace LogicLayer
             }
         }
 
+        /// <summary>
+        /// Filter the pair list by track of stading
+        /// </summary>
+        /// <param name="track">the track stading</param>
         public void FilterPairsByTrack(string track)
         {
             if (track == "הכל")
@@ -578,7 +676,11 @@ namespace LogicLayer
         #endregion
 
         #region Sending emails
-        async Task SendRegesterEmailForNewStudent()
+        /// <summary>
+        /// Send email to new students that registerd in the google forms
+        /// </summary>
+        /// <returns></returns>
+        private async Task SendRegesterEmailForNewStudent()
         {
             foreach (var s in DataSource.StudentsList)
             {
@@ -597,8 +699,8 @@ namespace LogicLayer
                             .SendAsync(s, Templates.SuccessfullyRegisteredEnglish);
                     }
                 }
-                catch (FormatException)
-                {
+                catch (FormatException) // the email addres of the student is not valid
+                {   // add to the the list og unvalid email students to notefiy the gui
                     StudentWithUnvalidEmail.Add(new BO.SimpleStudent
                     {
                         Id = s.Id,
@@ -614,6 +716,12 @@ namespace LogicLayer
             }
         }
 
+        /// <summary>
+        /// Send automatic email to pair
+        /// </summary>
+        /// <param name="pair">The pair to send the email to</param>
+        /// <param name="emailTypes">The email type [new pair, pair broke, ect...]</param>
+        /// <returns></returns>
         public async Task SendEmailToPairAsync(BO.Pair pair, EmailTypes emailTypes)
         {
             try
@@ -660,6 +768,12 @@ namespace LogicLayer
             }
         }
 
+        /// <summary>
+        /// Send automatic email to studnet
+        /// </summary>
+        /// <param name="student">The student to send the email to</param>
+        /// <param name="emailTypes">The email type [new rejester, status email, ect...]</param>
+        /// <returns></returns>     
         public async Task SendEmailToStudentAsync(BO.Student student, EmailTypes emailTypes)
         {
             try
@@ -704,6 +818,14 @@ namespace LogicLayer
             }
         }
 
+        /// <summary>
+        ///  Send open email 
+        /// </summary>
+        /// <param name="to">Email addres to send</param>
+        /// <param name="subject">The subject of the email</param>
+        /// <param name="body">The body of the email</param>
+        /// <param name="fileAttachment">File name to attach to the email</param>
+        /// <returns></returns>
         public async Task SendOpenEmailAsync(string to, string subject, string body, string fileAttachment = "")
         {
             await sendEmail
@@ -712,7 +834,6 @@ namespace LogicLayer
                 .Template(new StringBuilder().Append(body))
                 .SendOpenMailAsync(fileAttachment);
         }
-
         #endregion
 
         #region Build all the students and find a suggests students for each one

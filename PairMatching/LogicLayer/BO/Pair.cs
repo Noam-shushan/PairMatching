@@ -36,7 +36,7 @@ namespace BO
 
         public int Id { get; set; }
         /// <summary>
-        /// flag that determine if the pair is deleted from the data source 
+        /// flag that determine if the pair is deleted from the database 
         /// </summary>
         public bool IsDeleted { get; set; }
 

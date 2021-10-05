@@ -5,16 +5,31 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Configuration;
 
-namespace LogicLayer
+namespace LogicLayer.GoogleSheet
 {
+    /// <summary>
+    /// Descriptor for the values in the spreadsheet of the students from around the world
+    /// </summary>
     public class EnglishDiscriptor : IStudentDescriptor
     {
+        /// <summary>
+        /// The spreadsheet id
+        /// </summary>
         public string SpreadsheetId { get; }
 
+        /// <summary>
+        /// The spreadsheet range of rows and colunms 
+        /// </summary>
         public string Range => "A2:Z";
 
+        /// <summary>
+        /// The spreadsheet name
+        /// </summary>
         public string SheetName => "Shalhevet Regestration form תשפ\"א(תגובות)";
 
+        /// <summary>
+        /// The spreadsheet last date of update 
+        /// </summary>
         public DateTime LastUpdate { get; set; }
 
         public EnglishDiscriptor(LastDataOfSpredsheet lastDateOfUpdate)

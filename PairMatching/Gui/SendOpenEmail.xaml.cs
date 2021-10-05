@@ -13,17 +13,42 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using LogicLayer;
+using System.ComponentModel;
 
 namespace Gui
 {
     /// <summary>
     /// Interaction logic for SendOpenEmail.xaml
     /// </summary>
-    public partial class SendOpenEmail : Window
+    // TODO: Allow more then one file to send
+    public partial class SendOpenEmail : Window, INotifyPropertyChanged
     {
-        IBL bl = BlFactory.GetBL();
+        private readonly ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
+        
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        string _filePath = "";
+        private string _fileName = "";
+        public string FileName
+        {
+            get => _fileName;
+            set
+            {
+                _fileName = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileName"));
+            }
+        }
+
+        private string _filePath = "";
+
+        public string FilePath 
+        { 
+            get => _filePath; 
+            set
+            {
+                _filePath = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FilePath"));
+            } 
+        }
 
         public string StudentName { get; set; }
 
@@ -54,7 +79,7 @@ namespace Gui
             }
             try
             {
-                await bl.SendOpenEmailAsync(Email, tbSubject.Text, tbBody.Text, _filePath);
+                await logicLayer.SendOpenEmailAsync(Email, tbSubject.Text, tbBody.Text, FilePath);
                 isSend = true;
                 Messages.MessageBoxSimple("המייל נשלח בהצלחה");
             }
@@ -64,7 +89,7 @@ namespace Gui
             }
             finally
             {
-                _filePath = "";
+                FilePath = FileName = "";
             }
             if (isSend)
             {
@@ -80,9 +105,14 @@ namespace Gui
             
             if(response == true)
             {
-                _filePath = openFileDialog.FileName;
-                filePathLable.Content = _filePath;
+                FileName = openFileDialog.SafeFileName;
+                FilePath = openFileDialog.FileName;
             }
+        }
+
+        private void remFileAttchBtn_Click(object sender, RoutedEventArgs e)
+        {
+            FilePath = FileName = "";
         }
     }
 }

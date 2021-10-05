@@ -2,6 +2,7 @@
 
 namespace DataLayer
 {
+    // TODO: add documentation
     public class Counters
     {
         [BsonId]

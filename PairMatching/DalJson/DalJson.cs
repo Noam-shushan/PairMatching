@@ -8,6 +8,7 @@ using DO;
 
 namespace DalJson
 {
+    // TODO: add documentation
     public class DalJson : IDataLayer
     {
         #region Singleton

@@ -3,15 +3,28 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 
-namespace LogicLayer
+namespace LogicLayer.GoogleSheet
 {
     public class HebrewDescriptor : IStudentDescriptor
     {
+        /// <summary>
+        /// The spreadsheet id
+        /// </summary>
+        public string SpreadsheetId { get; }
+
+        /// <summary>
+        /// The spreadsheet range of rows and colunms 
+        /// </summary>
         public string Range { get => "A2:Z"; }
 
-        public string SpreadsheetId { get; }
+        /// <summary>
+        /// The spreadsheet name
+        /// </summary>
         public string SheetName { get => "טופס רישום שלהבת תשפ\"א (תגובות)"; }
 
+        /// <summary>
+        /// The spreadsheet last date of update 
+        /// </summary>
         public DateTime LastUpdate { get; set; }
 
         public HebrewDescriptor(LastDataOfSpredsheet lastDateOfUpdate)

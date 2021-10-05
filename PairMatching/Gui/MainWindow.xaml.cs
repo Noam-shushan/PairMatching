@@ -10,6 +10,7 @@ using LogicLayer;
 using BO;
 using System.Globalization;
 using System.ComponentModel;
+using LogicLayer.Eamil;
 
 namespace Gui
 {
@@ -18,7 +19,7 @@ namespace Gui
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private static readonly IBL bl = BlFactory.GetBL();
+        private readonly ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
 
         #region Dependency Properties
         public event PropertyChangedEventHandler PropertyChanged;
@@ -118,22 +119,22 @@ namespace Gui
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             IsLoadedData = true;
-            try
-            {
-                await bl.ReadDataFromSpredsheetAsync();
-            }
-            catch(Exception ex2)
-            {
-                Messages.MessageBoxError(ex2.Message);
-            }
+            //try
+            //{
+            //    await logicLayer.ReadDataFromSpredsheetAsync();
+            //}
+            //catch(Exception ex2)
+            //{
+            //    Messages.MessageBoxError(ex2.Message);
+            //}
             try
             {
 
-                await bl.UpdateAsync();
+                await logicLayer.UpdateAsync();
 
-                if (bl.StudentWithUnvalidEmail.Count > 0)
+                if (logicLayer.StudentWithUnvalidEmail.Count > 0)
                 {
-                    var result = string.Join(",\n", from s in bl.StudentWithUnvalidEmail select s.Name);
+                    var result = string.Join(",\n", from s in logicLayer.StudentWithUnvalidEmail select s.Name);
                     Messages.MessageBoxWarning($"הכתובות מייל של התלמידים הבאים:\n {result} אינן חוקיות");
                 }
             }
@@ -149,8 +150,8 @@ namespace Gui
             IsLoadedData = true;
             try
             {
-                await bl.ReadDataFromSpredsheetAsync();
-                await bl.UpdateAsync();
+                await logicLayer.ReadDataFromSpredsheetAsync();
+                await logicLayer.UpdateAsync();
             }
             catch (Exception ex)
             {
@@ -164,7 +165,7 @@ namespace Gui
         private void statisticsBtn_Click(object sender, RoutedEventArgs e)
         {
             IsStatisticsUi = true;
-            spStatistics.DataContext = bl.Statistics;
+            spStatistics.DataContext = logicLayer.Statistics;
         }
 
         #region Students UI
@@ -172,14 +173,14 @@ namespace Gui
         {
             IsStudentWitoutPairUi = false;
             IsStudentsUi = true;
-            bl.StudentListFilter = s => !s.IsDeleted;
+            logicLayer.StudentListFilter = s => !s.IsDeleted;
             studentsListControl.SetItemsSource();
         }
 
         private void allStudentWithoutPairBtn_Click(object sender, RoutedEventArgs e)
         {
             IsStudentWitoutPairUi = true;
-            bl.StudentListFilter = s => s.IsOpenToMatch;
+            logicLayer.StudentListFilter = s => s.IsOpenToMatch;
             studentsListControl.SetItemsSource();
         }
 
@@ -195,14 +196,14 @@ namespace Gui
         private void allStudentFromWorldBtn_Click(object sender, RoutedEventArgs e)
         {
             IsStudentsUi = true;
-            bl.StudentListFilter = s => !s.IsFromIsrael;
+            logicLayer.StudentListFilter = s => !s.IsFromIsrael;
             studentsListControl.SetItemsSource();
         }
 
         private void allStudentFromIsraelBtn_Click(object sender, RoutedEventArgs e)
         {
             IsStudentsUi = true;
-            bl.StudentListFilter = s => s.IsFromIsrael;
+            logicLayer.StudentListFilter = s => s.IsFromIsrael;
             studentsListControl.SetItemsSource();
         }
 
@@ -210,11 +211,11 @@ namespace Gui
         {
             if (IsStudentWitoutPairUi)
             {
-                bl.StudentListFilter = s => s.IsOpenToMatch;
+                logicLayer.StudentListFilter = s => s.IsOpenToMatch;
             }
             else
             {
-                bl.StudentListFilter = s => !s.IsDeleted;
+                logicLayer.StudentListFilter = s => !s.IsDeleted;
             }
             studentsListControl.SetItemsSource();
             studentControl.Visibility = Visibility.Collapsed;
@@ -225,36 +226,36 @@ namespace Gui
         private void allPairsBtn_Click(object sender, RoutedEventArgs e)
         {
             IsPairsUi = true;
-            bl.PairListFilter = p => !p.IsDeleted;
-            lvPairs.ItemsSource = bl.PairList;
+            logicLayer.PairListFilter = p => !p.IsDeleted;
+            lvPairs.ItemsSource = logicLayer.PairList;
         }
 
         private void allActivePairBtn_Click(object sender, RoutedEventArgs e)
         {
             IsPairsUi = true;
-            bl.PairListFilter = p => p.IsActive;
-            lvPairs.ItemsSource = bl.PairList;
+            logicLayer.PairListFilter = p => p.IsActive;
+            lvPairs.ItemsSource = logicLayer.PairList;
 
         }
 
         private void allStandbyPairBtn_Click(object sender, RoutedEventArgs e)
         {
             IsPairsUi = true;
-            bl.PairListFilter = p => !p.IsActive;
-            lvPairs.ItemsSource = bl.PairList;
+            logicLayer.PairListFilter = p => !p.IsActive;
+            lvPairs.ItemsSource = logicLayer.PairList;
         }
 
         private void cbTracksFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var track = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
-            bl.FilterPairsByTrack(track);
-            lvPairs.ItemsSource = bl.PairList;
+            logicLayer.FilterPairsByTrack(track);
+            lvPairs.ItemsSource = logicLayer.PairList;
         }
 
         public void RefreshMyPairView()
         {
-            bl.PairListFilter = p => !p.IsDeleted;
-            lvPairs.ItemsSource = bl.PairList;
+            logicLayer.PairListFilter = p => !p.IsDeleted;
+            lvPairs.ItemsSource = logicLayer.PairList;
             //tbIsThereResultOfSearcing.Text = string.Empty;
         }
 
@@ -265,8 +266,8 @@ namespace Gui
             {
                 return;
             }
-            var first = bl.GetStudent(s => s.Id == selectedPair.StudentFromIsrael.Id);
-            var seconde = bl.GetStudent(s => s.Id == selectedPair.StudentFromWorld.Id);
+            var first = logicLayer.GetStudent(s => s.Id == selectedPair.StudentFromIsrael.Id);
+            var seconde = logicLayer.GetStudent(s => s.Id == selectedPair.StudentFromWorld.Id);
             if (first.IsFromIsrael)
             {
                 new ComparingStudentsWin(first, seconde)
@@ -288,7 +289,7 @@ namespace Gui
         #region Pair operation
         private async void removeMenyPairBtn_Click(object sender, RoutedEventArgs e)
         {
-            var selectedPairs = bl.PairList.Where(p => p.IsSelected);
+            var selectedPairs = logicLayer.PairList.Where(p => p.IsSelected);
             int numOfPairsToRem = selectedPairs.Count();
             if (numOfPairsToRem == 0)
             {
@@ -303,9 +304,9 @@ namespace Gui
                     {
                         foreach (var pair in selectedPairs)
                         {
-                            await bl.SendEmailToPairAsync(pair, EmailTypes.ToSecretaryPairBroke);
-                            await bl.RemovePairAsync(pair);
-                            await bl.SendEmailToPairAsync(pair, EmailTypes.PairBroke);
+                            await logicLayer.SendEmailToPairAsync(pair, EmailTypes.ToSecretaryPairBroke);
+                            await logicLayer.RemovePairAsync(pair);
+                            await logicLayer.SendEmailToPairAsync(pair, EmailTypes.PairBroke);
 
                         }
                         RefreshMyPairView();
@@ -317,9 +318,9 @@ namespace Gui
                     if (Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את החברותא {selectedPairs.First()} ?"))
                     {
                         var pair = selectedPairs.First();
-                        await bl.RemovePairAsync(pair);
-                        await bl.SendEmailToPairAsync(pair, EmailTypes.PairBroke);
-                        await bl.SendEmailToPairAsync(pair, EmailTypes.ToSecretaryPairBroke);
+                        await logicLayer.RemovePairAsync(pair);
+                        await logicLayer.SendEmailToPairAsync(pair, EmailTypes.PairBroke);
+                        await logicLayer.SendEmailToPairAsync(pair, EmailTypes.ToSecretaryPairBroke);
                         RefreshMyPairView();
                         RefreshMyStudentsView();
                     }
@@ -333,7 +334,7 @@ namespace Gui
 
         private async void manualMatchBtn_Click(object sender, RoutedEventArgs e)
         {
-            var selectedList = bl.GetAllStudentsBy(s => s.IsSelected);
+            var selectedList = logicLayer.GetAllStudentsBy(s => s.IsSelected);
             if (selectedList.Count() != 2)
             {
                 Messages.MessageBoxWarning("בחר 2 תלמידים מהרשימה על מנת לבצע התאמה");
@@ -346,7 +347,7 @@ namespace Gui
                 var second = selectedList.Last();
                 if (Messages.MessageBoxConfirmation($"בטוח שברצונך להתאים את {first.Name} ל- {second.Name}?"))
                 {
-                    int id = await bl.MatchAsync(first, second);
+                    int id = await logicLayer.MatchAsync(first, second);
                     RefreshMyStudentsView();
                     RefreshMyPairView();
                 }
@@ -360,7 +361,7 @@ namespace Gui
         private void selectAllPairCB_Checked(object sender, RoutedEventArgs e)
         {
 
-            foreach (var p in bl.PairList)
+            foreach (var p in logicLayer.PairList)
             {
                 p.IsSelected = true;
             }
@@ -369,7 +370,7 @@ namespace Gui
 
         private void selectAllPairCB_Unchecked(object sender, RoutedEventArgs e)
         {
-            foreach (var p in bl.PairList)
+            foreach (var p in logicLayer.PairList)
             {
                 p.IsSelected = false;
             }
@@ -378,7 +379,7 @@ namespace Gui
 
         private void sendEmailToManyPairBtn_Click(object sender, RoutedEventArgs e)
         {
-            var selectedPair = bl.PairList.Where(p => p.IsSelected);
+            var selectedPair = logicLayer.PairList.Where(p => p.IsSelected);
             int numOfPairs = selectedPair.Count();
             if (numOfPairs == 0)
             {
@@ -433,14 +434,14 @@ namespace Gui
             {
                 if (selectedPair != null)
                 {
-                    var pairToUpdate = bl.GetPair(selectedPair.Id);
+                    var pairToUpdate = logicLayer.GetPair(selectedPair.Id);
                     if (_trackForEditPair != "")
                     {
                         pairToUpdate.EditPrefferdTracks(_trackForEditPair);
                         _trackForEditPair = "";
                     }
                     lvPairs.Items.Refresh();
-                    bl.UpdatePair(pairToUpdate);
+                    logicLayer.UpdatePair(pairToUpdate);
                 }
             }
             catch (Exception ex)
@@ -458,7 +459,7 @@ namespace Gui
                 {
                     if (Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את החברותא {selectedPair}?"))
                     {
-                        await bl.RemovePairAsync(selectedPair);
+                        await logicLayer.RemovePairAsync(selectedPair);
                         RefreshMyPairView();
                         RefreshMyStudentsView();
                     }
@@ -477,7 +478,7 @@ namespace Gui
             {
                 if (selectedPair != null)
                 {
-                    await bl.ActivatePairAsync(selectedPair);
+                    await logicLayer.ActivatePairAsync(selectedPair);
                     RefreshMyPairView();
                     RefreshMyStudentsView();
                 }

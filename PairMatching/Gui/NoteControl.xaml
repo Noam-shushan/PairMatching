@@ -32,9 +32,52 @@
             <materialDesign:PackIcon Kind="Close" />
         </Button>
         <StackPanel Margin="8">
+            <StackPanel>
+                <ListView
+                    x:Name="lvNotes"
+                    Height="200"
+                    ItemsSource="{Binding NotesBo}">
+                    <ListView.View>
+                        <GridView>
+                            <GridView.Columns>
+                                <GridViewColumn HeaderContainerStyle="{StaticResource HeadersStyle}">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button
+                                                x:Name="deleteNoteBtn"
+                                                Click="deleteNoteBtn_Click"
+                                                Style="{StaticResource MaterialDesignIconButton}"
+                                                ToolTip="מחק הערה">
+                                                <materialDesign:PackIcon Kind="Delete" />
+                                            </Button>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn
+                                    DisplayMemberBinding="{Binding Author}"
+                                    Header="כותב ההערה"
+                                    HeaderContainerStyle="{StaticResource HeadersStyle}" />
+                                <GridViewColumn
+                                    DisplayMemberBinding="{Binding Date, StringFormat='yyyy/MM/dd'}"
+                                    Header="תאריך"
+                                    HeaderContainerStyle="{StaticResource HeadersStyle}" />
+                                <GridViewColumn
+                                    Width="600"
+                                    DisplayMemberBinding="{Binding Text}"
+                                    Header="הערה"
+                                    HeaderContainerStyle="{StaticResource HeadersStyle}" />
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
             <Expander x:Name="expder">
                 <Expander.Header>
-                    <TextBlock Style="{StaticResource MaterialDesignButtonTextBlock}" Text="הוסף הערה" />
+                    <TextBlock
+                        FontSize="15"
+                        Foreground="#5e35b1"
+                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                        Text="הוסף הערה" />
                 </Expander.Header>
                 <StackPanel>
                     <TextBox
@@ -57,38 +100,12 @@
                     <Button
                         x:Name="addNote"
                         Width="80"
-                        Margin="0,5"
+                        Margin="200,5,0,5"
                         HorizontalAlignment="Left"
                         Click="addNote_Click"
                         Content="הוסף" />
                 </StackPanel>
             </Expander>
-            <StackPanel>
-                <ListView
-                    x:Name="lvNotes"
-                    Height="200"
-                    ItemsSource="{Binding NotesBo}">
-                    <ListView.View>
-                        <GridView>
-                            <GridView.Columns>
-                                <GridViewColumn
-                                    DisplayMemberBinding="{Binding Author}"
-                                    Header="כותב ההערה"
-                                    HeaderContainerStyle="{StaticResource HeadersStyle}" />
-                                <GridViewColumn
-                                    DisplayMemberBinding="{Binding Date, StringFormat='yyyy/MM/dd'}"
-                                    Header="תאריך"
-                                    HeaderContainerStyle="{StaticResource HeadersStyle}" />
-                                <GridViewColumn
-                                    Width="600"
-                                    DisplayMemberBinding="{Binding Text}"
-                                    Header="הערה"
-                                    HeaderContainerStyle="{StaticResource HeadersStyle}" />
-                            </GridView.Columns>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </StackPanel>
         </StackPanel>
     </DockPanel>
 </UserControl>

@@ -14,7 +14,7 @@ namespace DO
         public int Id { get; set; }
 
         /// <summary>
-        /// is this student as deleted from the data source
+        /// is this student as deleted from the database
         /// </summary>
         public bool IsDeleted { get; set; }
 

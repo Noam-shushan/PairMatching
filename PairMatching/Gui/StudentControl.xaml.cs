@@ -20,20 +20,18 @@ using LogicLayer;
 namespace Gui
 {
     /// <summary>
-    /// Interaction logic for StudentControl.xaml
+    /// Student view.
+    /// Show all propeties of this student.
+    /// Show matching suggestions.
+    /// Show history of pair matching and note of the admin.
     /// </summary>
     public partial class StudentControl : UserControl
     {
-        private static readonly IBL bl = BlFactory.GetBL();
+        private readonly ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
 
         public StudentControl()
         {
             InitializeComponent();
-        }
-
-        public void SetNotes(Student student)
-        {
-            notes.Student = student;
         }
 
         private void clearCBFirstMatchBtn_Click(object sender, RoutedEventArgs e)
@@ -60,7 +58,7 @@ namespace Gui
         {
             if (fristStudent != null && DataContext != null)
             {
-                var first = bl.GetStudent((fristStudent as SuggestStudent).SuggestStudentId);
+                var first = logicLayer.GetStudent((fristStudent as SuggestStudent).SuggestStudentId);
                 var seconde = DataContext as Student;
                 if (first.IsFromIsrael)
                 {
@@ -97,8 +95,8 @@ namespace Gui
             {
                 if (Messages.MessageBoxConfirmation($"בטוח שברצונך להתאים את {selectedStudent.Name} ל- {suggestStudent.SuggestStudentName}?"))
                 {
-                    var first = bl.GetStudent(suggestStudent.SuggestStudentId);
-                    int id = await bl.MatchAsync(selectedStudent, first);
+                    var first = logicLayer.GetStudent(suggestStudent.SuggestStudentId);
+                    int id = await logicLayer.MatchAsync(selectedStudent, first);
                     
                     var mainWin = Application.Current.MainWindow as MainWindow;
                     mainWin.RefreshMyStudentsView();

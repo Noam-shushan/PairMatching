@@ -13,7 +13,7 @@ namespace Gui
     /// </summary>
     public partial class AddStudentWin : Window
     {
-        private static readonly IBL bl = BlFactory.GetBL();
+        private static readonly ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
 
         public AddStudentWin()
         {
@@ -50,7 +50,7 @@ namespace Gui
             }
             try
             {
-                bl.AddStudent(new BO.Student
+                logicLayer.AddStudent(new BO.Student
                 {
                     Name = tbName.Text,
                     Country = cbCountry.Text,

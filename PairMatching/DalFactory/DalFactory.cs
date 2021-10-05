@@ -2,6 +2,7 @@
 
 namespace DataLayer
 {
+    // TODO: add documentation
     public static class DalFactory
     {
         public static IDataLayer GetDal()

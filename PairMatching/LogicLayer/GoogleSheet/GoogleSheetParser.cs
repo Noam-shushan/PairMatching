@@ -5,14 +5,23 @@ using System.Threading.Tasks;
 using DataLayer;
 
 
-namespace LogicLayer
+namespace LogicLayer.GoogleSheet
 {
+    /// <summary>
+    /// Google Sheet parser that descript the values in the spreadsheet table.<br/>
+    /// Save the descripting objects to the database.
+    /// </summary>
     public class GoogleSheetParser
     {   
-        private static readonly IDataLayer dal = DalFactory.GetDal();
+        private readonly IDataLayer dal = DalFactory.GetDal();
 
-        private static readonly int ROW_SIZE = 26;
+        private const int ROW_SIZE = 26;
+        private const int TIME_COLUMN_START = 2;
+        private const int TIME_COLUMN_END = 7;
 
+        /// <summary>
+        /// indexer of the values in the hebrow spreadsheet
+        /// </summary>
         private static readonly Dictionary<string, int> indexHebSheet = new Dictionary<string, int>()
         {
             {"Name", 1 },
@@ -34,6 +43,9 @@ namespace LogicLayer
             {"Languages", 22 }
         };
 
+        /// <summary>
+        /// indexer of the values in the english spreadsheet
+        /// </summary>
         private static readonly Dictionary<string, int> indexEngSheet = 
             new Dictionary<string, int>()
             {
@@ -60,10 +72,8 @@ namespace LogicLayer
                 {"Languages", 25 }
             };
         
+        // Reader for the spreadsheets
         private readonly GoogleSheetReader sheetReader;
-
-        private static readonly int TIME_COLUMN_START = 2;
-        private static readonly int TIME_COLUMN_END = 7;
 
         /// <summary>
         /// Constructor for GoogleSheetParser

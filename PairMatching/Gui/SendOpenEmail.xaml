@@ -6,9 +6,10 @@
     xmlns:local="clr-namespace:Gui"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="openEmail"
     Title="שלח מייל"
     Width="600"
-    Height="450"
+    MinHeight="500"
     Background="{DynamicResource MaterialDesignPaper}"
     FlowDirection="RightToLeft"
     FontFamily="{DynamicResource MaterialDesignFont}"
@@ -23,24 +24,8 @@
             <Setter Property="FontWeight" Value="Bold" />
         </Style>
     </Window.Resources>
-    <Grid Margin="20" FlowDirection="RightToLeft">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition Height="50" />
-        </Grid.RowDefinitions>
-        <StackPanel
-            Grid.Row="0"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            Margin="10">
+    <StackPanel Margin="20">
+        <StackPanel>
             <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
                 <TextBlock Margin="0,0,10,0" Text="אל:" />
                 <TextBlock Text="{Binding StudentName}" />
@@ -52,52 +37,43 @@
         </StackPanel>
         <TextBox
             x:Name="tbSubject"
-            Grid.Row="1"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
             Margin="10"
             materialDesign:HintAssist.Hint="נושא"
             Style="{StaticResource MaterialDesignOutlinedTextBox}" />
 
         <TextBox
             x:Name="tbBody"
-            Grid.Row="2"
-            Grid.RowSpan="2"
-            Grid.Column="0"
-            Grid.ColumnSpan="3"
+            MinHeight="180"
             Margin="10"
             materialDesign:HintAssist.Hint="תוכן"
             AcceptsReturn="True"
             Style="{StaticResource MaterialDesignOutlinedTextBox}" />
 
+        <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+            <Button
+                x:Name="attachmentBtn"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Click="attachmentBtn_Click"
+                Style="{StaticResource MaterialDesignIconButton}"
+                ToolTip="הוסף קובץ">
+                <materialDesign:PackIcon Kind="Paperclip" />
+            </Button>
+            <Button
+                x:Name="remFileAttchBtn"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Click="remFileAttchBtn_Click"
+                Style="{StaticResource MaterialDesignIconButton}"
+                ToolTip="הסר קובץ">
+                <materialDesign:PackIcon Kind="CloseBoxesOutline" />
+            </Button>
+            <Label x:Name="filePathLable" Content="{Binding ElementName=openEmail, Path=FileName}" />
+        </StackPanel>
         <Button
             x:Name="sendBtn"
-            Grid.Row="4"
-            Grid.Column="1"
             Width="100"
             Click="sendBtn_Click"
             Content="שלח מייל" />
-
-        <Button
-            x:Name="attachmentBtn"
-            Grid.Row="3"
-            Grid.Column="0"
-            Width="75"
-            Margin="10"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Bottom"
-            Click="attachmentBtn_Click"
-            Style="{StaticResource MaterialDesignIconButton}"
-            ToolTip="הוסף קובץ">
-            <materialDesign:PackIcon Kind="Paperclip" />
-        </Button>
-        <Label
-            x:Name="filePathLable"
-            Grid.Row="3"
-            Grid.Column="0"
-            Grid.ColumnSpan="3"
-            Margin="10"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom" />
-    </Grid>
+    </StackPanel>
 </Window>

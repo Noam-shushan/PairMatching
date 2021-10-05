@@ -12,16 +12,24 @@ using Google.Apis.Util.Store;
 using System.IO;
 using System.Threading;
 
-namespace LogicLayer
+namespace LogicLayer.GoogleSheet
 {
+    /// <summary>
+    /// Read Google Sheet file using Google Sheet Api
+    /// </summary>
     public class GoogleSheetReader
     {
+        // The scope i need is only to read
         private static readonly string[] scopes = { SheetsService.Scope.SpreadsheetsReadonly };
         
-        private readonly string applicationName = "PairMathcing";
+        private const string applicationName = "PairMathcing";
         
         private readonly SheetsService service;
 
+        /// <summary>
+        /// Constructor for the Reader.<br/>
+        /// Create credential from service acount.
+        /// </summary>
         public GoogleSheetReader()
         {
             GoogleCredential credential;
@@ -47,6 +55,12 @@ namespace LogicLayer
             }
         }
 
+        /// <summary>
+        /// Read the spreadsheet from google sheet by spreadsheet id  and range of rows and colunms.
+        /// </summary>
+        /// <param name="spreadsheetId">The spreadsheet id</param>
+        /// <param name="range">The spreadsheet range of rows and colunms</param>
+        /// <returns>Table of object values</returns>
         public IList<IList<object>> ReadEntries(string spreadsheetId, string range)
         {
             try
@@ -69,6 +83,11 @@ namespace LogicLayer
             }
         }
 
+        /// <summary>
+        /// Read the spreadsheet from google sheet by a descriptor
+        /// </summary>
+        /// <param name="studentDescriptor">A student descriptor</param>
+        /// <returns>Table of object values</returns>
         public IList<IList<object>> ReadEntries(IStudentDescriptor studentDescriptor)
         {
             return ReadEntries(studentDescriptor.SpreadsheetId, studentDescriptor.Range); 
