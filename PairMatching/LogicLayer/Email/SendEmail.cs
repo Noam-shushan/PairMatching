@@ -12,7 +12,7 @@ using System.IO;
 using RazorEngine;
 using RazorEngine.Templating;
 
-namespace LogicLayer.Eamil
+namespace LogicLayer
 {
     /// <summary>
     /// Send email from the system.<br/>

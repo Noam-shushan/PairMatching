@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 
-namespace LogicLayer.GoogleSheet
+namespace LogicLayer
 {
     public class HebrewDescriptor : IStudentDescriptor
     {

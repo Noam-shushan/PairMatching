@@ -395,7 +395,7 @@
                                                         <local:NoteControl
                                                             x:Name="notes"
                                                             Width="800"
-                                                            Height="500"
+                                                            MaxHeight="500"
                                                             IsStudent="False" />
                                                         <ComboBox
                                                             x:Name="cbTracksEdit"

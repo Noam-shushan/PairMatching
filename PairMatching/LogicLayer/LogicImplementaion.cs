@@ -7,8 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using DataLayer;
 using LogicLayer.FindMatching;
-using LogicLayer.Eamil;
-using LogicLayer.GoogleSheet;
 
 namespace LogicLayer
 {

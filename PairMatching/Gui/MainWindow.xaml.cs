@@ -10,7 +10,6 @@ using LogicLayer;
 using BO;
 using System.Globalization;
 using System.ComponentModel;
-using LogicLayer.Eamil;
 
 namespace Gui
 {
@@ -119,14 +118,14 @@ namespace Gui
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             IsLoadedData = true;
-            //try
-            //{
-            //    await logicLayer.ReadDataFromSpredsheetAsync();
-            //}
-            //catch(Exception ex2)
-            //{
-            //    Messages.MessageBoxError(ex2.Message);
-            //}
+            try
+            {
+                await logicLayer.ReadDataFromSpredsheetAsync();
+            }
+            catch (Exception ex2)
+            {
+                Messages.MessageBoxError(ex2.Message);
+            }
             try
             {
 

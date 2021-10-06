@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Configuration;
 
-namespace LogicLayer.GoogleSheet
+namespace LogicLayer
 {
     /// <summary>
     /// Descriptor for the values in the spreadsheet of the students from around the world

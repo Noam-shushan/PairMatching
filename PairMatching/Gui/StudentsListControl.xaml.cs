@@ -16,7 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using BO;
 using LogicLayer;
-using LogicLayer.Eamil;
+
 
 namespace Gui
 {

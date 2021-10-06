@@ -35,7 +35,8 @@
             <StackPanel>
                 <ListView
                     x:Name="lvNotes"
-                    Height="200"
+                    MinHeight="80"
+                    MaxHeight="140"
                     ItemsSource="{Binding NotesBo}">
                     <ListView.View>
                         <GridView>

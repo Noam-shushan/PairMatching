@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using DataLayer;
 
 
-namespace LogicLayer.GoogleSheet
+namespace LogicLayer
 {
     /// <summary>
     /// Google Sheet parser that descript the values in the spreadsheet table.<br/>

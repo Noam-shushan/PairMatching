@@ -10,6 +10,11 @@ namespace BO
         public DateTime DateOfMatch { get; set; }
 
         public DateTime DateOfUnMatch { get; set; }
+        
+        public string DateOfUnMatchShow 
+        { 
+            get => DateOfUnMatch == new DateTime() ? "" : DateOfUnMatch.ToString("d"); 
+        }
 
         public List<Tuple<DateTime, PrefferdTracks>> TracksHistory { get; set; } =
             new List<Tuple<DateTime, PrefferdTracks>>();

@@ -215,7 +215,7 @@
                                                 </GridViewColumn.CellTemplate>
                                             </GridViewColumn>
                                             <GridViewColumn
-                                                DisplayMemberBinding="{Binding Path=DateOfUnMatch, StringFormat='yyyy/MM/dd'}"
+                                                DisplayMemberBinding="{Binding Path=DateOfUnMatchShow}"
                                                 Header="תאריך מחיקה"
                                                 HeaderContainerStyle="{StaticResource HeadersStyle}" />
                                             <GridViewColumn
