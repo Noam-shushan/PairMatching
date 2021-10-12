@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogicLayer.FindMatching
+namespace LogicLayer
 {
     // TODO: find the problem with the day after 
     public class MatchinHouers

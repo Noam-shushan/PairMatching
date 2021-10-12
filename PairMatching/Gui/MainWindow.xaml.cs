@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using LogicLayer;
-using LogicLayer.Email;
 using BO;
 using System.Globalization;
 using System.ComponentModel;

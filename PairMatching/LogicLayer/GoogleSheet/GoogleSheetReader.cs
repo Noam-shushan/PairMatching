@@ -12,7 +12,7 @@ using Google.Apis.Util.Store;
 using System.IO;
 using System.Threading;
 
-namespace LogicLayer.GoogleSheet
+namespace LogicLayer
 {
     /// <summary>
     /// Read Google Sheet file using Google Sheet Api

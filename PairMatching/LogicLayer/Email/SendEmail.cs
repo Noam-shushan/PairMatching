@@ -11,7 +11,7 @@ using System.IO;
 using RazorEngine;
 using RazorEngine.Templating;
 
-namespace LogicLayer.Email
+namespace LogicLayer
 {
     /// <summary>
     /// Send email from the system.<br/>

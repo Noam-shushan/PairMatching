@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LogicLayer.FindMatching
+namespace LogicLayer
 {
     internal class TimeInterval
     {

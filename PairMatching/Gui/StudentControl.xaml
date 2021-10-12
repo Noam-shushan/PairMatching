@@ -156,7 +156,7 @@
                                     FontSize="15"
                                     Style="{StaticResource headersDetails}"
                                     Text="תאריך הרשמה:   " />
-                                <TextBlock FontSize="15" Text="{Binding Path=DateOfRegistered, StringFormat='yyyy/MM/dd'}" />
+                                <TextBlock FontSize="15" Text="{Binding Path=DateOfRegistered, StringFormat='dd/MM/yyyy'}" />
                             </StackPanel>
                             <ListView
                                 x:Name="lvHistory"
@@ -166,7 +166,7 @@
                                     <GridView>
                                         <GridView.Columns>
                                             <GridViewColumn
-                                                DisplayMemberBinding="{Binding Path=DateOfMatch, StringFormat='yyyy/MM/dd'}"
+                                                DisplayMemberBinding="{Binding Path=DateOfMatch, StringFormat='dd/MM/yyyy'}"
                                                 Header="תאריך התאמה"
                                                 HeaderContainerStyle="{StaticResource HeadersStyle}" />
                                             <GridViewColumn

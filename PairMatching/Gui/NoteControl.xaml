@@ -59,7 +59,7 @@
                                     Header="כותב ההערה"
                                     HeaderContainerStyle="{StaticResource HeadersStyle}" />
                                 <GridViewColumn
-                                    DisplayMemberBinding="{Binding Date, StringFormat='yyyy/MM/dd'}"
+                                    DisplayMemberBinding="{Binding Date, StringFormat='dd/MM/yyyy'}"
                                     Header="תאריך"
                                     HeaderContainerStyle="{StaticResource HeadersStyle}" />
                                 <GridViewColumn

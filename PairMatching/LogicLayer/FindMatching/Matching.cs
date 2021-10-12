@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LogicLayer.FindMatching
+namespace LogicLayer
 {
     public class Matching
     {

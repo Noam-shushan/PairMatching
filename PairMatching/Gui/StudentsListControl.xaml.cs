@@ -10,7 +10,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using BO;
 using LogicLayer;
-using LogicLayer.Email;
 
 
 namespace Gui
