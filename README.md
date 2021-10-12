@@ -18,7 +18,7 @@ Statistics window:
 
 
 Open Email window:
-![image](https://user-images.githubusercontent.com/40955004/135335784-fc26d1fd-d380-4e68-938f-c41f4b441d2f.png)
+![image](https://user-images.githubusercontent.com/40955004/136933728-c0fd8442-d0fb-4d8d-a46d-0cff0a193e74.png)
 
 Pairs window:
 ![image](https://user-images.githubusercontent.com/40955004/136932674-77ea4cb5-b138-4955-873a-c765fab744e2.png)
