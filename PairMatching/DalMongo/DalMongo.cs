@@ -55,8 +55,7 @@ namespace DalMongo
         {
             try
             {
-                _counters.IncStudentCounter();
-                student.Id = _counters.StudentCounter;
+                student.Id = GetNewStudentId();
                 db.UpsertRecord(countersAndLastDataOfSpredsheetTable, _counters.Id, _counters);
                 db.InsertRecord(studentsTable, student);
             }

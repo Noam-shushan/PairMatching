@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using DataLayer;
 using LogicLayer.FindMatching;
+using LogicLayer.Email;
+using LogicLayer.GoogleSheet;
 
 namespace LogicLayer
 {
@@ -200,7 +202,6 @@ namespace LogicLayer
             {
                 await Task.Run(() =>
                 {
-                    matcher.MatchingTimes.Clear();
                     _studentList = new ObservableCollection<BO.Student>(CreateAllStudents());
                     BuildAllStudents();
                     _pairList = new ObservableCollection<BO.Pair>(GetAllPairs());
@@ -849,7 +850,6 @@ namespace LogicLayer
             {
                 // copy the propertis to BO student
                 var studBO = studDO.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
-
                 if (studBO.IsSimpleStudent)
                 {
                     return studBO;
@@ -885,12 +885,14 @@ namespace LogicLayer
         private void BuildAllStudents()
         {
             var temp = new List<BO.Student>();
-            // find matcing student for each one
+            // Find matcing student for each one
             foreach (var stud in _studentList)
             {
+                // Get the names of the students that thy paired with
                 stud.MatchToShow = string.Join(", ", from s in _studentList
                                                      where stud.MatchTo.Contains(s.Id)
                                                     select s.Name);
+
                 if (stud.IsOpenToMatch)
                 {
                     temp.Add(BuildStudent(stud));
@@ -905,31 +907,61 @@ namespace LogicLayer
 
         private BO.Student BuildStudent(BO.Student student)
         {
-            // find matching students from first rank to this one
-            // and order them by the number of matcing houers
-            student.FirstSuggestStudents = from s in GetMatchingStudents(student, matcher.IsFirstMatching)
-                                           orderby (from l in s.MatchingLearningTime
-                                                    select l.TimeInDay.Count()).Count()
-                                                    descending
-                                           select s;
-            if(student.FirstSuggestStudents.Count() == 0)
-            {
+            // Find matching students from first rank to this one
+            student.FirstSuggestStudents = GetMatchingStudents(student, matcher.IsFirstMatching); 
+            if (student.FirstSuggestStudents.Count() == 0)
+            {   // If there isn't any matching students look for matching without compereing houers
                 student.FirstSuggestStudents = GetMatchingStudents(student, matcher.IsFirstMatching, true);
             }
 
-            // find matching students from seconde rank to this one
-            // and order them by the number of matcing houers
-            student.SecondeSuggestStudents = from s in GetMatchingStudents(student, matcher.IsMatchingStudentsCritical)
-                                             orderby (from l in s.MatchingLearningTime
-                                                      select l.TimeInDay.Count()).Count()
-                                                    descending
-                                             select s;
-            if(student.SecondeSuggestStudents.Count() == 0)
-            {
+            // Find matching students from seconde rank to this one
+            student.SecondeSuggestStudents = GetMatchingStudents(student, matcher.IsMatchingStudentsCritical);
+            if (student.SecondeSuggestStudents.Count() == 0)
+            {   // If there isn't any matching students look for matching without compereing houers
                 student.SecondeSuggestStudents = GetMatchingStudents(student, matcher.IsMatchingStudentsCritical, true);
             }
 
             return student;
+        }
+
+        private IEnumerable<BO.SuggestStudent> GetMatchingStudents(BO.Student student, Func<BO.Student, BO.Student, bool, bool> findFunc, bool flagNotFound = false)
+        {
+            var result = new List<BO.SuggestStudent>();
+            // Get optional students that is relevnt for finding matching
+            var studList = GetOptionalStudents(student);
+            foreach (var other in studList)
+            {
+                if (student.IsFromIsrael)
+                {
+                    // Create new suggest students
+                    matcher.BuildMatch(student, other);
+                    // Find and build the current suggest students
+                    if (findFunc(student, other, flagNotFound))
+                    {
+                        result.Add(matcher.CurrentForIsraeliSuggest);
+                    }
+                }
+                else
+                {
+                    // Create new suggest students
+                    matcher.BuildMatch(other, student);
+                    // Find and build the current suggest students
+                    if (findFunc(other, student, flagNotFound))
+                    {
+                        result.Add(matcher.CurrentForWorldSuggest);
+                    }
+                }
+            }
+
+            // Return the suggest students list order by the matching score
+            return GetOrderdSuggestStudents(result);
+        }
+
+        private IEnumerable<BO.SuggestStudent> GetOrderdSuggestStudents(IEnumerable<BO.SuggestStudent> suggestStudents)
+        {
+            return from s in suggestStudents
+                   orderby s.MatcingScore descending
+                   select s;
         }
 
         private IEnumerable<BO.Student> GetOptionalStudents(BO.Student student)
@@ -948,71 +980,6 @@ namespace LogicLayer
                        && !student.IsInTheSuggestStudents(s)
                        select s;
             }
-        }
-
-
-        private IEnumerable<BO.SuggestStudent> GetMatchingStudents(BO.Student student, Func<BO.Student, BO.Student, bool, bool> func, bool flagNotFound = false)
-        {
-            var result = new List<BO.SuggestStudent>();
-            var studList = GetOptionalStudents(student);
-            foreach (var other in studList)
-            {
-                if (student.IsFromIsrael)
-                {
-                    matcher.BuildMatch(student, other);
-                    if (func(student, other, flagNotFound))
-                    {
-                        var matchingLearningTime = from mt in matcher.MatchingTimes
-                                                    where mt.StudentFromIsraelId == student.Id
-                                                    && mt.StudentFromWorldId == other.Id
-                                                    let lt = mt.MatchingLearningTimeInWorld
-                                                    group lt.TimeInDay.First() by lt.Day into times
-                                                    select new DO.LearningTime
-                                                    {
-                                                        Day = times.Key,
-                                                        TimeInDay = times.Distinct()
-                                                    };
-                        var mat = new BO.SuggestStudent
-                        {
-                            ThisStudentId = student.Id,
-                            SuggestStudentId = other.Id,
-                            SuggestStudenCountry = other.Country,
-                            SuggestStudentName = other.Name,
-                            MatchingLearningTime = matchingLearningTime.ToList()
-                        };
-                        result.Add(mat);
-                    }
-                }
-                else
-                {
-                    matcher.BuildMatch(other, student);
-                    if (func(other, student, flagNotFound))
-                    {
-                        var matchingLearningTime = from mt in matcher.MatchingTimes
-                                                    where mt.StudentFromWorldId == student.Id
-                                                    && mt.StudentFromIsraelId == other.Id
-                                                    let lt = mt.MatchingLearningTimeInIsrael
-                                                    group lt.TimeInDay.First() by lt.Day into times
-                                                    select new DO.LearningTime
-                                                    {
-                                                        Day = times.Key,
-                                                        TimeInDay = times.Distinct()
-                                                    };
-
-                        var mat = new BO.SuggestStudent
-                        {
-                            ThisStudentId = student.Id,
-                            SuggestStudentId = other.Id,
-                            SuggestStudenCountry = other.Country,
-                            SuggestStudentName = other.Name,
-                            MatchingLearningTime = matchingLearningTime.ToList()
-                        };
-                        result.Add(mat);
-                    }
-                }
-            }
-
-            return result;
         }
         #endregion
 

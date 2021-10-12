@@ -23,9 +23,12 @@ namespace LogicLayer.FindMatching
             return t;
         }
 
-        internal bool IsIn(TimeSpan time)
+        internal bool IsIn(TimeInterval other)
         {
-            return time + MIN_TIME_TO_LEARN <= End && time >= Start;
+            var tempStart = other.Start.Days >= 1 ? other.Start - TimeSpan.FromDays(1) : other.Start;
+            var tempEnd = other.End.Days >= 1 ? other.End - TimeSpan.FromDays(1) : other.End;
+            return (tempStart + MIN_TIME_TO_LEARN <= End && tempEnd >= Start) 
+                || (tempEnd - MIN_TIME_TO_LEARN >= Start && tempStart <= End);
         }
 
         public static bool operator ==(TimeInterval left, TimeInterval right)

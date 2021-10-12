@@ -34,14 +34,11 @@ namespace LogicLayer.FindMatching
             };
         }
 
-        private void AddScores()
+        public void AddScores()
         {
             CurrentForIsraeliSuggest.AddScore();
             CurrentForWorldSuggest.AddScore();
         }
-
-        public List<MatchingTime> MatchingTimes { get; } =
-                new List<MatchingTime>();
 
         /// <summary>
         /// Cheack if tow student is a match from first degree 

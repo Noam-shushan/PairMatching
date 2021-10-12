@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using LogicLayer;
+using LogicLayer.Email;
 using BO;
 using System.Globalization;
 using System.ComponentModel;
@@ -14,7 +15,7 @@ using System.ComponentModel;
 namespace Gui
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Main window of the app
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {

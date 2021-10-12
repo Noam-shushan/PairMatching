@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using LogicLayer.Properties;
 
-namespace LogicLayer
+namespace LogicLayer.Email
 {
     /// <summary>
     /// Email template.

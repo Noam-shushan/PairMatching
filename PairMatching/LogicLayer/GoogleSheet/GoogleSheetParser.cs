@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using DataLayer;
 
 
-namespace LogicLayer
+namespace LogicLayer.GoogleSheet
 {
     /// <summary>
     /// Google Sheet parser that descript the values in the spreadsheet table.<br/>
@@ -143,9 +143,10 @@ namespace LogicLayer
 
 
                 // get the rows that after the last data of update
-                var table = from r in googleSheetValue
-                            where DateTime.Parse(r[0].ToString()) > studentDescriptor.LastUpdate
-                            select r;
+                var table = from row in googleSheetValue
+                            let tempDate = GetDate(row[0].ToString())
+                            where  tempDate > studentDescriptor.LastUpdate
+                            select row;
 
                 if (!table.Any())
                 {
@@ -174,9 +175,10 @@ namespace LogicLayer
                 try
                 {
                     int id = dal.GetNewStudentId();
+
                     DataSource.StudentsList.Add(new DO.Student
                     {
-                        DateOfRegistered = DateTime.Parse(row[0]),
+                        DateOfRegistered = GetDate(row[0]),
                         Id = id,
                         Name = row[indexHebSheet["Name"]],
                         DesiredLearningTime = GetLearningTime(row, studentDescriptor),
@@ -201,8 +203,13 @@ namespace LogicLayer
                     throw new Exception(ex.Message);
                 }
             }
+            DateTime result;
+            if(!DateTime.TryParse(tableStr.Last()[0], out result))
+            {
+                throw new Exception("Not a vaild date format in the hebrow spredsheet");
+            }
 
-            return DateTime.Parse(tableStr.Last()[0]);
+            return result;
         }
 
         private DateTime CreateDataFromEnglishSheet(List<List<string>> tableStr, IStudentDescriptor studentDescriptor)
@@ -214,7 +221,7 @@ namespace LogicLayer
                     int id = dal.GetNewStudentId();
                     DataSource.StudentsList.Add(new DO.Student
                     {
-                        DateOfRegistered = DateTime.Parse(row[0]),
+                        DateOfRegistered = GetDate(row[0]),
                         Id = id,
                         Name = row[indexEngSheet["Name"]],
                         DesiredLearningTime = GetLearningTime(row, studentDescriptor),
@@ -242,7 +249,20 @@ namespace LogicLayer
                 }
             }
 
-            return DateTime.Parse(tableStr.Last()[0]);
+            DateTime result;
+            if (!DateTime.TryParse(tableStr.Last()[0], out result))
+            {
+                throw new Exception("Not a vaild date format in the english spredsheet");
+            }
+
+            return result;
+        }
+
+        private DateTime GetDate(string dateFormat)
+        {
+            DateTime result;
+            DateTime.TryParse(dateFormat, out result);
+            return result;
         }
 
         private static IEnumerable<DO.LearningTime> GetLearningTime(List<string> row, IStudentDescriptor studentDescriptor)
