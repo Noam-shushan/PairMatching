@@ -7,7 +7,7 @@ namespace LogicLayer
     /// <summary>
     /// Interface for deciphering the values ​​on the columns for a student's properties
     /// </summary>
-    public interface IStudentDescriptor
+    internal interface IStudentDescriptor
     {
         /// <summary>
         /// The spreadsheet id

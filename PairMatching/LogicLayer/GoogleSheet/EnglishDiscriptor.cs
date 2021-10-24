@@ -10,7 +10,7 @@ namespace LogicLayer
     /// <summary>
     /// Descriptor for the values in the spreadsheet of the students from around the world
     /// </summary>
-    public class EnglishDiscriptor : IStudentDescriptor
+    internal class EnglishDiscriptor : IStudentDescriptor
     {
         /// <summary>
         /// The spreadsheet id

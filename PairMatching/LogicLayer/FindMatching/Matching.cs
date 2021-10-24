@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace LogicLayer
 {
-    public class Matching
+    internal class Matching
     {
         public static Matching Instance { get; } = new Matching();
 

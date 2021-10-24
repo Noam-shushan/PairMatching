@@ -221,272 +221,35 @@ namespace Gui
         }
         #endregion
 
-        #region Pair UI
+        #region Pairs UI
         private void allPairsBtn_Click(object sender, RoutedEventArgs e)
         {
             IsPairsUi = true;
             logicLayer.PairListFilter = p => !p.IsDeleted;
-            lvPairs.ItemsSource = logicLayer.PairList;
+            pairListControl.SetItemSource();
         }
 
         private void allActivePairBtn_Click(object sender, RoutedEventArgs e)
         {
             IsPairsUi = true;
             logicLayer.PairListFilter = p => p.IsActive;
-            lvPairs.ItemsSource = logicLayer.PairList;
-
+            pairListControl.SetItemSource();
         }
 
         private void allStandbyPairBtn_Click(object sender, RoutedEventArgs e)
         {
             IsPairsUi = true;
             logicLayer.PairListFilter = p => !p.IsActive;
-            lvPairs.ItemsSource = logicLayer.PairList;
-        }
-
-        private void cbTracksFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var track = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
-            logicLayer.FilterPairsByTrack(track);
-            lvPairs.ItemsSource = logicLayer.PairList;
+            pairListControl.SetItemSource();
         }
 
         public void RefreshMyPairView()
         {
             logicLayer.PairListFilter = p => !p.IsDeleted;
-            lvPairs.ItemsSource = logicLayer.PairList;
-            //tbIsThereResultOfSearcing.Text = string.Empty;
-        }
-
-        private void lvPairs_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            var selectedPair = lvPairs.SelectedItem as Pair;
-            if (selectedPair == null)
-            {
-                return;
-            }
-            var first = logicLayer.GetStudent(s => s.Id == selectedPair.StudentFromIsrael.Id);
-            var seconde = logicLayer.GetStudent(s => s.Id == selectedPair.StudentFromWorld.Id);
-            if (first.IsFromIsrael)
-            {
-                new ComparingStudentsWin(first, seconde)
-                {
-                    IsPair = true
-                }.Show();
-            }
-            else
-            {
-                new ComparingStudentsWin(seconde, first)
-                {
-                    IsPair = true
-                }.Show();
-            }
+            pairListControl.SetItemSource();
         }
         #endregion
-        #endregion
 
-        #region Pair operation
-        private async void removeMenyPairBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedPairs = logicLayer.PairList.Where(p => p.IsSelected);
-            int numOfPairsToRem = selectedPairs.Count();
-            if (numOfPairsToRem == 0)
-            {
-                Messages.MessageBoxWarning("בחר אחת או יותר חברותות");
-                return;
-            }
-            try
-            {
-                if (numOfPairsToRem > 1)
-                {
-                    if (Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את {numOfPairsToRem} החברותות שבחרת?"))
-                    {
-                        foreach (var pair in selectedPairs)
-                        {
-                            await logicLayer.SendEmailToPairAsync(pair, EmailTypes.ToSecretaryPairBroke);
-                            await logicLayer.RemovePairAsync(pair);
-                            await logicLayer.SendEmailToPairAsync(pair, EmailTypes.PairBroke);
-
-                        }
-                        RefreshMyPairView();
-                        RefreshMyStudentsView();
-                    }
-                }
-                else
-                {
-                    if (Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את החברותא {selectedPairs.First()} ?"))
-                    {
-                        var pair = selectedPairs.First();
-                        await logicLayer.RemovePairAsync(pair);
-                        await logicLayer.SendEmailToPairAsync(pair, EmailTypes.PairBroke);
-                        await logicLayer.SendEmailToPairAsync(pair, EmailTypes.ToSecretaryPairBroke);
-                        RefreshMyPairView();
-                        RefreshMyStudentsView();
-                    }
-                }
-            }
-            catch (BadPairException ex)
-            {
-                Messages.MessageBoxError(ex.Message);
-            }
-        }
-
-        private async void manualMatchBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedList = logicLayer.GetAllStudentsBy(s => s.IsSelected);
-            if (selectedList.Count() != 2)
-            {
-                Messages.MessageBoxWarning("בחר 2 תלמידים מהרשימה על מנת לבצע התאמה");
-                return;
-            }
-
-            try
-            {
-                var first = selectedList.First();
-                var second = selectedList.Last();
-                if (Messages.MessageBoxConfirmation($"בטוח שברצונך להתאים את {first.Name} ל- {second.Name}?"))
-                {
-                    int id = await logicLayer.MatchAsync(first, second);
-                    RefreshMyStudentsView();
-                    RefreshMyPairView();
-                }
-            }
-            catch (Exception ex)
-            {
-                Messages.MessageBoxError(ex.Message);
-            }
-        }
-
-        private void selectAllPairCB_Checked(object sender, RoutedEventArgs e)
-        {
-
-            foreach (var p in logicLayer.PairList)
-            {
-                p.IsSelected = true;
-            }
-            lvPairs.Items.Refresh();
-        }
-
-        private void selectAllPairCB_Unchecked(object sender, RoutedEventArgs e)
-        {
-            foreach (var p in logicLayer.PairList)
-            {
-                p.IsSelected = false;
-            }
-            lvPairs.Items.Refresh();
-        }
-
-        private void sendEmailToManyPairBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedPair = logicLayer.PairList.Where(p => p.IsSelected);
-            int numOfPairs = selectedPair.Count();
-            if (numOfPairs == 0)
-            {
-                Messages.MessageBoxWarning("בחר חברותא אחת או יותר");
-                return;
-            }
-            new SendOpenEmail()
-            {
-                StudentName = string.Join(", ", from p in selectedPair
-                                                select p.StudentFromIsrael.Name),
-                Email = string.Join(", ", from p in selectedPair
-                                          select p.StudentFromIsrael.Email)
-            }.Show();
-            new SendOpenEmail()
-            {
-                StudentName = string.Join(", ", from p in selectedPair
-                                                select p.StudentFromWorld.Name),
-                Email = string.Join(", ", from p in selectedPair
-                                          select p.StudentFromWorld.Email)
-            }.Show();
-        }
-
-        private void sendEmaileToPairBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedPair = (sender as Button).DataContext as Pair;
-            if (selectedPair != null)
-            {
-                new SendOpenEmail()
-                {
-                    StudentName = selectedPair.StudentFromIsrael.Name,
-                    Email = selectedPair.StudentFromIsrael.Email
-                }.Show();
-                new SendOpenEmail()
-                {
-                    StudentName = selectedPair.StudentFromWorld.Name,
-                    Email = selectedPair.StudentFromWorld.Email
-                }.Show();
-            }
-        }
-
-        static string _trackForEditPair = "";
-        private void cbTracksEdit_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var track = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
-            _trackForEditPair = track;
-        }
-
-        private void editPairBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedPair = (sender as Button).DataContext as Pair;
-            try
-            {
-                if (selectedPair != null)
-                {
-                    var pairToUpdate = logicLayer.GetPair(selectedPair.Id);
-                    if (_trackForEditPair != "")
-                    {
-                        pairToUpdate.EditPrefferdTracks(_trackForEditPair);
-                        _trackForEditPair = "";
-                    }
-                    lvPairs.Items.Refresh();
-                    logicLayer.UpdatePair(pairToUpdate);
-                }
-            }
-            catch (Exception ex)
-            {
-                Messages.MessageBoxError(ex.Message);
-            }
-        }
-
-        private async void deletePairBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedPair = (sender as Button).DataContext as Pair;
-            try
-            {
-                if (selectedPair != null)
-                {
-                    if (Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את החברותא {selectedPair}?"))
-                    {
-                        await logicLayer.RemovePairAsync(selectedPair);
-                        RefreshMyPairView();
-                        RefreshMyStudentsView();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Messages.MessageBoxError(ex.Message);
-            }
-        }
-
-        private async void activePairBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedPair = (sender as Button).DataContext as Pair;
-            try
-            {
-                if (selectedPair != null)
-                {
-                    await logicLayer.ActivatePairAsync(selectedPair);
-                    RefreshMyPairView();
-                    RefreshMyStudentsView();
-                }
-            }
-            catch (Exception ex)
-            {
-                Messages.MessageBoxError(ex.Message);
-            }
-        }
         #endregion
     }
 

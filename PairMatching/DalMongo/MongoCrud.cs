@@ -9,10 +9,18 @@ using System.Threading.Tasks;
 
 namespace DalMongo
 {
+    /// <summary>
+    /// Crud operation to the database in MongoDB cloud
+    /// </summary>
     public class MongoCrud
     {
         private IMongoDatabase db;
 
+        /// <summary>
+        /// Constroctor to MongoCrud.<br/>
+        /// Create connection to the database as client.  
+        /// </summary>
+        /// <param name="databaseName">The name of the database</param>
         public MongoCrud(string databaseName)
         {
             var connectionString = ConfigurationManager.ConnectionStrings["mongoDB"].ConnectionString;
@@ -21,12 +29,24 @@ namespace DalMongo
             db = client.GetDatabase(databaseName);
         }
 
+        /// <summary>
+        /// Insert one record to the cloud
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="table">Table name (collction)</param>
+        /// <param name="record">The recorod to insert</param>
         public void InsertRecord<T>(string table, T record)
         {
             var collection = db.GetCollection<T>(table);
             collection.InsertOne(record);
         }
 
+        /// <summary>
+        /// Loade many record from the cloud
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="table">The table name (collction)</param>
+        /// <returns></returns>
         public List<T> LoadeRecords<T>(string table)
         {
             var collection = db.GetCollection<T>(table);

@@ -55,20 +55,6 @@ namespace Gui
             tbIsThereResultOfSearcing.Text = string.Empty;
         }
 
-        public void SetItemsSource(Student student)
-        {
-            if (student.IsFromIsrael)
-            {
-                logicLayer.StudentListFilter = s => !s.IsFromIsrael;
-            }
-            else
-            {
-                logicLayer.StudentListFilter = s => s.IsFromIsrael;
-            }
-            lvStudents.ItemsSource = logicLayer.StudentList;
-            tbIsThereResultOfSearcing.Text = string.Empty;
-        }
-
         private void lvStudents_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (IsSimpleView)

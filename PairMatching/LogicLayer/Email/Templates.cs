@@ -21,7 +21,7 @@ namespace LogicLayer
     /// <summary>
     /// Automatic read only mail templates
     /// </summary>
-    public static class Templates
+    internal static class Templates
     {
         public static MailTemplate SuccessfullyRegisteredHebrew { get; } = new MailTemplate
         {

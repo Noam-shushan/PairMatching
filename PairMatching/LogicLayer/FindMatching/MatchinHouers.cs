@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace LogicLayer
 {
     // TODO: find the problem with the day after 
-    public class MatchinHouers
+    internal class MatchinHouers
     {
         private static Matching matcher = Matching.Instance;
 

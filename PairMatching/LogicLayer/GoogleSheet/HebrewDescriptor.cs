@@ -5,7 +5,7 @@ using System.Configuration;
 
 namespace LogicLayer
 {
-    public class HebrewDescriptor : IStudentDescriptor
+    internal class HebrewDescriptor : IStudentDescriptor
     {
         /// <summary>
         /// The spreadsheet id

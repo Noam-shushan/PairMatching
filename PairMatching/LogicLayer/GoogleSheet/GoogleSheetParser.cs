@@ -11,7 +11,7 @@ namespace LogicLayer
     /// Google Sheet parser that descript the values in the spreadsheet table.<br/>
     /// Save the descripting objects to the database.
     /// </summary>
-    public class GoogleSheetParser
+    internal class GoogleSheetParser
     {   
         private readonly IDataLayer dal = DalFactory.GetDal();
 

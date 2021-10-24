@@ -17,7 +17,7 @@ namespace LogicLayer
     /// <summary>
     /// Read Google Sheet file using Google Sheet Api
     /// </summary>
-    public class GoogleSheetReader
+    internal class GoogleSheetReader
     {
         // The scope i need is only to read
         private static readonly string[] scopes = { SheetsService.Scope.SpreadsheetsReadonly };
