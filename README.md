@@ -9,14 +9,19 @@ Pair Matching (CRM and Marketing System) - A management system I built for Stein
 The program receives updates automatically from Azure clude.
 
 Matching window:
-![image](https://user-images.githubusercontent.com/40955004/135326359-0c999f6c-1b66-45f5-a271-da77adeee59a.png)
 
+![image](https://user-images.githubusercontent.com/40955004/136932282-dfa27a28-1d48-49f2-a2ab-93e811e83293.png)
 
-statistics window:
-![image](https://user-images.githubusercontent.com/40955004/135335685-1e2f9655-fb93-4873-830c-73b35edd12cf.png)
+Statistics window:
+
+![image](https://user-images.githubusercontent.com/40955004/136932438-9f291721-b63d-474a-a00e-013d0463e89c.png)
 
 
 Open Email window:
-![image](https://user-images.githubusercontent.com/40955004/135335784-fc26d1fd-d380-4e68-938f-c41f4b441d2f.png)
+![image](https://user-images.githubusercontent.com/40955004/136933728-c0fd8442-d0fb-4d8d-a46d-0cff0a193e74.png)
+
+Pairs window:
+![image](https://user-images.githubusercontent.com/40955004/136932674-77ea4cb5-b138-4955-873a-c765fab744e2.png)
+
 
 
