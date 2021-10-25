@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 using LogicLayer;
 using BO;
 
-namespace Gui
+namespace Gui.Controlers
 {
     /// <summary>
     /// Notes view

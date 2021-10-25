@@ -14,8 +14,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Globalization;
 
-namespace Gui
+namespace Gui.Controlers
 {
     /// <summary>
     /// Interaction logic for PairsListControl.xaml
@@ -276,6 +277,33 @@ namespace Gui
             var track = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
             logicLayer.FilterPairsByTrack(track);
             lvPairs.ItemsSource = logicLayer.PairList;
+        }
+    }
+
+    /// <summary>
+    /// Converter class for convert from ListViewItem to number of row 
+    /// atending to display row number in the list that displays
+    /// </summary>
+    public class OrdinalConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int ordinal = 0;
+
+            if (value is ListViewItem lvi)
+            {
+                ListView lv = ItemsControl.ItemsControlFromItemContainer(lvi) as ListView;
+                ordinal = lv.ItemContainerGenerator.IndexFromContainer(lvi) + 1;
+            }
+
+            return ordinal;
+
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // This converter does not provide conversion back from ordinal position to list view item
+            throw new InvalidOperationException();
         }
     }
 }

@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:Gui"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:myns="clr-namespace:Gui.Controlers"
     x:Name="CompWin"
     Title="השווה משתתפים"
     Width="1200"
@@ -50,10 +51,10 @@
                 Margin="0,0,10,0"
                 BorderBrush="BlueViolet"
                 Header="תלמיד מישראל">
-                <local:StudentControl x:Name="studentFromIsrael" />
+                <myns:StudentControl x:Name="studentFromIsrael" />
             </GroupBox>
             <GroupBox BorderBrush="BlueViolet" Header="תלמיד מהתפוצות">
-                <local:StudentControl x:Name="studentFromWorld" />
+                <myns:StudentControl x:Name="studentFromWorld" />
             </GroupBox>
         </StackPanel>
     </StackPanel>

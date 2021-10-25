@@ -12,7 +12,7 @@ using BO;
 using LogicLayer;
 
 
-namespace Gui
+namespace Gui.Controlers
 {
     /// <summary>
     /// Students list view.
@@ -86,6 +86,7 @@ namespace Gui
                 if (Messages.MessageBoxConfirmation($"בטוח שברצונך להתאים את {first.Name} ל- {second.Name}?"))
                 {
                     int id = await logicLayer.MatchAsync(first, second);
+                    
                     var mainWin = Application.Current.MainWindow as MainWindow;
                     mainWin.RefreshMyStudentsView();
                     mainWin.RefreshMyPairView();

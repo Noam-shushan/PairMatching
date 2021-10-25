@@ -1,24 +1,40 @@
 ﻿using LogicLayer;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
-
+using BO;
 
 namespace Gui
 {
     /// <summary>
     /// Interaction logic for AddStudentWin.xaml
     /// </summary>
-    public partial class AddStudentWin : Window
+    public partial class AddStudentWin : Window, INotifyPropertyChanged
     {
         private static readonly ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
+
+        private Student _newStudent = new Student();
+
+        public Student NewStudent
+        {
+            get => _newStudent;
+            set
+            {
+                _newStudent = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NewStudent"));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public AddStudentWin()
         {
             InitializeComponent();
             cbCountry.ItemsSource = GetCountryList();
+            DataContext = NewStudent;
         }
 
         public List<string> GetCountryList()
@@ -40,7 +56,8 @@ namespace Gui
 
         private void AddBtn_Click(object sender, RoutedEventArgs e)
         {
-            if(cbCountry.SelectedItem == null 
+            if (cbCountry.SelectedItem == null
+                || cbTrack.SelectedItem == null
                 || string.IsNullOrEmpty(tbEmail.Text)
                 || string.IsNullOrEmpty(tbName.Text)
                 || string.IsNullOrEmpty(tbPhone.Text))
@@ -50,14 +67,9 @@ namespace Gui
             }
             try
             {
-                logicLayer.AddStudent(new BO.Student
-                {
-                    Name = tbName.Text,
-                    Country = cbCountry.Text,
-                    Email = tbEmail.Text,
-                    PhoneNumber = tbPhone.Text,
-                    IsSimpleStudent = true
-                });
+                logicLayer.AddStudent(NewStudent, cbTrack.Text);
+                NewStudent = new Student();
+                
                 var mainWin = Application.Current.MainWindow as MainWindow;
                 mainWin.RefreshMyStudentsView();
                 Close();

@@ -54,30 +54,35 @@
             x:Name="tbName"
             Grid.Row="1"
             Grid.Column="1"
-            materialDesign:HintAssist.Hint="שם:" />
+            materialDesign:HintAssist.Hint="שם:"
+            Text="{Binding Name}" />
 
         <TextBox
             x:Name="tbEmail"
             Grid.Row="2"
             Grid.Column="1"
-            materialDesign:HintAssist.Hint="אימייל" />
+            materialDesign:HintAssist.Hint="אימייל"
+            Text="{Binding Email}" />
 
         <TextBox
             x:Name="tbPhone"
             Grid.Row="3"
             Grid.Column="1"
-            materialDesign:HintAssist.Hint="טלפון:" />
+            materialDesign:HintAssist.Hint="טלפון:"
+            Text="{Binding PhoneNumber}" />
 
         <ComboBox
             x:Name="cbCountry"
             Grid.Row="4"
             Grid.Column="1"
-            materialDesign:HintAssist.Hint="ארץ:" />
+            materialDesign:HintAssist.Hint="ארץ:"
+            Text="{Binding Country}" />
 
-        <!--<ComboBox
+        <ComboBox
             Name="cbTrack"
             Grid.Row="5"
             Grid.Column="1"
+            Margin="0,5"
             materialDesign:HintAssist.Hint="מסלול">
             <ComboBoxItem Content="תניא" />
             <ComboBoxItem Content="פרשה" />
@@ -85,7 +90,7 @@
             <ComboBoxItem Content="פרקי אבות" />
             <ComboBoxItem Content="תפילה" />
             <ComboBoxItem Content="לא משנה לי" />
-        </ComboBox>-->
+        </ComboBox>
 
         <Button
             x:Name="AddBtn"

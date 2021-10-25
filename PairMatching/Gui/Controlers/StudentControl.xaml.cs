@@ -17,7 +17,7 @@ using System.Collections.ObjectModel;
 using BO;
 using LogicLayer;
 
-namespace Gui
+namespace Gui.Controlers
 {
     /// <summary>
     /// Student view.

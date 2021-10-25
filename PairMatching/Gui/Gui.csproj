@@ -96,20 +96,24 @@
     <Compile Include="AddStudentWin.xaml.cs">
       <DependentUpon>AddStudentWin.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controlers\StatisticsControl.xaml.cs">
+      <DependentUpon>StatisticsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Messages.cs" />
-    <Compile Include="NoteControl.xaml.cs">
+    <Compile Include="Controlers\NoteControl.xaml.cs">
       <DependentUpon>NoteControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PairsListControl.xaml.cs">
+    <Compile Include="Controlers\PairsListControl.xaml.cs">
       <DependentUpon>PairsListControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\RecordCollection.cs" />
     <Compile Include="SendOpenEmail.xaml.cs">
       <DependentUpon>SendOpenEmail.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StudentControl.xaml.cs">
+    <Compile Include="Controlers\StudentControl.xaml.cs">
       <DependentUpon>StudentControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StudentsListControl.xaml.cs">
+    <Compile Include="Controlers\StudentsListControl.xaml.cs">
       <DependentUpon>StudentsListControl.xaml</DependentUpon>
     </Compile>
     <Page Include="AddStudentWin.xaml">
@@ -117,6 +121,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ComparingStudentsWin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controlers\StatisticsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -135,11 +143,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="NoteControl.xaml">
+    <Page Include="Controlers\NoteControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PairsListControl.xaml">
+    <Page Include="Controlers\PairsListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -147,11 +155,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="StudentControl.xaml">
+    <Page Include="Controlers\StudentControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="StudentsListControl.xaml">
+    <Page Include="Controlers\StudentsListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -213,5 +221,6 @@
       <Version>4.0.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

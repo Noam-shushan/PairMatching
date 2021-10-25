@@ -79,7 +79,7 @@ namespace LogicLayer
         /// Add student to the database
         /// </summary>
         /// <param name="student">The new student to add</param>
-        void AddStudent(BO.Student student);
+        void AddStudent(BO.Student student, string track = "");
 
         /// <summary>
         /// Update student in the database

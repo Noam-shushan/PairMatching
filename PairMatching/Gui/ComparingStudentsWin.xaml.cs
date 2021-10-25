@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows;
 using BO;
 using LogicLayer;
+using Gui.Controlers;
 
 namespace Gui
 {

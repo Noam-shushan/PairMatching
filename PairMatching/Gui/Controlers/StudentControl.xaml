@@ -1,9 +1,9 @@
 ﻿<UserControl
-    x:Class="Gui.StudentControl"
+    x:Class="Gui.Controlers.StudentControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:Gui"
+    xmlns:local="clr-namespace:Gui.Controlers"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="studentControl"
@@ -402,10 +402,11 @@
 
         <ListBox
             x:Name="lbOpneQA"
-            Width="700"
+            Width="760"
             Height="270"
             HorizontalAlignment="Left"
-            VerticalAlignment="Top">
+            VerticalAlignment="Top"
+            ScrollViewer.CanContentScroll="False">
             <ListBox.ItemContainerStyle>
                 <Style BasedOn="{StaticResource MaterialDesignCardsListBoxItem}" TargetType="ListBoxItem">
                     <Setter Property="Height" Value="auto" />

@@ -302,11 +302,19 @@ namespace LogicLayer
         /// Add student to the database
         /// </summary>
         /// <param name="student">The new student to add</param>
-        public void AddStudent(BO.Student student)
+        public void AddStudent(BO.Student student, string track = "")
         {
             int id = 0;
             try
             {
+                DO.PrefferdTracks newTrack = DO.PrefferdTracks.DONT_MATTER;
+                if(track != "")
+                {
+                    newTrack = BO.Dictionaries.PrefferdTracksDictInverse[track];
+                }
+                student.IsSimpleStudent = true;
+                student.PrefferdTracks.Append(newTrack);
+                student.DateOfRegistered = DateTime.Now;
                 var studDO = student.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
                 id = dal.AddStudent(studDO);
                 student.Id = id;
@@ -983,6 +991,24 @@ namespace LogicLayer
         #region Pairs helper functions
         private DO.PrefferdTracks GetPrefferdTrackOfPair(BO.Student firstStud, BO.Student secondeStud)
         {
+            firstStud.PrefferdTracks.Contains(DO.PrefferdTracks.TANYA); 
+            secondeStud.PrefferdTracks.Contains(DO.PrefferdTracks.TANYA);
+            if (firstStud.PrefferdTracks.Count() == 0
+                && secondeStud.PrefferdTracks.Count() != 0)
+            {
+                secondeStud.PrefferdTracks.First();
+            }
+            else if(firstStud.PrefferdTracks.Count() != 0
+                && secondeStud.PrefferdTracks.Count() == 0)
+            {
+                return firstStud.PrefferdTracks.First();
+            }
+            else if(firstStud.PrefferdTracks.Count() == 0
+                && secondeStud.PrefferdTracks.Count() == 0)
+            {
+                return DO.PrefferdTracks.DONT_MATTER;
+            }
+        
             return firstStud.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER) ?
                 secondeStud.PrefferdTracks.First() : firstStud.PrefferdTracks.First();
         }

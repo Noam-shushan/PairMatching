@@ -53,6 +53,15 @@ namespace BO
             {DO.EnglishLevels.DONT_MATTER, "לא משנה" }
         };
 
+        internal static Dictionary<DO.EnglishLevels, string> DesiredEnglishLevelsDict = new
+            Dictionary<DO.EnglishLevels, string>()
+        {
+            {DO.EnglishLevels.GOOD, "Excellent\n(I don't know any Hebrew whatsoever)" },
+            {DO.EnglishLevels.TALK_LEVEL, "Conversational level" },
+            {DO.EnglishLevels.NOT_GOOD, "Doesn't have to be perfect.\nI know some Hebrew" },
+            {DO.EnglishLevels.DONT_MATTER, "לא משנה" }
+        };
+
         internal static Dictionary<DO.PrefferdTracks, string> PrefferdTracksDict =
             new Dictionary<DO.PrefferdTracks, string>()
         {

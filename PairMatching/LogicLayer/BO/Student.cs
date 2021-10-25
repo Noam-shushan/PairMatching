@@ -157,7 +157,7 @@ namespace BO
 
         public string DesiredEnglishLevelShow
         {
-            get => !IsFromIsrael ? Dictionaries.EnglishLevelsDict[DesiredEnglishLevel] : "";
+            get => !IsFromIsrael ? Dictionaries.DesiredEnglishLevelsDict[DesiredEnglishLevel] : "";
         }
 
         public string DesiredSkillLevelShow

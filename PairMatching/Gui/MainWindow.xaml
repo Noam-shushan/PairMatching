@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:Gui"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:myns="clr-namespace:Gui.Controlers"
     x:Name="Main"
     Title="שלהבת"
     Width="1400"
@@ -88,7 +89,7 @@
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="hideWheneLoadingStudentControl" TargetType="local:StudentControl">
+        <Style x:Key="hideWheneLoadingStudentControl" TargetType="myns:StudentControl">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Path=IsLoadedData, ElementName=Main}" Value="True">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -208,7 +209,7 @@
                 Margin="0,0,20,0"
                 HorizontalAlignment="Left"
                 Style="{StaticResource visiblStudentsUi}">
-                <local:StudentsListControl x:Name="studentsListControl" IsSimpleView="False" />
+                <myns:StudentsListControl x:Name="studentsListControl" IsSimpleView="False" />
             </StackPanel>
             <!--#endregion-->
 
@@ -219,11 +220,11 @@
                 Grid.Column="1"
                 Grid.ColumnSpan="7"
                 Style="{StaticResource visiblPairsUi}">
-                <local:PairsListControl x:Name="pairListControl" />
+                <myns:PairsListControl x:Name="pairListControl" />
             </StackPanel>
             <!--#endregion-->
 
-            <local:StudentControl
+            <myns:StudentControl
                 x:Name="studentControl"
                 Grid.Row="0"
                 Grid.Column="3"
@@ -237,36 +238,8 @@
                 x:Name="spStatistics"
                 Grid.Row="0"
                 Grid.Column="1"
-                DataContext="{Binding}"
                 Style="{StaticResource statisticsUi}">
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="מספר המשתתפים הכולל:" />
-                    <Label Content="{Binding Path=NumberOfStudents}" Foreground="SteelBlue" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="מספר המשתתפים מישראל:" />
-                    <Label Content="{Binding Path=NumberOfStudentFromIsrael}" Foreground="SteelBlue" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="מספר המשתתפים מהתפוצות:" />
-                    <Label Content="{Binding Path=NumberOfStudentFromWorld}" Foreground="SteelBlue" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="מספר המשתתפים ללא חברותא:" />
-                    <Label Content="{Binding Path=NumberOfStudentsWithoutPair}" Foreground="SteelBlue" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="מספר המשתתפים מישראל ללא חברותא:" />
-                    <Label Content="{Binding Path=NumberOfStudentFromIsraelWithoutPair}" Foreground="SteelBlue" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="מספר המשתתפים מהתפוצות ללא חברותא:" />
-                    <Label Content="{Binding Path=NumberOfStudentFromWorldWithoutPair}" Foreground="SteelBlue" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="מספר החברותות:" />
-                    <Label Content="{Binding Path=NumberOfPair}" Foreground="SteelBlue" />
-                </StackPanel>
+                <myns:StatisticsControl x:Name="statistics" />
             </StackPanel>
             <!--#endregion-->
 
