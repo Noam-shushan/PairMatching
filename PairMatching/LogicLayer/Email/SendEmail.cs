@@ -138,7 +138,7 @@ namespace LogicLayer
                 throw new Exception("Missing destination address to send email");
             }
 
-            SmtpClient client = GetSmtpClient(true);
+            SmtpClient client = GetSmtpClient();
 
             try
             {
@@ -178,7 +178,7 @@ namespace LogicLayer
                 throw new Exception("Missing destination address to send email");
             }
 
-            SmtpClient client = GetSmtpClient(true);
+            SmtpClient client = GetSmtpClient();
 
             try
             {

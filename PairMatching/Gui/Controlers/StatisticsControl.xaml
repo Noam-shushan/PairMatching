@@ -21,7 +21,7 @@
                     <StackPanel Margin="10,10,10,80" VerticalAlignment="Bottom">
                         <Border
                             Name="br"
-                            Width="20"
+                            Width="30"
                             Height="{Binding Data}"
                             Margin="3,10,3,10"
                             Background="{Binding Color}"
@@ -45,6 +45,7 @@
                         <TextBlock
                             HorizontalAlignment="Center"
                             FontFamily="Latha"
+                            FontSize="15"
                             FontWeight="Bold"
                             Text="{Binding Data}">
                             <TextBlock.RenderTransform>
@@ -54,6 +55,7 @@
                         <TextBlock
                             HorizontalAlignment="Center"
                             FontFamily="Latha"
+                            FontSize="15"
                             FontWeight="Bold"
                             Foreground="{Binding Color}"
                             Text="{Binding Name}">

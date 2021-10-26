@@ -132,7 +132,6 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-
     </UserControl.Resources>
     <StackPanel FlowDirection="RightToLeft">
 
@@ -140,6 +139,8 @@
 
             <DockPanel>
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+
+                    <!--#region History-->
                     <materialDesign:PopupBox Margin="0,0,10,0" ToolTip="היסטוריה">
                         <materialDesign:PopupBox.ToggleContent>
                             <materialDesign:PackIcon
@@ -228,6 +229,9 @@
                             </ListView>
                         </StackPanel>
                     </materialDesign:PopupBox>
+                    <!--#endregion-->
+
+                    <!--#region Notes-->
                     <materialDesign:DialogHost CloseOnClickAway="True">
                         <materialDesign:DialogHost.DialogContent>
                             <local:NoteControl
@@ -246,7 +250,11 @@
                         </Button>
                     </materialDesign:DialogHost>
                     <TextBlock FontSize="20" Text="{Binding Path=Name}" />
+                    <!--#endregion-->
+
                 </StackPanel>
+
+                <!--#region Details-->
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <StackPanel Margin="0,0,10,0">
@@ -309,8 +317,11 @@
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
+                <!--#endregion-->
+
             </DockPanel>
 
+            <!--#region Matching Suggestions-->
             <Expander
                 Width="300"
                 Height="300"
@@ -397,9 +408,11 @@
                     </StackPanel>
                 </GroupBox>
             </Expander>
+            <!--#endregion-->
 
         </StackPanel>
 
+        <!--#region Open QA-->
         <ListBox
             x:Name="lbOpneQA"
             Width="760"
@@ -554,6 +567,7 @@
                 </StackPanel>
             </Expander>
         </ListBox>
+        <!--#endregion-->
 
     </StackPanel>
 </UserControl>

@@ -89,10 +89,10 @@ namespace BO
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}
         /// </summary>
-        public IEnumerable<PrefferdTracks> PrefferdTracks { get; set; } = new List<PrefferdTracks>();
+        public List<PrefferdTracks> PrefferdTracks { get; set; } = new List<PrefferdTracks>();
 
-        public string PrefferdTracksShow => IsSimpleStudent ? "" : string.Join(",\n", from p in PrefferdTracks
-                                                                                    select Dictionaries.PrefferdTracksDict[p]);
+        public string PrefferdTracksShow => string.Join(",\n", from p in PrefferdTracks
+                                                               select Dictionaries.PrefferdTracksDict[p]);
         public DateTime DateOfRegistered { get; set; }
 
         public List<StudentMatchingHistory> MatchingHistories { get; set; } =

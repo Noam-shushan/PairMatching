@@ -195,6 +195,7 @@
             Height="500"
             FlowDirection="RightToLeft"
             ItemsSource="{Binding}"
+            ScrollViewer.CanContentScroll="False"
             SelectionChanged="lvStudents_SelectionChanged">
             <ListView.ItemContainerStyle>
                 <Style BasedOn="{StaticResource MaterialDesignGridViewItem}" TargetType="ListViewItem">

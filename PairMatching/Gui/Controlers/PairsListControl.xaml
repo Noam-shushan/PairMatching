@@ -19,15 +19,39 @@
     TextOptions.TextFormattingMode="Ideal"
     TextOptions.TextRenderingMode="Auto"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style x:Key="pairDetailsFilds" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="TextDecorations" Value="Underline" />
+        </Style>
+
+        <DataTemplate x:Key="pairDetails" DataType="{x:Type ListViewItem}">
+            <StackPanel DataContext="{Binding}">
+                <StackPanel Margin="5" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource pairDetailsFilds}" Text="שם:  " />
+                    <TextBlock Text="{Binding Path=Name}" />
+                </StackPanel>
+                <StackPanel Margin="5" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource pairDetailsFilds}" Text="מייל:  " />
+                    <TextBlock Text="{Binding Path=Email}" />
+                </StackPanel>
+                <StackPanel Margin="5" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource pairDetailsFilds}" Text="טלפון:  " />
+                    <TextBlock Text="{Binding Path=PhoneNumber}" />
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
     <Grid>
         <!--#region Pairs-->
         <ListView
             x:Name="lvPairs"
             Width="1150"
-            Height="500"
+            Height="570"
             VerticalAlignment="Top"
             ItemsSource="{Binding}"
-            MouseDoubleClick="lvPairs_MouseDoubleClick">
+            MouseDoubleClick="lvPairs_MouseDoubleClick"
+            ScrollViewer.CanContentScroll="False">
             <ListView.ItemContainerStyle>
                 <Style BasedOn="{StaticResource MaterialDesignGridViewItem}" TargetType="ListViewItem">
                     <Setter Property="ToolTip" Value="לחץ פעמיים על מנת לראות השוואה מלאה" />
@@ -75,29 +99,7 @@
                             HeaderContainerStyle="{StaticResource HeadersStyle}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel DataContext="{Binding StudentFromIsrael}">
-                                        <StackPanel Margin="5" Orientation="Horizontal">
-                                            <TextBlock
-                                                FontWeight="Bold"
-                                                Text="שם:  "
-                                                TextDecorations="Underline" />
-                                            <TextBlock Text="{Binding Path=Name}" />
-                                        </StackPanel>
-                                        <StackPanel Margin="5" Orientation="Horizontal">
-                                            <TextBlock
-                                                FontWeight="Bold"
-                                                Text="מייל:  "
-                                                TextDecorations="Underline" />
-                                            <TextBlock Text="{Binding Path=Email}" />
-                                        </StackPanel>
-                                        <StackPanel Margin="5" Orientation="Horizontal">
-                                            <TextBlock
-                                                FontWeight="Bold"
-                                                Text="טלפון:  "
-                                                TextDecorations="Underline" />
-                                            <TextBlock Text="{Binding Path=PhoneNumber}" />
-                                        </StackPanel>
-                                    </StackPanel>
+                                    <ContentPresenter Content="{Binding StudentFromIsrael}" ContentTemplate="{StaticResource ResourceKey=pairDetails}" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -107,29 +109,7 @@
                             HeaderContainerStyle="{StaticResource HeadersStyle}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel DataContext="{Binding StudentFromWorld}">
-                                        <StackPanel Margin="5" Orientation="Horizontal">
-                                            <TextBlock
-                                                FontWeight="Bold"
-                                                Text="שם:  "
-                                                TextDecorations="Underline" />
-                                            <TextBlock Text="{Binding Path=Name}" />
-                                        </StackPanel>
-                                        <StackPanel Margin="5" Orientation="Horizontal">
-                                            <TextBlock
-                                                FontWeight="Bold"
-                                                Text="מייל:  "
-                                                TextDecorations="Underline" />
-                                            <TextBlock Text="{Binding Path=Email}" />
-                                        </StackPanel>
-                                        <StackPanel Margin="5" Orientation="Horizontal">
-                                            <TextBlock
-                                                FontWeight="Bold"
-                                                Text="טלפון:  "
-                                                TextDecorations="Underline" />
-                                            <TextBlock Text="{Binding Path=PhoneNumber}" />
-                                        </StackPanel>
-                                    </StackPanel>
+                                    <ContentPresenter Content="{Binding StudentFromWorld}" ContentTemplate="{StaticResource ResourceKey=pairDetails}" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -202,9 +182,8 @@
                                                 <ComboBox
                                                     x:Name="cbTracksEdit"
                                                     Width="150"
-                                                    Margin="0,10,0,20"
+                                                    Margin="20,10,0,20"
                                                     HorizontalAlignment="Left"
-                                                    materialDesign:HintAssist.HelperTextStyle="{StaticResource MaterialDesignFloatingHintComboBox}"
                                                     materialDesign:HintAssist.Hint="שנה מסלול"
                                                     SelectionChanged="cbTracksEdit_SelectionChanged">
                                                     <ComboBoxItem Content="תניא" />

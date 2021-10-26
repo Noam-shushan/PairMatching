@@ -32,7 +32,7 @@ namespace DalMongo
         #endregion
 
         #region Counters
-        private Counters _counters = Counters.Instance;
+        private readonly Counters _counters = Counters.Instance;
 
         private LastDataOfSpredsheet _lastDateOfSheets = new LastDataOfSpredsheet();
 

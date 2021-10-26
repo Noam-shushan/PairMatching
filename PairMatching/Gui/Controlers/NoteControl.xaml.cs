@@ -77,7 +77,7 @@ namespace Gui.Controlers
 
             lvNotes.Items.Refresh();
             expder.IsExpanded = false;
-            NewNote = new Note() { Author = "", Text = "", Date = new DateTime() };
+            NewNote = new Note();
         }
 
         private void deleteNoteBtn_Click(object sender, RoutedEventArgs e)

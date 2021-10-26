@@ -2,54 +2,32 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
-using System.Collections.ObjectModel;
-using System.Reflection;
 using System.ComponentModel;
 
 namespace Gui
 {
     class RecordCollection : ObservableCollection<Record>
     {
-
-        public RecordCollection(List<Bar> barvalues)
+        public RecordCollection(List<Bar> barValues)
         {
             Random rand = new Random();
-            BrushCollection brushcoll = new BrushCollection();
 
-            foreach (Bar barval in barvalues)
+            foreach (Bar barVal in barValues)
             {
-                int num = rand.Next(brushcoll.Count / 3);
-                Add(new Record(barval.Value, brushcoll[num], barval.BarName));
+                var color = Color.FromRgb((byte)rand.Next(120, 180), 
+                    (byte)rand.Next(100, 160), 
+                    (byte)rand.Next(110, 170));
+                Add(new Record(barVal.Value, new SolidColorBrush(color), barVal.BarName));
             }
         }
 
-    }
-
-    class BrushCollection : ObservableCollection<Brush>
-    {
-        public BrushCollection()
-        {
-            Type _brush = typeof(Brushes);
-            PropertyInfo[] props = _brush.GetProperties();
-            foreach (PropertyInfo prop in props)
-            {
-                Brush _color = (Brush)prop.GetValue(null, null);
-                if (_color != Brushes.LightSteelBlue && _color != Brushes.White &&
-                     _color != Brushes.WhiteSmoke && _color != Brushes.LightCyan &&
-                     _color != Brushes.LightYellow && _color != Brushes.Linen
-                     && _color != Brushes.Black)
-                    Add(_color);
-            }
-        }
     }
 
     class Bar
     {
-
         public string BarName { set; get; }
 
         public int Value { set; get; }
-
     }
 
     class Record : INotifyPropertyChanged
@@ -61,17 +39,14 @@ namespace Gui
         private int _data;
         public int Data
         {
+            get => _data;
             set
             {
                 if (_data != value)
                 {
                     _data = value;
-                    PropertyOnChange("Data");
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Data"));
                 }
-            }
-            get
-            {
-                return _data;
             }
         }
 
@@ -82,14 +57,6 @@ namespace Gui
             Data = value;
             Color = color;
             Name = name;
-        }
-
-        protected void PropertyOnChange(string propname)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propname));
-            }
         }
     }
 }

@@ -175,6 +175,9 @@ namespace LogicLayer
                 // save all new data from the spredsheet to the DB
                 await dal.SaveAllDataFromSpredsheetAsync();
 
+                // update the last date of updating of the sheets
+                dal.UpdateLastDateOfSheets(lastDate);
+
                 // send email for all new students
                 await SendRegesterEmailForNewStudent();
             }
@@ -182,11 +185,6 @@ namespace LogicLayer
             {
                 await sendEmail.Error(ex);
                 throw new Exception("באג לא ידוע, פרטים על הבאג נשלחו למפתח");
-            }
-            finally
-            {
-                // update the last date of updating of the sheets
-                dal.UpdateLastDateOfSheets(lastDate);
             }
         }
 
@@ -313,7 +311,7 @@ namespace LogicLayer
                     newTrack = BO.Dictionaries.PrefferdTracksDictInverse[track];
                 }
                 student.IsSimpleStudent = true;
-                student.PrefferdTracks.Append(newTrack);
+                student.PrefferdTracks.Add(newTrack);
                 student.DateOfRegistered = DateTime.Now;
                 var studDO = student.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
                 id = dal.AddStudent(studDO);
@@ -855,28 +853,29 @@ namespace LogicLayer
             {
                 // copy the propertis to BO student
                 var studBO = studDO.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
-                if (studBO.IsSimpleStudent)
-                {
-                    return studBO;
-                }
 
                 foreach(var n in studDO.Notes)
                 {
                     studBO.NotesBo.Add(n.CopyPropertiesToNew(typeof(BO.Note)) as BO.Note);
                 }
-                
+
+                foreach (var mh in studBO.MatchingHistories)
+                {
+                    studBO.MatchingHistoriesShow
+                        .Add(mh.CopyPropertiesToNew(typeof(BO.StudentMatchingHistoryShow))
+                        as BO.StudentMatchingHistoryShow);
+                }
+
+                if (studBO.IsSimpleStudent)
+                {
+                    return studBO;
+                }
+
                 // create a dictionary of the open Q&A for the student 
                 studBO.OpenQuestionsDict = new Dictionary<string, string>();
                 foreach (var o in studDO.OpenQuestions)
                 {
                     studBO.OpenQuestionsDict.Add(o.Question, o.Answer.SpliceText(10));
-                }
-
-                foreach(var mh in studBO.MatchingHistories)
-                {
-                    studBO.MatchingHistoriesShow
-                        .Add(mh.CopyPropertiesToNew(typeof(BO.StudentMatchingHistoryShow))
-                        as BO.StudentMatchingHistoryShow);
                 }
 
                 return studBO;

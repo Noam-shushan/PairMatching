@@ -187,8 +187,7 @@ namespace Gui
         {
             IsStudentsUi = true;
             studentControl.DataContext = student;
-            studentControl.DataContext = student;
-            studentControl.SetHeightOfOpenQA(height:270, width: 700);
+            studentControl.SetHeightOfOpenQA(height:270, width: 760);
             studentControl.Visibility = Visibility.Visible;
         }
 
