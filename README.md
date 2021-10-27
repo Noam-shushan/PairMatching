@@ -1,12 +1,10 @@
 # PairMatching
 Pair Matching (CRM and Marketing System) - A management system I built for Steinsaltz Center to help matching people from all around the world to study together Jewish sources.
 - Backend is written in C#  (with WPF as front) and it uses multithreading 
-- The software uses Google’s Sheet API 
-- The software uses MongoDB and connects to the cloud through Azure application
+- Uses Google’s Sheet API  
+- Uses MongoDB and connects to the cloud through Azure application
 - The system sends automatic mails (written in HTML and CSS)
-- Uses design patterns such as Singleton and Factory
-
-The program receives updates automatically from Azure clude.
+- Receives updates automatically from Azure clude
 
 Matching view:
 
