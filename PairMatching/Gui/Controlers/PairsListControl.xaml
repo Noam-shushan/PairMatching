@@ -52,6 +52,18 @@
             ItemsSource="{Binding}"
             MouseDoubleClick="lvPairs_MouseDoubleClick"
             ScrollViewer.CanContentScroll="False">
+            <ListView.Style>
+                <Style BasedOn="{StaticResource MaterialDesignListView}" TargetType="ListView">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=pairListControl, Path=IsLoadingData}" Value="True">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=pairListControl, Path=IsLoadingData}" Value="False">
+                            <Setter Property="IsEnabled" Value="True" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.Style>
             <ListView.ItemContainerStyle>
                 <Style BasedOn="{StaticResource MaterialDesignGridViewItem}" TargetType="ListViewItem">
                     <Setter Property="ToolTip" Value="לחץ פעמיים על מנת לראות השוואה מלאה" />

@@ -8,11 +8,11 @@ namespace Gui
 {
     class RecordCollection : ObservableCollection<Record>
     {
-        public RecordCollection(List<Bar> barValues)
+        public RecordCollection(List<BO.Bar> barValues)
         {
             Random rand = new Random();
 
-            foreach (Bar barVal in barValues)
+            foreach (BO.Bar barVal in barValues)
             {
                 var color = Color.FromRgb((byte)rand.Next(120, 180), 
                     (byte)rand.Next(100, 160), 
@@ -21,13 +21,6 @@ namespace Gui
             }
         }
 
-    }
-
-    class Bar
-    {
-        public string BarName { set; get; }
-
-        public int Value { set; get; }
     }
 
     class Record : INotifyPropertyChanged

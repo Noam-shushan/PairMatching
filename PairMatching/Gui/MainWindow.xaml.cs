@@ -115,17 +115,17 @@ namespace Gui
         }
 
         #region Update data
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        private async Task Initialize()
         {
             IsLoadedData = true;
-            try
-            {
-                await logicLayer.ReadDataFromSpredsheetAsync();
-            }
-            catch (Exception ex2)
-            {
-                Messages.MessageBoxError(ex2.Message);
-            }
+            //try
+            //{
+            //    await logicLayer.ReadDataFromSpredsheetAsync();
+            //}
+            //catch (Exception ex2)
+            //{
+            //    Messages.MessageBoxError(ex2.Message);
+            //}
             try
             {
 
@@ -144,19 +144,15 @@ namespace Gui
             IsLoadedData = false;
         }
 
+        
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            await Initialize();
+        }
+
         private async void updateBtn_Click(object sender, RoutedEventArgs e)
         {
-            IsLoadedData = true;
-            try
-            {
-                await logicLayer.ReadDataFromSpredsheetAsync();
-                await logicLayer.UpdateAsync();
-            }
-            catch (Exception ex)
-            {
-                Messages.MessageBoxError(ex.Message);
-            }
-            IsLoadedData = false;
+            await Initialize();
         }
         #endregion
 
@@ -164,7 +160,7 @@ namespace Gui
         private void statisticsBtn_Click(object sender, RoutedEventArgs e)
         {
             IsStatisticsUi = true;
-            statistics.SetDataContext();
+            statistics.DataContext = new RecordCollection(logicLayer.GetStatistics());
         }
 
         #region Students UI

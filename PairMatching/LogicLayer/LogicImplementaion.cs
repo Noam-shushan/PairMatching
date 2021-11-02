@@ -38,20 +38,32 @@ namespace LogicLayer
             }
         }
 
+        private BO.Statistics _statistics = new BO.Statistics();
         public BO.Statistics Statistics
         {
             get
             {
-                return new BO.Statistics
-                {
-                    NumberOfPair = _pairList.Count,
-                    NumberOfStudentFromIsrael = _studentList.Where(s => s.IsFromIsrael).Count(),
-                    NumberOfStudents = _studentList.Count,
-                    NumberOfStudentsWithoutPair = _studentList.Where(s => !s.IsMatch).Count(),
-                    NumberOfStudentFromWorldWithoutPair = _studentList.Where(s => !s.IsMatch && !s.IsFromIsrael).Count(),
-                    NumberOfStudentFromIsraelWithoutPair = _studentList.Where(s => !s.IsMatch && s.IsFromIsrael).Count(),
-                    NumberOfStudentFromWorld = _studentList.Where(s => !s.IsFromIsrael).Count()
-                };
+                _statistics.NumberOfPair.Value = _pairList.Count;
+                _statistics.NumberOfStudentFromIsrael.Value = _studentList
+                                                                .Where(s => s.IsFromIsrael)
+                                                                .Count();
+                _statistics.NumberOfStudents.Value = _studentList.Count;
+                _statistics.NumberOfStudentsWithoutPair.Value = _studentList
+                                                                .Where(s => !s.IsMatch)
+                                                                .Count();
+                _statistics.NumberOfStudentFromWorldWithoutPair.Value = _studentList
+                                                                .Where(s => !s.IsMatch && !s.IsFromIsrael)
+                                                                .Count();
+                _statistics.NumberOfStudentFromIsraelWithoutPair.Value = _studentList
+                                                                        .Where(s => !s.IsMatch && s.IsFromIsrael)
+                                                                        .Count();
+                _statistics.NumberOfStudentFromWorld.Value = _studentList
+                    .Where(s => !s.IsFromIsrael)
+                    .Count();
+                _statistics.NumberOfActivePairs.Value = _pairList
+                    .Where(p => p.IsActive)
+                    .Count();
+                return _statistics;
             }
         }
 
@@ -126,6 +138,20 @@ namespace LogicLayer
         public static ILogicLayer Instance { get; } = new LogicImplementaion();
 
         private LogicImplementaion() { }
+        #endregion
+
+        #region Statistics
+        public List<BO.Bar> GetStatistics()
+        {
+            var listOfBars = new List<BO.Bar>();
+            var propList = Statistics.GetType().GetProperties();
+            foreach (var prop in propList)
+            {
+                var val = prop.GetValue(_statistics);
+                listOfBars.Add(val as BO.Bar);
+            }
+            return listOfBars;
+        } 
         #endregion
 
         #region Data reading and updating   
@@ -518,10 +544,6 @@ namespace LogicLayer
         /// <param name="seconde">student from the world</param>
         public async Task<int> MatchAsync(BO.Student first, BO.Student seconde)
         {
-            if(first.IsFromIsrael && seconde.IsFromIsrael)
-            {
-                throw new Exception("!אי אפשר לחבר בין שני משתתפים מישראל");
-            }
             if(_pairList.Any(p => 
             (p.StudentFromIsraelId == first.Id) && (p.StudentFromWorldId == seconde.Id)
             || (p.StudentFromIsraelId == seconde.Id && p.StudentFromWorldId == first.Id)))

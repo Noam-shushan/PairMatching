@@ -249,8 +249,9 @@
                             <materialDesign:PackIcon Kind="Pencil" />
                         </Button>
                     </materialDesign:DialogHost>
-                    <TextBlock FontSize="20" Text="{Binding Path=Name}" />
                     <!--#endregion-->
+
+                    <TextBlock FontSize="20" Text="{Binding Path=Name}" />
 
                 </StackPanel>
 
@@ -268,7 +269,7 @@
                             </StackPanel>
                             <StackPanel Margin="0,8">
                                 <TextBlock Style="{StaticResource headersDetails}" Text="אימייל:  " />
-                                <TextBlock Text="{Binding Path=Email}" />
+                                <TextBox Style="{StaticResource MaterialDesignTextBox}" Text="{Binding Path=Email, Mode=TwoWay}" />
                             </StackPanel>
                             <StackPanel Style="{StaticResource myStackPanelStyle}">
                                 <TextBlock Style="{StaticResource headersDetails}" Text="ארץ: " />

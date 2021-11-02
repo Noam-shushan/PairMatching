@@ -218,7 +218,11 @@ namespace LogicLayer
         /// Filter the pair list by track of stading
         /// </summary>
         /// <param name="track">the track stading</param>
-        void FilterPairsByTrack(string track); 
+        void FilterPairsByTrack(string track);
+        #endregion
+
+        #region Statistics
+        List<BO.Bar> GetStatistics(); 
         #endregion
     }
 }

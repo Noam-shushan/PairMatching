@@ -15,15 +15,31 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Globalization;
+using System.ComponentModel;
 
 namespace Gui.Controlers
 {
     /// <summary>
     /// Interaction logic for PairsListControl.xaml
     /// </summary>
-    public partial class PairsListControl : UserControl
+    public partial class PairsListControl : UserControl, INotifyPropertyChanged
     {
         private readonly ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private bool _isLoadingData;
+
+        public bool IsLoadingData
+        {
+            get { return _isLoadingData; }
+            set 
+            { 
+                _isLoadingData = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsLoadingData"));
+            }
+        }
+
 
         public PairsListControl()
         {
@@ -33,6 +49,7 @@ namespace Gui.Controlers
         public void SetItemSource()
         {
             lvPairs.ItemsSource = logicLayer.PairList;
+            lvPairs.Items.Refresh();
         }
 
         private void lvPairs_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -62,6 +79,7 @@ namespace Gui.Controlers
 
         private async void removeMenyPairBtn_Click(object sender, RoutedEventArgs e)
         {
+            IsLoadingData = true;
             var selectedPairs = logicLayer.PairList.Where(p => p.IsSelected);
             int numOfPairsToRem = selectedPairs.Count();
             if (numOfPairsToRem == 0)
@@ -85,7 +103,7 @@ namespace Gui.Controlers
 
                         var mainWin = Application.Current.MainWindow as MainWindow;
                         mainWin.RefreshMyStudentsView();
-                        mainWin.RefreshMyPairView();
+                        SetItemSource();
                     }
                 }
                 else
@@ -99,42 +117,15 @@ namespace Gui.Controlers
                         
                         var mainWin = Application.Current.MainWindow as MainWindow;
                         mainWin.RefreshMyStudentsView();
-                        mainWin.RefreshMyPairView();
+                        SetItemSource();
                     }
                 }
             }
-            catch (BO.BadPairException ex)
+            catch (BadPairException ex)
             {
                 Messages.MessageBoxError(ex.Message);
             }
-        }
-
-        private async void manualMatchBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedList = logicLayer.GetAllStudentsBy(s => s.IsSelected);
-            if (selectedList.Count() != 2)
-            {
-                Messages.MessageBoxWarning("בחר 2 תלמידים מהרשימה על מנת לבצע התאמה");
-                return;
-            }
-
-            try
-            {
-                var first = selectedList.First();
-                var second = selectedList.Last();
-                if (Messages.MessageBoxConfirmation($"בטוח שברצונך להתאים את {first.Name} ל- {second.Name}?"))
-                {
-                    int id = await logicLayer.MatchAsync(first, second);
-                    
-                    var mainWin = Application.Current.MainWindow as MainWindow;
-                    mainWin.RefreshMyStudentsView();
-                    mainWin.RefreshMyPairView();
-                }
-            }
-            catch (Exception ex)
-            {
-                Messages.MessageBoxError(ex.Message);
-            }
+            IsLoadingData = false;
         }
 
         private void selectAllPairCB_Checked(object sender, RoutedEventArgs e)
@@ -200,6 +191,7 @@ namespace Gui.Controlers
         }
 
         static string _trackForEditPair = "";
+
         private void cbTracksEdit_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var track = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
@@ -231,6 +223,7 @@ namespace Gui.Controlers
 
         private async void deletePairBtn_Click(object sender, RoutedEventArgs e)
         {
+            IsLoadingData = true;
             var selectedPair = (sender as Button).DataContext as Pair;
             try
             {
@@ -242,7 +235,7 @@ namespace Gui.Controlers
                         
                         var mainWin = Application.Current.MainWindow as MainWindow;
                         mainWin.RefreshMyStudentsView();
-                        mainWin.RefreshMyPairView();
+                        SetItemSource();
                     }
                 }
             }
@@ -250,10 +243,12 @@ namespace Gui.Controlers
             {
                 Messages.MessageBoxError(ex.Message);
             }
+            IsLoadingData = false;
         }
 
         private async void activePairBtn_Click(object sender, RoutedEventArgs e)
         {
+            IsLoadingData = true;
             var selectedPair = (sender as Button).DataContext as Pair;
             try
             {
@@ -262,14 +257,16 @@ namespace Gui.Controlers
                     await logicLayer.ActivatePairAsync(selectedPair);
                     
                     var mainWin = Application.Current.MainWindow as MainWindow;
+
+                    SetItemSource();
                     mainWin.RefreshMyStudentsView();
-                    mainWin.RefreshMyPairView();
                 }
             }
             catch (Exception ex)
             {
                 Messages.MessageBoxError(ex.Message);
             }
+            IsLoadingData = false;
         }
 
         private void cbTracksFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
