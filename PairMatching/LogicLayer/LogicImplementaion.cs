@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataLayer;
+using UtilEntities;
 
 namespace LogicLayer
 {
@@ -331,10 +332,10 @@ namespace LogicLayer
             int id = 0;
             try
             {
-                DO.PrefferdTracks newTrack = DO.PrefferdTracks.DONT_MATTER;
+                PrefferdTracks newTrack = PrefferdTracks.DONT_MATTER;
                 if(track != "")
                 {
-                    newTrack = BO.Dictionaries.PrefferdTracksDictInverse[track];
+                    newTrack = Dictionaries.PrefferdTracksDictInverse[track];
                 }
                 student.IsSimpleStudent = true;
                 student.PrefferdTracks.Add(newTrack);
@@ -380,11 +381,11 @@ namespace LogicLayer
         /// </summary>
         /// <param name="student">The student to add note to</param>
         /// <param name="note">The note to add to the student</param>
-        public void AddNoteToStudent(BO.Student student, BO.Note note)
+        public void AddNoteToStudent(BO.Student student, Note note)
         {
-            student.NotesBo.Add(note);
+            student.Notes.Add(note);
             var s = dal.GetStudent(student.Id);
-            s.Notes.Add(note.CopyPropertiesToNew(typeof(DO.Note)) as DO.Note);
+            s.Notes.Add(note);
             dal.UpdateStudent(s);
         }
 
@@ -393,11 +394,11 @@ namespace LogicLayer
         /// </summary>
         /// <param name="student">The student to remove the note from</param>
         /// <param name="note">The note to remove from the student</param>
-        public void RemoveNoteFromStudent(BO.Student student, BO.Note note)
+        public void RemoveNoteFromStudent(BO.Student student, Note note)
         {
-            student.NotesBo.Remove(note);
+            student.Notes.Remove(note);
             var s = dal.GetStudent(student.Id);
-            s.Notes.Remove(note.CopyPropertiesToNew(typeof(DO.Note)) as DO.Note);
+            s.Notes.Remove(note);
             dal.UpdateStudent(s);
         }
         #endregion
@@ -428,11 +429,11 @@ namespace LogicLayer
         /// </summary>
         /// <param name="pair">The pair to add note to</param>
         /// <param name="note">The note to add to the pair</param>
-        public void AddNoteToPair(BO.Pair pair, BO.Note note)
+        public void AddNoteToPair(BO.Pair pair, Note note)
         {
-            pair.NotesBo.Add(note);
+            pair.Notes.Add(note);
             var p = dal.GetPair(pair.Id);
-            p.Notes.Add(note.CopyPropertiesToNew(typeof(DO.Note)) as DO.Note);
+            p.Notes.Add(note);
             dal.UpdatePair(p);
         }
 
@@ -441,11 +442,11 @@ namespace LogicLayer
         /// </summary>
         /// <param name="pair">The pair to remove note from</param>
         /// <param name="note">The note to remove from the pair</param>
-        public void RemoveNoteFromPair(BO.Pair pair, BO.Note note)
+        public void RemoveNoteFromPair(BO.Pair pair, Note note)
         {
-            pair.NotesBo.Remove(note);
+            pair.Notes.Remove(note);
             var p = dal.GetPair(pair.Id);
-            p.Notes.Remove(note.CopyPropertiesToNew(typeof(DO.Note)) as DO.Note);
+            p.Notes.Remove(note);
             dal.UpdatePair(p);
         }
 
@@ -458,7 +459,7 @@ namespace LogicLayer
                 var studFromIsrael = GetStudent(pair.StudentFromIsrael.Id);
                 var studFromWorld = GetStudent(pair.StudentFromWorld.Id);
 
-                var updateTrack = new Tuple<DateTime, DO.PrefferdTracks>(DateTime.Now, pair.PrefferdTracks);
+                var updateTrack = new Tuple<DateTime, PrefferdTracks>(DateTime.Now, pair.PrefferdTracks);
 
                 var matchHistFromIsrael = studFromIsrael
                     .MatchingHistories
@@ -602,7 +603,7 @@ namespace LogicLayer
             }
         }
 
-        private DO.StudentMatchingHistory GetNewMatchingHistory(BO.Student secondeStudent, DO.PrefferdTracks track)
+        private DO.StudentMatchingHistory GetNewMatchingHistory(BO.Student secondeStudent, PrefferdTracks track)
         {
             var matchHistoryFirst = new DO.StudentMatchingHistory
             {
@@ -613,7 +614,7 @@ namespace LogicLayer
             };
             matchHistoryFirst
                 .TracksHistory
-                .Add(new Tuple<DateTime, DO.PrefferdTracks>(DateTime.Now, track));
+                .Add(new Tuple<DateTime, PrefferdTracks>(DateTime.Now, track));
             return matchHistoryFirst;
         }
 
@@ -623,7 +624,8 @@ namespace LogicLayer
         /// <returns>list of all pairs</returns>
         public IEnumerable<BO.Pair> GetAllPairs()
         {
-            return from p in dal.GetAllPairs()
+            var pairsList = dal.GetAllPairs();
+            return from p in pairsList
                    select new BO.Pair()
                     .CreateFromDO(p, GetSimpleStudent);
         }
@@ -876,11 +878,6 @@ namespace LogicLayer
                 // copy the propertis to BO student
                 var studBO = studDO.CopyPropertiesToNew(typeof(BO.Student)) as BO.Student;
 
-                foreach(var n in studDO.Notes)
-                {
-                    studBO.NotesBo.Add(n.CopyPropertiesToNew(typeof(BO.Note)) as BO.Note);
-                }
-
                 foreach (var mh in studBO.MatchingHistories)
                 {
                     studBO.MatchingHistoriesShow
@@ -1010,10 +1007,10 @@ namespace LogicLayer
         #endregion
 
         #region Pairs helper functions
-        private DO.PrefferdTracks GetPrefferdTrackOfPair(BO.Student firstStud, BO.Student secondeStud)
+        private PrefferdTracks GetPrefferdTrackOfPair(BO.Student firstStud, BO.Student secondeStud)
         {
-            firstStud.PrefferdTracks.Contains(DO.PrefferdTracks.TANYA); 
-            secondeStud.PrefferdTracks.Contains(DO.PrefferdTracks.TANYA);
+            firstStud.PrefferdTracks.Contains(PrefferdTracks.TANYA); 
+            secondeStud.PrefferdTracks.Contains(PrefferdTracks.TANYA);
             if (firstStud.PrefferdTracks.Count() == 0
                 && secondeStud.PrefferdTracks.Count() != 0)
             {
@@ -1027,10 +1024,10 @@ namespace LogicLayer
             else if(firstStud.PrefferdTracks.Count() == 0
                 && secondeStud.PrefferdTracks.Count() == 0)
             {
-                return DO.PrefferdTracks.DONT_MATTER;
+                return PrefferdTracks.DONT_MATTER;
             }
         
-            return firstStud.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER) ?
+            return firstStud.PrefferdTracks.Contains(PrefferdTracks.DONT_MATTER) ?
                 secondeStud.PrefferdTracks.First() : firstStud.PrefferdTracks.First();
         }
 
@@ -1039,6 +1036,16 @@ namespace LogicLayer
             var studDO = dal.GetStudent(id);
             var simpleStudent = studDO.CopyPropertiesToNew(typeof(BO.SimpleStudent)) as BO.SimpleStudent;
             return simpleStudent;
+        }
+
+        public void SearchPairs(string text)
+        {
+            PairListFilter = p => 
+            p.StudentFromIsrael.
+            Name.StartsWith(text, StringComparison.InvariantCultureIgnoreCase)
+            || 
+            p.StudentFromWorld.
+            Name.StartsWith(text, StringComparison.InvariantCultureIgnoreCase);
         }
         #endregion
     }

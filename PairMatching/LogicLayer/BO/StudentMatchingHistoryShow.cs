@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DO;
+using UtilEntities;
 
 namespace BO
 {
@@ -29,8 +30,11 @@ namespace BO
         }
 
         public string MatchStudentName { get; set; }
+        
         public int MatchStudentId { get; set; }
+        
         public bool IsUnMatch { get; set; }
+        
         public bool IsActive { get; set; }
     }
 }

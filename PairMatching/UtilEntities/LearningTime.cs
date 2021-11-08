@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DO
+namespace UtilEntities
 {
     public class LearningTime : IEquatable<LearningTime>
     {
@@ -20,7 +18,7 @@ namespace DO
             if (ReferenceEquals(this, other)) return true;
 
             return Day == other.Day
-                && !TimeInDay.Except(other.TimeInDay).Any() 
+                && !TimeInDay.Except(other.TimeInDay).Any()
                 && !other.TimeInDay.Except(TimeInDay).Any();
         }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using DO;
 using LogicLayer;
-using RazorEngine.Templating;
+using UtilEntities;
 
 namespace BO
 {
@@ -205,7 +205,7 @@ namespace BO
 
         public IEnumerable<OpenQuestion> OpenQuestions { get; set; }
 
-        public ObservableCollection<Note> NotesBo { get; set; } = new ObservableCollection<Note>();
+        public List<Note> Notes { get; set; } = new List<Note>();
 
         public override string ToString()
         {

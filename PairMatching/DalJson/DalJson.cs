@@ -111,15 +111,9 @@ namespace DalJson
 
         public IEnumerable<Student> GetAllStudents()
         {
-            return from s in JsonTools.LoadRecords<Student>(studentsPath)
+            var students = JsonTools.LoadRecords<Student>(studentsPath);
+            return from s in students
                    where !s.IsDeleted
-                   select s;
-        }
-
-        public IEnumerable<Student> GetAllStudentsBy(Predicate<Student> predicate)
-        {
-            return from s in JsonTools.LoadRecords<Student>(studentsPath)
-                   where !s.IsDeleted && predicate(s)
                    select s;
         }
 
@@ -205,15 +199,9 @@ namespace DalJson
 
         public IEnumerable<Pair> GetAllPairs()
         {
-            return from p in JsonTools.LoadRecords<Pair>(pairsPath)
+            var pairs = JsonTools.LoadRecords<Pair>(pairsPath);
+            return from p in pairs
                    where !p.IsDeleted
-                   select p;
-        }
-
-        public IEnumerable<Pair> GetAllPairsBy(Predicate<Pair> predicate)
-        {
-            return from p in JsonTools.LoadRecords<Pair>(pairsPath)
-                   where !p.IsDeleted && predicate(p)
                    select p;
         }
 
@@ -226,18 +214,6 @@ namespace DalJson
                 return result;
             }
             throw new BadPairException("can not find the pair", id);
-        }
-
-        public Pair GetPair(int studFromIsraelId, int studFromWorldId)
-        {
-            var pairList = JsonTools.LoadRecords<Pair>(pairsPath);
-            var result = pairList.Find(p => p.StudentFromIsraelId == studFromIsraelId
-                && p.StudentFromWorldId == studFromWorldId);
-            if (result != null)
-            {
-                return result;
-            }
-            throw new BadPairException("can not find the pair", studFromWorldId, studFromIsraelId);
         }
         #endregion
 

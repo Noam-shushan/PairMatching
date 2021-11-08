@@ -119,21 +119,6 @@ namespace DalMongo
             }
         }
 
-        public IEnumerable<Student> GetAllStudentsBy(Predicate<Student> predicate)
-        {
-            try
-            {
-                var students = db.LoadeRecords<Student>(studentsTable);
-                return from s in students
-                       where predicate(s) && !s.IsDeleted
-                       select s;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
         public void UpdateStudent(Student student)
         {
             try
@@ -208,21 +193,6 @@ namespace DalMongo
             }
         }
 
-        public IEnumerable<Pair> GetAllPairsBy(Predicate<Pair> predicate)
-        {
-            try
-            {
-                var pairList = db.LoadeRecords<Pair>(pairsTable);
-                return from p in pairList
-                       where predicate(p) && !p.IsDeleted
-                       select p;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
         public Pair GetPair(int id)
         {
             Pair pair;
@@ -245,26 +215,6 @@ namespace DalMongo
             throw new BadPairException("can not find the pair of is removed", 
                 pair.StudentFromIsraelId, pair.StudentFromWorldId);
 
-        }
-
-        public Pair GetPair(int studFromIsraelId, int studFromWorldId)
-        {
-            Pair pair;
-            try
-            {
-                pair = GetAllPairsBy(p => p.StudentFromIsraelId == studFromIsraelId
-                    && p.StudentFromWorldId == studFromWorldId)
-                    .FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message); 
-            }
-            if (pair != null)
-            {
-                return pair;
-            }
-            throw new BadPairException("can not find the pair", studFromWorldId, studFromIsraelId);
         }
         #endregion
 

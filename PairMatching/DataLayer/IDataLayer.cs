@@ -8,20 +8,13 @@ namespace DataLayer
     /// TODO: add documentation
     /// </summary>
     public interface IDataLayer
-    { 
+    {
         #region Student
         /// <summary>
         /// Get all the students from the database
         /// </summary>
         /// <returns>list of all students</returns>
         IEnumerable<DO.Student> GetAllStudents();
-
-        /// <summary>
-        /// Get all the students by some predicate from the database
-        /// </summary>
-        /// <param name="predicate">condition on Student</param>
-        /// <returns>all students thet is the condition</returns>
-        IEnumerable<DO.Student> GetAllStudentsBy(Predicate<DO.Student> predicate);
 
         Task SaveAllDataFromSpredsheetAsync();
 
@@ -58,13 +51,6 @@ namespace DataLayer
         /// </summary>
         /// <returns>All the pairs</returns>
         IEnumerable<DO.Pair> GetAllPairs();
-        
-        /// <summary>
-        /// Get all the pairs by some predicate from the database
-        /// </summary>
-        /// <param name="predicate">condition on the Pair</param>
-        /// <returns>all pairs thet is the condition</returns>
-        IEnumerable<DO.Pair> GetAllPairsBy(Predicate<DO.Pair> predicate);
 
         /// <summary>
         /// Add new pair to the database 
@@ -81,8 +67,6 @@ namespace DataLayer
         void UpdatePair(DO.Pair pair);
 
         DO.Pair GetPair(int id);
-
-        DO.Pair GetPair(int studFromIsraelId, int studFromWorldId);
         #endregion
 
         #region LastDateOfSheets

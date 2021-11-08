@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DO;
 using LogicLayer;
-using RazorEngine.Templating;
+using UtilEntities;
 
 namespace BO
 {
@@ -20,14 +20,14 @@ namespace BO
             var res = pairDo.CopyPropertiesToNew(typeof(Pair)) as Pair;
             res.StudentFromIsrael = createSimpleStudentFunc(pairDo.StudentFromIsraelId);
             res.StudentFromWorld = createSimpleStudentFunc(pairDo.StudentFromWorldId);
-            foreach(var n in pairDo.Notes)
-            {
-                res.NotesBo.Add(n.CopyPropertiesToNew(typeof(Note)) as Note);
-            }
+            //foreach(var n in pairDo.Notes)
+            //{
+            //    res.Notes.Add(n.CopyPropertiesToNew(typeof(Note)) as Note);
+            //}
             return res;
         }
 
-        public ObservableCollection<Note> NotesBo { get; set; } = new ObservableCollection<Note>();
+        public List<Note> Notes { get; set; } = new List<Note>();
 
         public void EditPrefferdTracks(string track)
         {
@@ -67,8 +67,6 @@ namespace BO
         public DateTime DateOfDelete { get; set; }
 
         public bool IsActive { get; set; } = false;
-
-        public string InfoAbout { get; set; } = "";
 
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}

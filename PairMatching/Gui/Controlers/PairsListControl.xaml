@@ -42,10 +42,39 @@
             </StackPanel>
         </DataTemplate>
     </UserControl.Resources>
-    <Grid>
+    <StackPanel>
+        <!--#region Search-->
+        <Grid Width="150" HorizontalAlignment="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Button
+                x:Name="searchBtn"
+                Click="searchBtn_Click"
+                Style="{DynamicResource MaterialDesignToolButton}">
+                <materialDesign:PackIcon Kind="Search" Opacity=".56" />
+            </Button>
+            <TextBox
+                x:Name="tbSearch"
+                Grid.Column="1"
+                MinWidth="150"
+                VerticalAlignment="Center"
+                materialDesign:HintAssist.Hint="חיפוש"
+                materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                BorderBrush="#28a7e7"
+                KeyDown="tbSearch_KeyDown" />
+        </Grid>
+        <!--#endregion-->
+
         <!--#region Pairs-->
         <ListView
             x:Name="lvPairs"
+            Grid.Column="0"
             Width="1150"
             Height="570"
             VerticalAlignment="Top"
@@ -279,5 +308,7 @@
             </ListView.View>
         </ListView>
         <!--#endregion-->
-    </Grid>
+
+
+    </StackPanel>
 </UserControl>

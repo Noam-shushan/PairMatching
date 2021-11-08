@@ -275,6 +275,38 @@ namespace Gui.Controlers
             logicLayer.FilterPairsByTrack(track);
             lvPairs.ItemsSource = logicLayer.PairList;
         }
+
+        private void searchBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Search();
+        }
+
+        private void Search()
+        {
+            if (tbSearch.Text != string.Empty)
+            {
+                logicLayer.SearchPairs(tbSearch.Text);
+                lvPairs.ItemsSource = logicLayer.PairList;
+                if (lvPairs.Items.IsEmpty)
+                {
+                    return;
+                }
+                lvPairs.Items.Refresh();
+            }
+            else
+            {
+                logicLayer.PairListFilter = p => !p.IsDeleted;
+                lvPairs.ItemsSource = logicLayer.PairList;
+            }
+        }
+
+        private void tbSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                Search();
+            }
+        }
     }
 
     /// <summary>

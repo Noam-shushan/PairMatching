@@ -118,14 +118,14 @@ namespace Gui
         private async Task Initialize()
         {
             IsLoadedData = true;
-            //try
-            //{
-            //    await logicLayer.ReadDataFromSpredsheetAsync();
-            //}
-            //catch (Exception ex2)
-            //{
-            //    Messages.MessageBoxError(ex2.Message);
-            //}
+            try
+            {
+                await logicLayer.ReadDataFromSpredsheetAsync();
+            }
+            catch (Exception ex2)
+            {
+                Messages.MessageBoxError(ex2.Message);
+            }
             try
             {
 
@@ -133,7 +133,8 @@ namespace Gui
 
                 if (logicLayer.StudentWithUnvalidEmail.Count > 0)
                 {
-                    var result = string.Join(",\n", from s in logicLayer.StudentWithUnvalidEmail select s.Name);
+                    var result = string.Join(",\n", 
+                        from s in logicLayer.StudentWithUnvalidEmail select s.Name);
                     Messages.MessageBoxWarning($"הכתובות מייל של התלמידים הבאים:\n {result} אינן חוקיות");
                 }
             }

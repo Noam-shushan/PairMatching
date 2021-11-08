@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DataLayer;
+using UtilEntities;
 
 
 namespace LogicLayer
@@ -265,12 +266,12 @@ namespace LogicLayer
             return result;
         }
 
-        private static IEnumerable<DO.LearningTime> GetLearningTime(List<string> row, IStudentDescriptor studentDescriptor)
+        private static IEnumerable<LearningTime> GetLearningTime(List<string> row, IStudentDescriptor studentDescriptor)
         {
-            var result = new List<DO.LearningTime>();
+            var result = new List<LearningTime>();
             for (int i = TIME_COLUMN_START; i < TIME_COLUMN_END; i++)
             {
-                result.Add(new DO.LearningTime
+                result.Add(new LearningTime
                 {
                     Day = studentDescriptor.GetDay(i),
                     TimeInDay = studentDescriptor.GetTimesInDey(row[i])

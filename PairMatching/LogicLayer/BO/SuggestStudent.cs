@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UtilEntities;
 
 namespace BO
 {
@@ -14,8 +15,8 @@ namespace BO
         
         public string SuggestStudenCountry { get; set; }
 
-        public List<DO.LearningTime> MatchingLearningTime { get; set; }
-            = new List<DO.LearningTime>(); 
+        public List<LearningTime> MatchingLearningTime { get; set; }
+            = new List<LearningTime>(); 
 
         private int _matcingScore;
         /// <summary>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using UtilEntities;
 
 namespace LogicLayer
 {
@@ -92,14 +93,14 @@ namespace LogicLayer
         /// </summary>
         /// <param name="student">The student to add note to</param>
         /// <param name="note">The note to add to the student</param>
-        void AddNoteToStudent(BO.Student student, BO.Note note);
+        void AddNoteToStudent(BO.Student student, Note note);
 
         /// <summary>
         /// Remove note from student
         /// </summary>
         /// <param name="student">The student to remove the note from</param>
         /// <param name="note">The note to remove from the student</param>
-        void RemoveNoteFromStudent(BO.Student student, BO.Note note);
+        void RemoveNoteFromStudent(BO.Student student, Note note);
 
         /// <summary>
         /// Search students by prefix of thire name 
@@ -197,14 +198,14 @@ namespace LogicLayer
         /// </summary>
         /// <param name="pair">The pair to add note to</param>
         /// <param name="note">The note to add to the pair</param>
-        void AddNoteToPair(BO.Pair pair, BO.Note note);
+        void AddNoteToPair(BO.Pair pair, Note note);
 
         /// <summary>
         /// Remove note from pair
         /// </summary>
         /// <param name="pair">The pair to remove note from</param>
         /// <param name="note">The note to remove from the pair</param>
-        void RemoveNoteFromPair(BO.Pair pair, BO.Note note);
+        void RemoveNoteFromPair(BO.Pair pair, UtilEntities.Note note);
 
         /// <summary>
         /// Active pair from standby status to active pair.
@@ -222,7 +223,8 @@ namespace LogicLayer
         #endregion
 
         #region Statistics
-        List<BO.Bar> GetStatistics(); 
+        List<BO.Bar> GetStatistics();
+        void SearchPairs(string text);
         #endregion
     }
 }

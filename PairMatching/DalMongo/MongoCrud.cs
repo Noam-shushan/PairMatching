@@ -1,11 +1,10 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Configuration;
-using System.Text;
 using System.Threading.Tasks;
+using MongoDB.Driver.Builders;
 
 namespace DalMongo
 {
@@ -51,7 +50,9 @@ namespace DalMongo
         {
             var collection = db.GetCollection<T>(table);
             
-            return collection.Find(new BsonDocument()).ToList();
+            var list = collection.Find(new BsonDocument());
+            
+            return list.ToList();
         }
 
         public T LoadeRecordById<T>(string table, int id)

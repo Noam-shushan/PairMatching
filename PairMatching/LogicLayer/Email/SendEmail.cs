@@ -8,8 +8,7 @@ using System.Net;
 using System.Configuration;
 using System.Net.Configuration;
 using System.IO;
-using RazorEngine;
-using RazorEngine.Templating;
+
 
 namespace LogicLayer
 {
@@ -38,6 +37,8 @@ namespace LogicLayer
         /// The template of the email body
         /// </summary>
         private StringBuilder _template = new StringBuilder();
+
+        CreateEmailTemplate emailTemplateCreator = new CreateEmailTemplate();
 
         /// <summary>
         /// smtp object that send the email.
@@ -193,6 +194,10 @@ namespace LogicLayer
             {
                 throw new FormatException($"The Email address {_to} is not valid");
             }
+            catch (SmtpException)
+            {
+                throw new FormatException($"The Email address {_to} is not valid");
+            }
             catch(Exception ex)
             {
                 throw new Exception(ex.Message);
@@ -205,21 +210,13 @@ namespace LogicLayer
         /// <returns></returns>
         public async Task SendAsync<T>(T model, MailTemplate template)
         {
-            string result;
-            try
-            {   // Get the template string using Razor Engine
-                result = Engine.Razor
-                        .RunCompile(template.Template.ToString(),
-                        template.Subject, null, model);
+            string result = emailTemplateCreator
+                .Compile(model, template.Template.ToString());
 
-            }
-            catch (TemplateCompilationException)
-            {
-                throw new Exception("בעיה בשליחת המייל רצוי לשלוח מייל פתוח");
-            }
+
             var temp = new StringBuilder()
                 .Append(result);
-            
+
             await Subject(template.Subject)
                 .Template(temp)
                 .SendAsync();
@@ -233,13 +230,11 @@ namespace LogicLayer
         public async Task Error(Exception exception)
         {
             await To("noam8shu@gmail.com")
-                .SendAsync(exception, new MailTemplate
-                {
-                    Subject = "Bug in PairMatching", 
-                    Template = new StringBuilder()
-                        .AppendLine("<p>@Model.Message</p>")
-                        .AppendLine("<p>@Model.StackTrace</p>")
-                });
+                .Subject("Bug in PairMatching")
+                .Template(new StringBuilder()
+                        .AppendLine(exception.Message)
+                        .AppendLine(exception.StackTrace))
+                .SendAsync();
         }
     }
 }

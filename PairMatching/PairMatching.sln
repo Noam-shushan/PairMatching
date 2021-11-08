@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DalMongo", "DalMongo\DalMongo.csproj", "{A07A733F-D9D2-4D82-A938-D0DA62B72907}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilEntities", "UtilEntities\UtilEntities.csproj", "{B12F6A06-B5C2-495C-8901-83AC9724DFA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{A07A733F-D9D2-4D82-A938-D0DA62B72907}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A07A733F-D9D2-4D82-A938-D0DA62B72907}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A07A733F-D9D2-4D82-A938-D0DA62B72907}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B12F6A06-B5C2-495C-8901-83AC9724DFA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B12F6A06-B5C2-495C-8901-83AC9724DFA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B12F6A06-B5C2-495C-8901-83AC9724DFA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B12F6A06-B5C2-495C-8901-83AC9724DFA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

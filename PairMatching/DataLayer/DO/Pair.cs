@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
+using UtilEntities;
 
 namespace DO
 {
@@ -23,11 +24,6 @@ namespace DO
         /// The macher student id for the first student
         /// </summary>
         public int StudentFromWorldId { get; set; }
-        
-        /// <summary>
-        /// the matching degree of the pair 
-        /// </summary>
-        public MatchingDegrees MatchingDegree { get; set; }
 
         public DateTime DateOfCreate { get; set; }
 
@@ -36,8 +32,6 @@ namespace DO
         public DateTime DateOfDelete { get; set; }
 
         public bool IsActive { get; set; } = false;
-
-        public string InfoAbout { get; set; } = "";
 
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}

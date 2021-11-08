@@ -37,7 +37,7 @@
                     x:Name="lvNotes"
                     MinHeight="80"
                     MaxHeight="140"
-                    ItemsSource="{Binding NotesBo}">
+                    ItemsSource="{Binding Notes}">
                     <ListView.View>
                         <GridView>
                             <GridView.Columns>

@@ -269,7 +269,7 @@
                             </StackPanel>
                             <StackPanel Margin="0,8">
                                 <TextBlock Style="{StaticResource headersDetails}" Text="אימייל:  " />
-                                <TextBox Style="{StaticResource MaterialDesignTextBox}" Text="{Binding Path=Email, Mode=TwoWay}" />
+                                <TextBlock Text="{Binding Path=Email}" />
                             </StackPanel>
                             <StackPanel Style="{StaticResource myStackPanelStyle}">
                                 <TextBlock Style="{StaticResource headersDetails}" Text="ארץ: " />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UtilEntities;
 
 namespace LogicLayer
 {
@@ -11,19 +12,19 @@ namespace LogicLayer
     {
         private static Matching matcher = Matching.Instance;
 
-        private static readonly Dictionary<DO.TimesInDay, TimeInterval> BoundryOfTimeInDay =
-                new Dictionary<DO.TimesInDay, TimeInterval>()
+        private static readonly Dictionary<TimesInDay, TimeInterval> BoundryOfTimeInDay =
+                new Dictionary<TimesInDay, TimeInterval>()
         {
-            [DO.TimesInDay.MORNING] =
+            [TimesInDay.MORNING] =
                 new TimeInterval(TimeSpan.Parse("05:00"), TimeSpan.Parse("12:00")),
 
-            [DO.TimesInDay.NOON] =
+            [TimesInDay.NOON] =
                 new TimeInterval(TimeSpan.Parse("12:00"), TimeSpan.Parse("18:00")),
 
-            [DO.TimesInDay.EVENING] =
+            [TimesInDay.EVENING] =
                 new TimeInterval(TimeSpan.Parse("18:00"), TimeSpan.Parse("21:00")),
 
-            [DO.TimesInDay.NIGHT] =
+            [TimesInDay.NIGHT] =
                 new TimeInterval(TimeSpan.Parse("21:00"), TimeSpan.Parse("02:00"))
         };
 
@@ -44,7 +45,7 @@ namespace LogicLayer
             {
                 foreach (var t in dt.TimeInDay)
                 {
-                    if (t == DO.TimesInDay.INCAPABLE)
+                    if (t == TimesInDay.INCAPABLE)
                     {
                         continue;
                     }
@@ -61,16 +62,16 @@ namespace LogicLayer
             return found;
         }
 
-        private static bool FindMatcinHouers(BO.Student israeliStudent, DO.LearningTime learningTimeFromWorld,
-            DO.TimesInDay timesInDayFromWorld, TimeInterval equivalentIntevalFromWorld,
-            DO.TimesInDay equivalentTimeInIsrael, TimeSpan diff)
+        private static bool FindMatcinHouers(BO.Student israeliStudent, LearningTime learningTimeFromWorld,
+            TimesInDay timesInDayFromWorld, TimeInterval equivalentIntevalFromWorld,
+            TimesInDay equivalentTimeInIsrael, TimeSpan diff)
         {
             bool found = false;
-            var ltToAddFromWorld = new DO.LearningTime
+            var ltToAddFromWorld = new LearningTime
             {
                 //Id = learningTimeFromWorld.Id,
                 Day = learningTimeFromWorld.Day,
-                TimeInDay = new List<DO.TimesInDay> { timesInDayFromWorld }
+                TimeInDay = new List<TimesInDay> { timesInDayFromWorld }
             };
             foreach (var lt in israeliStudent.DesiredLearningTime)
             {
@@ -83,7 +84,7 @@ namespace LogicLayer
 
                 foreach (var t in lt.TimeInDay)
                 {
-                    if (t == DO.TimesInDay.INCAPABLE)
+                    if (t == TimesInDay.INCAPABLE)
                     {
                         continue;
                     }
@@ -91,10 +92,10 @@ namespace LogicLayer
                         && BoundryOfTimeInDay[t].IsIn(equivalentIntevalFromWorld))
                     {
                         matcher.CurrentForIsraeliSuggest.MatchingLearningTime.Add(ltToAddFromWorld);
-                        matcher.CurrentForWorldSuggest.MatchingLearningTime.Add(new DO.LearningTime
+                        matcher.CurrentForWorldSuggest.MatchingLearningTime.Add(new LearningTime
                         {
                             Day = lt.Day,
-                            TimeInDay = new List<DO.TimesInDay> { t }
+                            TimeInDay = new List<TimesInDay> { t }
                         });
                         matcher.AddScores();
                         found = true;
@@ -104,13 +105,13 @@ namespace LogicLayer
                     {
                         if ((lt.Day - learningTimeFromWorld.Day) == 1 &&
                             (BoundryOfTimeInDay[t].IsIn(equivalentIntevalFromWorld)
-                            || (t == equivalentTimeInIsrael && equivalentTimeInIsrael != DO.TimesInDay.DONT_MATTER)))
+                            || (t == equivalentTimeInIsrael && equivalentTimeInIsrael != TimesInDay.DONT_MATTER)))
                         {
                             matcher.CurrentForIsraeliSuggest.MatchingLearningTime.Add(ltToAddFromWorld);
-                            matcher.CurrentForWorldSuggest.MatchingLearningTime.Add(new DO.LearningTime
+                            matcher.CurrentForWorldSuggest.MatchingLearningTime.Add(new LearningTime
                             {
                                 Day = lt.Day,
-                                TimeInDay = new List<DO.TimesInDay> { t }
+                                TimeInDay = new List<TimesInDay> { t }
                             });
                             matcher.AddScores();
                             found = true;
@@ -121,20 +122,20 @@ namespace LogicLayer
                     {
                         if ((learningTimeFromWorld.Day - lt.Day) == 1 &&
                             (BoundryOfTimeInDay[t].IsIn(equivalentIntevalFromWorld)
-                            || (t == equivalentTimeInIsrael && equivalentTimeInIsrael != DO.TimesInDay.DONT_MATTER)))
+                            || (t == equivalentTimeInIsrael && equivalentTimeInIsrael != TimesInDay.DONT_MATTER)))
                         {
                             matcher.CurrentForIsraeliSuggest.MatchingLearningTime.Add(ltToAddFromWorld);
-                            matcher.CurrentForWorldSuggest.MatchingLearningTime.Add(new DO.LearningTime
+                            matcher.CurrentForWorldSuggest.MatchingLearningTime.Add(new LearningTime
                             {
                                 Day = lt.Day,
-                                TimeInDay = new List<DO.TimesInDay> { t }
+                                TimeInDay = new List<TimesInDay> { t }
                             });
                             matcher.AddScores();
                             found = true;
                             continue;
                         }
                     }
-                    if (equivalentTimeInIsrael == DO.TimesInDay.DONT_MATTER)
+                    if (equivalentTimeInIsrael == TimesInDay.DONT_MATTER)
                     {
                         continue;
                     }
@@ -142,10 +143,10 @@ namespace LogicLayer
                         && t == equivalentTimeInIsrael)
                     {
                         matcher.CurrentForIsraeliSuggest.MatchingLearningTime.Add(ltToAddFromWorld);
-                        matcher.CurrentForWorldSuggest.MatchingLearningTime.Add(new DO.LearningTime
+                        matcher.CurrentForWorldSuggest.MatchingLearningTime.Add(new LearningTime
                         {
                             Day = lt.Day,
-                            TimeInDay = new List<DO.TimesInDay> { t }
+                            TimeInDay = new List<TimesInDay> { t }
                         });
                         matcher.AddScores();
                         found = true;
@@ -163,7 +164,7 @@ namespace LogicLayer
         /// <param name="studentDiff"></param>
         /// <param name="timesInDay"></param>
         /// <returns></returns>
-        static TimeInterval GetStudentTimes(TimeSpan studentDiff, DO.TimesInDay timesInDay)
+        static TimeInterval GetStudentTimes(TimeSpan studentDiff, TimesInDay timesInDay)
         {
             var interval = BoundryOfTimeInDay[timesInDay];
             return new TimeInterval(interval.Start - studentDiff,
@@ -175,25 +176,25 @@ namespace LogicLayer
         /// </summary>
         /// <param name="timeInterval"></param>
         /// <returns></returns>
-        static DO.TimesInDay GetTimesInDayByInterval(TimeInterval timeInterval)
+        static TimesInDay GetTimesInDayByInterval(TimeInterval timeInterval)
         {
-            if (BoundryOfTimeInDay[DO.TimesInDay.MORNING] == timeInterval)
+            if (BoundryOfTimeInDay[TimesInDay.MORNING] == timeInterval)
             {
-                return DO.TimesInDay.MORNING;
+                return TimesInDay.MORNING;
             }
-            if (BoundryOfTimeInDay[DO.TimesInDay.NOON] == timeInterval)
+            if (BoundryOfTimeInDay[TimesInDay.NOON] == timeInterval)
             {
-                return DO.TimesInDay.NOON;
+                return TimesInDay.NOON;
             }
-            if (BoundryOfTimeInDay[DO.TimesInDay.EVENING] == timeInterval)
+            if (BoundryOfTimeInDay[TimesInDay.EVENING] == timeInterval)
             {
-                return DO.TimesInDay.EVENING;
+                return TimesInDay.EVENING;
             }
-            if (BoundryOfTimeInDay[DO.TimesInDay.NIGHT] == timeInterval)
+            if (BoundryOfTimeInDay[TimesInDay.NIGHT] == timeInterval)
             {
-                return DO.TimesInDay.NIGHT;
+                return TimesInDay.NIGHT;
             }
-            return DO.TimesInDay.DONT_MATTER;
+            return TimesInDay.DONT_MATTER;
         }
 
         /// <summary>

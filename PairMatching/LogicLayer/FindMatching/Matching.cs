@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UtilEntities;
 
 namespace LogicLayer
 {
@@ -54,11 +55,11 @@ namespace LogicLayer
 
         private bool IsMatchingStudentsNotCritical(BO.Student israelStudent, BO.Student other)
         {
-            return ((israelStudent.DesiredSkillLevel <= other.SkillLevel && other.SkillLevel != DO.SkillLevels.DONT_MATTER) 
-                || israelStudent.DesiredSkillLevel == DO.SkillLevels.DONT_MATTER)
+            return ((israelStudent.DesiredSkillLevel <= other.SkillLevel && other.SkillLevel != SkillLevels.DONT_MATTER) 
+                || israelStudent.DesiredSkillLevel == SkillLevels.DONT_MATTER)
                 && (israelStudent.LearningStyle == other.LearningStyle
-                || israelStudent.LearningStyle == DO.LearningStyles.DONT_MATTER
-                     || other.LearningStyle == DO.LearningStyles.DONT_MATTER);
+                || israelStudent.LearningStyle == LearningStyles.DONT_MATTER
+                     || other.LearningStyle == LearningStyles.DONT_MATTER);
         }
 
         /// <summary>
@@ -70,17 +71,17 @@ namespace LogicLayer
         public bool IsMatchingStudentsCritical(BO.Student israelStudent, BO.Student other, bool flagNotFound = false)
         {
             bool matchLenguage =
-                ((israelStudent.MoreLanguages == DO.MoreLanguages.NO ||
-                    israelStudent.MoreLanguages == DO.MoreLanguages.YES)
-                    && (other.MoreLanguages == DO.MoreLanguages.YES
-                        || other.MoreLanguages == DO.MoreLanguages.NO))
+                ((israelStudent.MoreLanguages == MoreLanguages.NO ||
+                    israelStudent.MoreLanguages == MoreLanguages.YES)
+                    && (other.MoreLanguages == MoreLanguages.YES
+                        || other.MoreLanguages == MoreLanguages.NO))
                 ||
-                (israelStudent.MoreLanguages == DO.MoreLanguages.NOT_ENGLISH
+                (israelStudent.MoreLanguages == MoreLanguages.NOT_ENGLISH
                     && israelStudent.Languages
                         .Select(l => l)
                         .Intersect(other.Languages)
                         .Any())
-                || (other.MoreLanguages == DO.MoreLanguages.NOT_ENGLISH
+                || (other.MoreLanguages == MoreLanguages.NOT_ENGLISH
                     && other.Languages
                         .Select(l => l)
                         .Intersect(israelStudent.Languages)
@@ -90,7 +91,7 @@ namespace LogicLayer
             {
                 AddScores();
             }
-            bool matchEnglishLevel = other.DesiredEnglishLevel == DO.EnglishLevels.DONT_MATTER
+            bool matchEnglishLevel = other.DesiredEnglishLevel == EnglishLevels.DONT_MATTER
                                     || other.DesiredEnglishLevel <= israelStudent.EnglishLevel;
 
             if (israelStudent.PrefferdGender == other.Gender
@@ -99,23 +100,23 @@ namespace LogicLayer
                 AddScores();
             }
             bool matchGender = israelStudent.PrefferdGender == other.PrefferdGender
-                               || (other.PrefferdGender == DO.Genders.DONT_MATTER
+                               || (other.PrefferdGender == Genders.DONT_MATTER
                                     && israelStudent.PrefferdGender == other.Gender)
-                               || (israelStudent.PrefferdGender == DO.Genders.DONT_MATTER
+                               || (israelStudent.PrefferdGender == Genders.DONT_MATTER
                                     && israelStudent.Gender == other.PrefferdGender)
                                || (israelStudent.PrefferdGender == other.Gender
                                     && other.PrefferdGender == israelStudent.Gender);
 
             if (israelStudent.PrefferdTracks
-                                  .Where(p => p != DO.PrefferdTracks.DONT_MATTER)
+                                  .Where(p => p != PrefferdTracks.DONT_MATTER)
                                   .Intersect(other.PrefferdTracks)
                                   .Any())
             {
                 AddScores();
             }
 
-            bool matchTrack = israelStudent.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER)
-                              || other.PrefferdTracks.Contains(DO.PrefferdTracks.DONT_MATTER)
+            bool matchTrack = israelStudent.PrefferdTracks.Contains(PrefferdTracks.DONT_MATTER)
+                              || other.PrefferdTracks.Contains(PrefferdTracks.DONT_MATTER)
                               || israelStudent.PrefferdTracks
                                   .Select(p => p)
                                   .Intersect(other.PrefferdTracks)
@@ -152,7 +153,7 @@ namespace LogicLayer
             suggestStudent.MatchingLearningTime
                 = (from m in suggestStudent.MatchingLearningTime
                    group m.TimeInDay.First() by m.Day into times
-                   select new DO.LearningTime
+                   select new LearningTime
                    {
                        Day = times.Key,
                        TimeInDay = times.Distinct()
