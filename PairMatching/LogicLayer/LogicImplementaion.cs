@@ -19,10 +19,10 @@ namespace LogicLayer
         private readonly IDataLayer dal = DalFactory.GetDal();
 
         // maching object to cheack all the condition to make a match
-        private Matching matcher = Matching.Instance;
+        private readonly Matching matcher = Matching.Instance;
 
         // Email sender
-        private readonly SendEmail sendEmail = SendEmail.Instance;
+        private readonly SendEmail emailSender = SendEmail.Instance;
 
         #region Properties
         public event PropertyChangedEventHandler PropertyChanged;
@@ -161,56 +161,58 @@ namespace LogicLayer
         /// Seaving all the data to the database.
         /// Sending automatic emails to the new studnts
         /// </summary>
-        public async Task ReadDataFromSpredsheetAsync()
+        public async Task<bool> ReadDataFromSpredsheetAsync()
         {
-            DO.LastDataOfSpredsheet lastDate, oldDate;
+            DO.SpredsheetLastRange lastRange, oldRange;
             try
             {
                 // get the last date of the update of the sheets to read from there
-                lastDate = dal.GetLastDateOfSheets();
-                oldDate = new DO.LastDataOfSpredsheet
+                lastRange = dal.GetSheetsLastRang();
+                oldRange = new DO.SpredsheetLastRange
                 {
-                    EnglishSheets = lastDate.EnglishSheets,
-                    HebrewSheets = lastDate.HebrewSheets
+                    EnglishSheets = lastRange.EnglishSheets,
+                    HebrewSheets = lastRange.HebrewSheets
                 };
             }
             catch (Exception ex1)
             {
-                await sendEmail.Error(ex1);
-                throw new Exception("באג לא ידוע, פרטים על הבאג נשלחו למפתח");
+                await emailSender.Error(ex1);
+                throw new Exception("בעיה בתוכנה\n. נסה ללחוץ על עדכן נתונים");
             }
             try
             {
                 // create parser for the spradsheets
                 GoogleSheetParser parser = new GoogleSheetParser();
                 // read the english sheet
-                var englishSheets = parser.ReadAsync(new EnglishDiscriptor(lastDate));
+                var englishSheets = parser.ReadAsync(new EnglishDiscriptor(lastRange));
                 // read the hebrew sheet
-                var hebrewSheets = parser.ReadAsync(new HebrewDescriptor(lastDate));
+                var hebrewSheets = parser.ReadAsync(new HebrewDescriptor(lastRange));
 
                 await Task.WhenAll(englishSheets, hebrewSheets);
 
-                lastDate.EnglishSheets = englishSheets.Result;
-                lastDate.HebrewSheets = hebrewSheets.Result;
+                lastRange.EnglishSheets = englishSheets.Result;
+                lastRange.HebrewSheets = hebrewSheets.Result;
 
                 // if there is no new data dont update the data base
-                if (lastDate.Equals(oldDate))
+                if (lastRange.Equals(oldRange))
                 {
-                    return;
+                    return false;
                 }
 
                 // save all new data from the spredsheet to the DB
                 await dal.SaveAllDataFromSpredsheetAsync();
 
                 // update the last date of updating of the sheets
-                dal.UpdateLastDateOfSheets(lastDate);
+                dal.UpdateSheetsLastRange(lastRange);
 
                 // send email for all new students
                 await SendRegesterEmailForNewStudent();
+                
+                return true;
             }
             catch (Exception ex)
             {
-                await sendEmail.Error(ex);
+                await emailSender.Error(ex);
                 throw new Exception("באג לא ידוע, פרטים על הבאג נשלחו למפתח");
             }
         }
@@ -231,7 +233,7 @@ namespace LogicLayer
             }
             catch (Exception ex)
             {
-                await sendEmail.Error(ex);
+                await emailSender.Error(ex);
                 throw new Exception("באג לא ידוע, פרטים על הבאג נשלחו למפתח");
             }
         }
@@ -327,18 +329,12 @@ namespace LogicLayer
         /// Add student to the database
         /// </summary>
         /// <param name="student">The new student to add</param>
-        public void AddStudent(BO.Student student, string track = "")
+        public void AddStudent(BO.Student student)
         {
             int id = 0;
             try
-            {
-                PrefferdTracks newTrack = PrefferdTracks.DONT_MATTER;
-                if(track != "")
-                {
-                    newTrack = Dictionaries.PrefferdTracksDictInverse[track];
-                }
+            { 
                 student.IsSimpleStudent = true;
-                student.PrefferdTracks.Add(newTrack);
                 student.DateOfRegistered = DateTime.Now;
                 var studDO = student.CopyPropertiesToNew(typeof(DO.Student)) as DO.Student;
                 id = dal.AddStudent(studDO);
@@ -505,7 +501,7 @@ namespace LogicLayer
         /// </summary>
         /// <param name="pair">The pair to activete</param>
         /// <returns></returns>
-        public async Task ActivatePairAsync(BO.Pair pair)
+        public async Task ActivatePairAsync(BO.Pair pair, bool sendEmail)
         {
             pair.IsActive = true;
             try
@@ -528,9 +524,12 @@ namespace LogicLayer
                 UpdateStudent(studFromIsrael);
                 UpdateStudent(studFromWorld);
                 UpdatePair(pair);
-                await UpdateAsync();
-                await SendEmailToPairAsync(pair, EmailTypes.YouGotPair);
-                await SendEmailToPairAsync(pair, EmailTypes.ToSecretaryNewPair);
+
+                if (sendEmail)
+                {
+                    await SendEmailToPairAsync(pair, EmailTypes.YouGotPair);
+                    await SendEmailToPairAsync(pair, EmailTypes.ToSecretaryNewPair);
+                }
             }
             catch (Exception ex)
             {
@@ -714,13 +713,13 @@ namespace LogicLayer
                 {
                     if (s.Country == "Israel")
                     {
-                        await sendEmail
+                        await emailSender
                             .To(s.Email)
                             .SendAsync(s, Templates.SuccessfullyRegisteredHebrew);
                     }
                     else
                     {
-                        await sendEmail
+                        await emailSender
                             .To(s.Email)
                             .SendAsync(s, Templates.SuccessfullyRegisteredEnglish);
                     }
@@ -755,32 +754,32 @@ namespace LogicLayer
                 switch (emailTypes)
                 {
                     case EmailTypes.YouGotPair:
-                        await sendEmail
+                        await emailSender
                         .To(pair.StudentFromIsrael.Email)
                             .SendAsync(pair, Templates.YouGotPairHebrew);
                         
-                        await sendEmail
+                        await emailSender
                             .To(pair.StudentFromWorld.Email)
                             .SendAsync(pair, Templates.YouGotPairEnglish);
                         break;
                     
                     case EmailTypes.PairBroke:
-                        await sendEmail
+                        await emailSender
                             .To(pair.StudentFromIsrael.Email)
                             .SendAsync(pair, Templates.PairBrokeHebrew);
 
-                        await sendEmail
+                        await emailSender
                             .To(pair.StudentFromWorld.Email)
                             .SendAsync(pair, Templates.PairBrokeEnglish);
                         break;
                     case EmailTypes.ToSecretaryNewPair:
-                        await sendEmail
-                            .To(sendEmail.FromMail.Address)
+                        await emailSender
+                            .To(emailSender.FromMail.Address)
                             .SendAsync(pair, Templates.ToSecretaryNewPair);
                         break;
                     case EmailTypes.ToSecretaryPairBroke:
-                        await sendEmail
-                            .To(sendEmail.FromMail.Address)
+                        await emailSender
+                            .To(emailSender.FromMail.Address)
                             .SendAsync(pair, Templates.ToSecretaryPairBroke);
                         break;
 
@@ -809,13 +808,13 @@ namespace LogicLayer
                     case EmailTypes.SuccessfullyRegistered:
                         if (student.IsFromIsrael)
                         {
-                            await sendEmail
+                            await emailSender
                                 .To(student.Email)
                                 .SendAsync(student, Templates.SuccessfullyRegisteredHebrew);
                         }
                         else
                         {
-                            await sendEmail
+                            await emailSender
                                 .To(student.Email)
                                 .SendAsync(student, Templates.SuccessfullyRegisteredEnglish);
                         }
@@ -823,13 +822,13 @@ namespace LogicLayer
                     case EmailTypes.StatusQuiz:
                         if (student.IsFromIsrael)
                         {
-                            await sendEmail
+                            await emailSender
                                 .To(student.Email)
                                 .SendAsync(student, Templates.StatusQuizHebrew);
                         }
                         else
                         {
-                            await sendEmail
+                            await emailSender
                                 .To(student.Email)
                                 .SendAsync(student, Templates.StatusQuizEnglish);
                         }
@@ -854,7 +853,7 @@ namespace LogicLayer
         /// <returns></returns>
         public async Task SendOpenEmailAsync(string to, string subject, string body, string fileAttachment = "")
         {
-            await sendEmail
+            await emailSender
                 .To(to)
                 .Subject(subject)
                 .Template(new StringBuilder().Append(body))

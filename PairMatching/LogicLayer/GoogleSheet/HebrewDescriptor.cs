@@ -16,21 +16,17 @@ namespace LogicLayer
         /// <summary>
         /// The spreadsheet range of rows and colunms 
         /// </summary>
-        public string Range { get => "A2:Z"; }
+        public string Range { get; }
 
         /// <summary>
         /// The spreadsheet name
         /// </summary>
         public string SheetName { get => "טופס רישום שלהבת תשפ\"א (תגובות)"; }
 
-        /// <summary>
-        /// The spreadsheet last date of update 
-        /// </summary>
-        public DateTime LastUpdate { get; set; }
 
-        public HebrewDescriptor(LastDataOfSpredsheet lastDateOfUpdate)
+        public HebrewDescriptor(SpredsheetLastRange lastRange)
         {
-            LastUpdate = lastDateOfUpdate.HebrewSheets;
+            Range = lastRange.HebrewSheets;
             SpreadsheetId = ConfigurationManager.AppSettings["hebrew spreadsheet id"];
         }
 

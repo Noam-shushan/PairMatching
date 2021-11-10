@@ -80,7 +80,7 @@ namespace LogicLayer
         /// Add student to the database
         /// </summary>
         /// <param name="student">The new student to add</param>
-        void AddStudent(BO.Student student, string track = "");
+        void AddStudent(BO.Student student);
 
         /// <summary>
         /// Update student in the database
@@ -115,7 +115,7 @@ namespace LogicLayer
         /// Seaving all the data to the database.
         /// Sending automatic emails to the new studnts
         /// </summary>
-        Task ReadDataFromSpredsheetAsync();
+        Task<bool> ReadDataFromSpredsheetAsync();
 
         /// <summary>
         /// Update all the data from the database and find new matching students
@@ -213,7 +213,7 @@ namespace LogicLayer
         /// </summary>
         /// <param name="pair">The pair to activete</param>
         /// <returns></returns>
-        Task ActivatePairAsync(BO.Pair pair);
+        Task ActivatePairAsync(BO.Pair pair, bool sendEmail);
 
         /// <summary>
         /// Filter the pair list by track of stading

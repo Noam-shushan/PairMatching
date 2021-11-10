@@ -16,7 +16,6 @@ namespace LogicLayer
     {   
         private readonly IDataLayer dal = DalFactory.GetDal();
 
-        private const int ROW_SIZE = 26;
         private const int TIME_COLUMN_START = 2;
         private const int TIME_COLUMN_END = 7;
 
@@ -96,80 +95,37 @@ namespace LogicLayer
         }
 
         /// <summary>
-        /// Fix the size of the column for each row in the table to be at the same size 
-        /// and return new table with string values
-        /// </summary>
-        /// <param name="table">original table</param>
-        /// <returns>new table with string values</returns>
-        private List<List<string>> GetFixdStrTable(IEnumerable<IList<object>> table)
-        {
-            List<List<string>> tableResult = new List<List<string>>();
-            foreach (var row in table)
-            {
-                // get the row in string values
-                var rowStr = (from c in row
-                            select c.ToString())
-                            .ToList();
-                
-                if (row.Count < ROW_SIZE)
-                {
-                    for (int i = 0; i <= ROW_SIZE - row.Count; i++)
-                    {
-                        // append empty string to the end of the row
-                        // just to fix the row size
-                        rowStr = rowStr.Append("")
-                            .ToList();
-                    }
-                }
-                tableResult.Add(rowStr);
-            }
-            return tableResult;
-        }
-
-        /// <summary>
         /// Read the data from the Google sheet.
         /// Descript the data and create objects from the data.
         /// </summary>
         /// <param name="studentDescriptor">Descriptor from the data</param>
         /// <returns>the last data of update of the spredsheet</returns>
-        public async Task<DateTime> ReadAsync(IStudentDescriptor studentDescriptor)
+        public async Task<string> ReadAsync(IStudentDescriptor studentDescriptor)
         {
-            DateTime result = DateTime.Now;
+            string result = studentDescriptor.Range;
             await Task.Run(() =>
             {
-                var googleSheetValue = sheetReader.ReadEntries(studentDescriptor);
+                var table = sheetReader.ReadEntries(studentDescriptor);
 
-                if (googleSheetValue == null)
-                    throw new Exception("canot parse the sheet file");
-
-
-                // get the rows that after the last data of update
-                var table = from row in googleSheetValue
-                            let tempDate = GetDate(row[0].ToString())
-                            where  tempDate > studentDescriptor.LastUpdate
-                            select row;
-
-                if (!table.Any())
-                {
-                    result = studentDescriptor.LastUpdate;
+                if (table == null)
                     return;
-                }
 
-                var tableStr = GetFixdStrTable(table);
+                // seve the last range that read in the spredsheet
+                result = $"A{table.Count + 1}:Z";
 
                 if(studentDescriptor is HebrewDescriptor)
                 {
-                    result = CreateDataFromHebrewSheet(tableStr, studentDescriptor);
+                    CreateDataFromHebrewSheet(table, studentDescriptor);
                 }
                 else if(studentDescriptor is EnglishDiscriptor)
                 {
-                    result = CreateDataFromEnglishSheet(tableStr, studentDescriptor);
+                    CreateDataFromEnglishSheet(table, studentDescriptor);
                 }
             });
             return result;
         }
 
-        private DateTime CreateDataFromHebrewSheet(List<List<string>> tableStr, IStudentDescriptor studentDescriptor)
+        private void CreateDataFromHebrewSheet(List<List<string>> tableStr, IStudentDescriptor studentDescriptor)
         {
             foreach (var row in tableStr)
             {
@@ -204,16 +160,9 @@ namespace LogicLayer
                     throw new Exception(ex.Message);
                 }
             }
-            DateTime result;
-            if(!DateTime.TryParse(tableStr.Last()[0], out result))
-            {
-                throw new Exception("Not a vaild date format in the hebrow spredsheet");
-            }
-
-            return result;
         }
 
-        private DateTime CreateDataFromEnglishSheet(List<List<string>> tableStr, IStudentDescriptor studentDescriptor)
+        private void CreateDataFromEnglishSheet(List<List<string>> tableStr, IStudentDescriptor studentDescriptor)
         {
             foreach (var row in tableStr)
             {
@@ -249,14 +198,6 @@ namespace LogicLayer
                     throw new Exception(ex.Message);
                 }
             }
-
-            DateTime result;
-            if (!DateTime.TryParse(tableStr.Last()[0], out result))
-            {
-                throw new Exception("Not a vaild date format in the english spredsheet");
-            }
-
-            return result;
         }
 
         private DateTime GetDate(string dateFormat)

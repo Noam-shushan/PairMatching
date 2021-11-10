@@ -25,11 +25,6 @@ namespace LogicLayer
         /// </summary>
         string SheetName { get; }
 
-        /// <summary>
-        /// The spreadsheet last date of update 
-        /// </summary>
-        DateTime LastUpdate { get; set; }
-
         Genders GetGender(string row);
         LearningStyles GetLearningStyle(string row);
         SkillLevels GetSkillLevel(string row);

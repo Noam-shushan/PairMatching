@@ -69,9 +69,9 @@ namespace DataLayer
         DO.Pair GetPair(int id);
         #endregion
 
-        #region LastDateOfSheets
-        void UpdateLastDateOfSheets(DO.LastDataOfSpredsheet lastDateOfSheets);
-        DO.LastDataOfSpredsheet GetLastDateOfSheets(); 
+        #region SpredsheetLastRange
+        void UpdateSheetsLastRange(DO.SpredsheetLastRange lastDateOfSheets);
+        DO.SpredsheetLastRange GetSheetsLastRang(); 
         #endregion
     }
 }

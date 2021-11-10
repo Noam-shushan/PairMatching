@@ -37,8 +37,7 @@ namespace LogicLayer
         /// The template of the email body
         /// </summary>
         private StringBuilder _template = new StringBuilder();
-
-        CreateEmailTemplate emailTemplateCreator = new CreateEmailTemplate();
+        readonly CreateEmailTemplate emailTemplateCreator = new CreateEmailTemplate();
 
         /// <summary>
         /// smtp object that send the email.

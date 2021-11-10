@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:Gui.Controlers"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:myns="clr-namespace:Gui.Controlers"
     x:Name="pairListControl"
     d:DesignHeight="500"
     d:DesignWidth="1150"
@@ -107,7 +108,7 @@
                 <Style TargetType="DataGridRow">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 </Style>
-                <local:OrdinalConverter x:Key="OrdinalConverter" />
+                <myns:OrdinalConverter x:Key="OrdinalConverter" />
                 <DataTemplate x:Key="OrdinalColumnDataTemplate">
                     <TextBlock HorizontalAlignment="Right" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Converter={StaticResource ResourceKey=OrdinalConverter}}" />
                 </DataTemplate>
@@ -164,16 +165,9 @@
                                         x:Name="cbTracksFilter"
                                         materialDesign:HintAssist.HelperTextStyle="{StaticResource MaterialDesignFloatingHintComboBox}"
                                         materialDesign:HintAssist.Hint="מסלול"
+                                        ItemsSource="{Binding ElementName=pairListControl, Path=TracksNames}"
                                         SelectionChanged="cbTracksFilter_SelectionChanged"
-                                        ToolTip="סנן לפי מסלול">
-                                        <ComboBoxItem Content="תניא" />
-                                        <ComboBoxItem Content="פרשה" />
-                                        <ComboBoxItem Content="גמרא" />
-                                        <ComboBoxItem Content="פרקי אבות" />
-                                        <ComboBoxItem Content="תפילה" />
-                                        <ComboBoxItem Content="לא משנה לי" />
-                                        <ComboBoxItem Content="הכל" />
-                                    </ComboBox>
+                                        ToolTip="סנן לפי מסלול" />
                                 </DataTemplate>
                             </GridViewColumn.HeaderTemplate>
                         </GridViewColumn>
@@ -226,13 +220,8 @@
                                                     Margin="20,10,0,20"
                                                     HorizontalAlignment="Left"
                                                     materialDesign:HintAssist.Hint="שנה מסלול"
-                                                    SelectionChanged="cbTracksEdit_SelectionChanged">
-                                                    <ComboBoxItem Content="תניא" />
-                                                    <ComboBoxItem Content="פרשה" />
-                                                    <ComboBoxItem Content="גמרא" />
-                                                    <ComboBoxItem Content="פרקי אבות" />
-                                                    <ComboBoxItem Content="תפילה" />
-                                                </ComboBox>
+                                                    ItemsSource="{Binding ElementName=pairListControl, Path=TracksNames}"
+                                                    SelectionChanged="cbTracksEdit_SelectionChanged" />
                                                 <Button
                                                     x:Name="editPairBtn"
                                                     Grid.Column="0"

@@ -145,9 +145,6 @@
     <PackageReference Include="Google.Apis.Sheets.v4">
       <Version>1.55.0.2371</Version>
     </PackageReference>
-    <PackageReference Include="System.ObjectModel">
-      <Version>4.3.0</Version>
-    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

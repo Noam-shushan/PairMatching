@@ -65,12 +65,13 @@ namespace UtilEntities
         public static Dictionary<PrefferdTracks, string> PrefferdTracksDict =
             new Dictionary<PrefferdTracks, string>()
         {
-            {PrefferdTracks.TANYA, "תניא" },
-            {PrefferdTracks.TALMUD, "גמרא" },
-            {PrefferdTracks.PARASHA, "פרשה" },
-            {PrefferdTracks.PRAYER, "תפילה" },
-            {PrefferdTracks.PIRKEY_AVOT, "פרקי אבות" },
-            {PrefferdTracks.DONT_MATTER, "לא משנה לי" }
+            [PrefferdTracks.TANYA] = "תניא",
+            [PrefferdTracks.TALMUD] = "גמרא",
+            [PrefferdTracks.PARASHA] = "פרשה",
+            [PrefferdTracks.PRAYER] = "תפילה",
+            [PrefferdTracks.PIRKEY_AVOT] = "פרקי אבות",
+            [PrefferdTracks.DONT_MATTER] = "לא משנה לי",
+            [PrefferdTracks.IndependentLearning] = "Independent learning"
         };
 
         public static Dictionary<string, PrefferdTracks> PrefferdTracksDictInverse =

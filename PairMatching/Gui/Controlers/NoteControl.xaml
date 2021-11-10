@@ -21,6 +21,7 @@
     mc:Ignorable="d">
     <DockPanel>
         <Button
+            x:Name="CloseButtenForDialog"
             Width="25"
             Height="25"
             Margin="5"

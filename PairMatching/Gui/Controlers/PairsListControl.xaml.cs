@@ -7,15 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Globalization;
 using System.ComponentModel;
+using UtilEntities;
 
 namespace Gui.Controlers
 {
@@ -25,6 +24,8 @@ namespace Gui.Controlers
     public partial class PairsListControl : UserControl, INotifyPropertyChanged
     {
         private readonly ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
+
+        public List<string> TracksNames { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -44,6 +45,7 @@ namespace Gui.Controlers
         public PairsListControl()
         {
             InitializeComponent();
+            TracksNames = new List<string>(Dictionaries.PrefferdTracksDict.Values);
         }
 
         public void SetItemSource()
@@ -194,7 +196,7 @@ namespace Gui.Controlers
 
         private void cbTracksEdit_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var track = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
+            var track = (sender as ComboBox).SelectedItem.ToString();
             _trackForEditPair = track;
         }
 
@@ -254,7 +256,12 @@ namespace Gui.Controlers
             {
                 if (selectedPair != null)
                 {
-                    await logicLayer.ActivatePairAsync(selectedPair);
+                    bool sendEmail = false;
+                    if(Messages.MessageBoxConfirmation("האם ברצונך לשלוח מייל אוטומטי למשתתפים בחברותא?"))
+                    {
+                        sendEmail = true;
+                    }
+                    await logicLayer.ActivatePairAsync(selectedPair, sendEmail);
                     
                     var mainWin = Application.Current.MainWindow as MainWindow;
 
@@ -271,7 +278,7 @@ namespace Gui.Controlers
 
         private void cbTracksFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var track = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
+            var track = (sender as ComboBox).SelectedItem.ToString();
             logicLayer.FilterPairsByTrack(track);
             lvPairs.ItemsSource = logicLayer.PairList;
         }
@@ -306,33 +313,6 @@ namespace Gui.Controlers
             {
                 Search();
             }
-        }
-    }
-
-    /// <summary>
-    /// Converter class for convert from ListViewItem to number of row 
-    /// atending to display row number in the list that displays
-    /// </summary>
-    public class OrdinalConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            int ordinal = 0;
-
-            if (value is ListViewItem lvi)
-            {
-                ListView lv = ItemsControl.ItemsControlFromItemContainer(lvi) as ListView;
-                ordinal = lv.ItemContainerGenerator.IndexFromContainer(lvi) + 1;
-            }
-
-            return ordinal;
-
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            // This converter does not provide conversion back from ordinal position to list view item
-            throw new InvalidOperationException();
         }
     }
 }

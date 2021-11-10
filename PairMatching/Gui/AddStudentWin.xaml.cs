@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using BO;
+using UtilEntities;
 
 namespace Gui
 {
@@ -34,6 +35,7 @@ namespace Gui
         {
             InitializeComponent();
             cbCountry.ItemsSource = GetCountryList();
+            cbTrack.ItemsSource = Dictionaries.PrefferdTracksDict.Values;
             DataContext = NewStudent;
         }
 
@@ -67,7 +69,8 @@ namespace Gui
             }
             try
             {
-                logicLayer.AddStudent(NewStudent, cbTrack.Text);
+                NewStudent.PrefferdTracks.Add(Dictionaries.PrefferdTracksDictInverse[cbTrack.Text]);
+                logicLayer.AddStudent(NewStudent);
                 NewStudent = new Student();
                 
                 var mainWin = Application.Current.MainWindow as MainWindow;

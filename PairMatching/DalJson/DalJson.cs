@@ -218,15 +218,15 @@ namespace DalJson
         #endregion
 
         #region Last update of the data tables
-        public void UpdateLastDateOfSheets(LastDataOfSpredsheet lastDateOfSheets)
+        public void UpdateSheetsLastRange(SpredsheetLastRange lastDateOfSheets)
         {
             JsonTools.InsertOne(lastDateOfSheets, lastDateOfSheetsPath);
         }
 
-        public LastDataOfSpredsheet GetLastDateOfSheets()
+        public SpredsheetLastRange GetSheetsLastRang()
         {
-            var result = JsonTools.LoadOne<LastDataOfSpredsheet>(lastDateOfSheetsPath);
-            return result != null ? result : new LastDataOfSpredsheet();
+            var result = JsonTools.LoadOne<SpredsheetLastRange>(lastDateOfSheetsPath);
+            return result ?? new SpredsheetLastRange();
         }
         #endregion
     }

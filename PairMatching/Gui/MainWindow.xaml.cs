@@ -115,12 +115,14 @@ namespace Gui
         }
 
         #region Update data
+        static bool isUpdate = false;
         private async Task Initialize()
         {
+            bool isNeedToUpdate = false;
             IsLoadedData = true;
             try
             {
-                await logicLayer.ReadDataFromSpredsheetAsync();
+                isNeedToUpdate = await logicLayer.ReadDataFromSpredsheetAsync();
             }
             catch (Exception ex2)
             {
@@ -128,9 +130,14 @@ namespace Gui
             }
             try
             {
+                if (!isNeedToUpdate && isUpdate)
+                {
+                    IsLoadedData = false;
+                    return;
+                }
 
                 await logicLayer.UpdateAsync();
-
+                isUpdate = true;
                 if (logicLayer.StudentWithUnvalidEmail.Count > 0)
                 {
                     var result = string.Join(",\n", 
@@ -184,7 +191,7 @@ namespace Gui
         {
             IsStudentsUi = true;
             studentControl.DataContext = student;
-            studentControl.SetHeightOfOpenQA(height:270, width: 760);
+            studentControl.SetHeightOfOpenQA(height:460, width: 760);
             studentControl.Visibility = Visibility.Visible;
         }
 

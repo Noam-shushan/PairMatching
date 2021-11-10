@@ -83,14 +83,7 @@
             Grid.Row="5"
             Grid.Column="1"
             Margin="0,5"
-            materialDesign:HintAssist.Hint="מסלול">
-            <ComboBoxItem Content="תניא" />
-            <ComboBoxItem Content="פרשה" />
-            <ComboBoxItem Content="גמרא" />
-            <ComboBoxItem Content="פרקי אבות" />
-            <ComboBoxItem Content="תפילה" />
-            <ComboBoxItem Content="לא משנה לי" />
-        </ComboBox>
+            materialDesign:HintAssist.Hint="מסלול" />
 
         <Button
             x:Name="AddBtn"

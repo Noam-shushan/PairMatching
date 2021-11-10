@@ -51,7 +51,7 @@
     <Compile Include="Counters.cs" />
     <Compile Include="DataSource.cs" />
     <Compile Include="DO\DalExceptions.cs" />
-    <Compile Include="DO\LastDataOfSpredsheet.cs" />
+    <Compile Include="DO\SpredsheetLastRange.cs" />
     <Compile Include="DO\Pair.cs" />
     <Compile Include="DO\OpenQuestion.cs" />
     <Compile Include="DO\Student.cs" />
@@ -60,13 +60,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\UtilEntities\UtilEntities.csproj">
       <Project>{b12f6a06-b5c2-495c-8901-83ac9724dfa2}</Project>
       <Name>UtilEntities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

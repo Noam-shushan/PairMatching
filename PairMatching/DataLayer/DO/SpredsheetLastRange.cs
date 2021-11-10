@@ -3,14 +3,18 @@ using System;
 
 namespace DO
 {
-    public class LastDataOfSpredsheet : IEquatable<LastDataOfSpredsheet>
+    public class SpredsheetLastRange : IEquatable<SpredsheetLastRange>
     {
         [BsonId]
         public int Id { get; } = 2;
-        public DateTime HebrewSheets { get; set; }
-        public DateTime EnglishSheets { get; set; }
 
-        public bool Equals(LastDataOfSpredsheet other)
+        private const string DEFULT_RANGE = "A2:Z";
+
+        public string HebrewSheets { get; set; } = DEFULT_RANGE;
+        
+        public string EnglishSheets { get; set; } = DEFULT_RANGE;
+
+        public bool Equals(SpredsheetLastRange other)
         {
             //Check whether the compared object is null.
             if (ReferenceEquals(other, null)) 
@@ -24,7 +28,7 @@ namespace DO
                 && EnglishSheets == other.EnglishSheets;
         }
 
-        public override bool Equals(object obj) => Equals(obj as LastDataOfSpredsheet);
+        public override bool Equals(object obj) => Equals(obj as SpredsheetLastRange);
 
         public override int GetHashCode() => (HebrewSheets, EnglishSheets).GetHashCode();
     }

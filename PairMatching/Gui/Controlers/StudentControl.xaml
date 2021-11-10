@@ -31,7 +31,7 @@
         </Style>
 
         <Style x:Key="myStackPanelStyle" TargetType="StackPanel">
-            <Setter Property="Margin" Value="0,8" />
+            <Setter Property="Margin" Value="10" />
             <Setter Property="Orientation" Value="Horizontal" />
         </Style>
 
@@ -119,10 +119,7 @@
             </Style.Triggers>
         </Style>
 
-        <Style
-            x:Key="hideSuggestions"
-            BasedOn="{StaticResource MaterialDesignExpander}"
-            TargetType="Expander">
+        <Style x:Key="hideSuggestions" TargetType="StackPanel">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsCompereWin}" Value="True">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -139,9 +136,32 @@
 
             <DockPanel>
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    <TextBlock FontSize="20" Text="{Binding Path=Name}" />
+
+                    <!--#region Contact info-->
+                    <materialDesign:PopupBox Margin="10,0,0,0" ToolTip="פרטי קשר">
+                        <materialDesign:PopupBox.ToggleContent>
+                            <materialDesign:PackIcon
+                                Width="25"
+                                Height="25"
+                                Background="Ivory"
+                                Kind="CardAccountPhone" />
+                        </materialDesign:PopupBox.ToggleContent>
+                        <StackPanel Margin="10">
+                            <StackPanel Style="{StaticResource myStackPanelStyle}">
+                                <TextBlock Style="{StaticResource headersDetails}" Text="טלפון:  " />
+                                <TextBlock Text="{Binding Path=PhoneNumber}" />
+                            </StackPanel>
+                            <StackPanel Margin="0,8">
+                                <TextBlock Style="{StaticResource headersDetails}" Text="אימייל:  " />
+                                <TextBlock Text="{Binding Path=Email}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </materialDesign:PopupBox>
+                    <!--#endregion-->
 
                     <!--#region History-->
-                    <materialDesign:PopupBox Margin="0,0,10,0" ToolTip="היסטוריה">
+                    <materialDesign:PopupBox Margin="10,0,0,0" ToolTip="היסטוריה">
                         <materialDesign:PopupBox.ToggleContent>
                             <materialDesign:PackIcon
                                 Width="25"
@@ -242,173 +262,164 @@
                         <Button
                             Width="25"
                             Height="25"
-                            Margin="0,0,10,0"
+                            Margin="10,0,00,0"
                             Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
                             Style="{StaticResource MaterialDesignIconButton}"
-                            ToolTip="ערוך תלמיד זה">
+                            ToolTip="הוסף הערות למשתתף זה">
                             <materialDesign:PackIcon Kind="Pencil" />
                         </Button>
                     </materialDesign:DialogHost>
                     <!--#endregion-->
 
-                    <TextBlock FontSize="20" Text="{Binding Path=Name}" />
-
                 </StackPanel>
 
                 <!--#region Details-->
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <StackPanel Margin="0,0,10,0">
-                            <StackPanel Style="{StaticResource hideStackPanelForNotMathc}">
-                                <TextBlock Style="{StaticResource headersDetails}" Text="הותאם ל:  " />
-                                <TextBlock Text="{Binding Path=MatchToShow}" />
-                            </StackPanel>
-                            <StackPanel Style="{StaticResource myStackPanelStyle}">
-                                <TextBlock Style="{StaticResource headersDetails}" Text="טלפון:  " />
-                                <TextBlock Text="{Binding Path=PhoneNumber}" />
-                            </StackPanel>
-                            <StackPanel Margin="0,8">
-                                <TextBlock Style="{StaticResource headersDetails}" Text="אימייל:  " />
-                                <TextBlock Text="{Binding Path=Email}" />
-                            </StackPanel>
-                            <StackPanel Style="{StaticResource myStackPanelStyle}">
-                                <TextBlock Style="{StaticResource headersDetails}" Text="ארץ: " />
-                                <TextBlock Text="{Binding Path=Country}" />
-                            </StackPanel>
-                            <StackPanel Style="{StaticResource stackPanelStyleForSimpelStudent}">
-                                <TextBlock Style="{StaticResource headersDetails}" Text="מגדר:  " />
-                                <TextBlock Text="{Binding Path=GenderShow}" />
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel>
-                            <StackPanel Style="{StaticResource myStackPanelStyle}">
-                                <TextBlock Style="{StaticResource headersDetails}" Text="תחום לימוד מועדף:  " />
-                                <TextBlock Text="{Binding Path=PrefferdTracksShow}" />
-                            </StackPanel>
-                            <StackPanel Style="{StaticResource stackPanelStyleForSimpelStudent}">
-                                <TextBlock Style="{StaticResource headersDetails}" Text="מגדר מועדף:  " />
-                                <TextBlock Text="{Binding Path=PrefferdGenderShow}" />
-                            </StackPanel>
-                            <StackPanel Style="{StaticResource hideStackPanelsForStudentFromWorld}">
-                                <TextBlock Style="{StaticResource headersDetails}" Text="רמת אנגלית:  " />
-                                <TextBlock Text="{Binding Path=EnglishLevelShow}" />
-                            </StackPanel>
-                            <StackPanel Style="{StaticResource hideStackPanelsForStudentFromIsrael}">
-                                <TextBlock Style="{StaticResource headersDetails}" Text="רמת אנגלית רצויה:  " />
-                                <TextBlock Text="{Binding Path=DesiredEnglishLevelShow}" />
-                            </StackPanel>
-                            <StackPanel Style="{StaticResource hideStackPanelsForStudentFromIsrael}">
-                                <TextBlock Style="{StaticResource headersDetails}" Text="רמת לימוד:  " />
-                                <TextBlock Text="{Binding Path=SkillLevelShow}" />
-                            </StackPanel>
-                            <StackPanel Style="{StaticResource hideStackPanelsForStudentFromWorld}">
-                                <TextBlock Style="{StaticResource headersDetails}" Text="רמת לימוד רצויה:  " />
-                                <TextBlock Text="{Binding Path=DesiredSkillLevelShow}" />
-                            </StackPanel>
-                        </StackPanel>
+                <WrapPanel MaxWidth="600">
+                    <StackPanel Style="{StaticResource hideStackPanelForNotMathc}">
+                        <TextBlock Style="{StaticResource headersDetails}" Text="הותאם ל:  " />
+                        <TextBlock Text="{Binding Path=MatchToShow}" />
                     </StackPanel>
-                    <StackPanel>
-                        <StackPanel Style="{StaticResource stackPanelStyleForSimpelStudent}">
-                            <TextBlock Style="{StaticResource headersDetails}" Text="סגנון לימוד:  " />
-                            <TextBlock Text="{Binding Path=LearningStyleShow}" />
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource hideLeng}">
-                            <TextBlock Style="{StaticResource headersDetails}" Text="שפות נוספות:  " />
-                            <TextBlock Text="{Binding Path=LanguagesShow}" />
-                        </StackPanel>
+                    <StackPanel Style="{StaticResource myStackPanelStyle}">
+                        <TextBlock Style="{StaticResource headersDetails}" Text="ארץ: " />
+                        <TextBlock Text="{Binding Path=Country}" />
                     </StackPanel>
-                </StackPanel>
+                    <StackPanel Style="{StaticResource stackPanelStyleForSimpelStudent}">
+                        <TextBlock Style="{StaticResource headersDetails}" Text="מגדר:  " />
+                        <TextBlock Text="{Binding Path=GenderShow}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource myStackPanelStyle}">
+                        <TextBlock Style="{StaticResource headersDetails}" Text="תחום לימוד מועדף:  " />
+                        <TextBlock Text="{Binding Path=PrefferdTracksShow}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource stackPanelStyleForSimpelStudent}">
+                        <TextBlock Style="{StaticResource headersDetails}" Text="מגדר מועדף:  " />
+                        <TextBlock Text="{Binding Path=PrefferdGenderShow}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource hideStackPanelsForStudentFromWorld}">
+                        <TextBlock Style="{StaticResource headersDetails}" Text="רמת אנגלית:  " />
+                        <TextBlock Text="{Binding Path=EnglishLevelShow}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource hideStackPanelsForStudentFromIsrael}">
+                        <TextBlock Style="{StaticResource headersDetails}" Text="רמת אנגלית רצויה:  " />
+                        <TextBlock Text="{Binding Path=DesiredEnglishLevelShow}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource hideStackPanelsForStudentFromIsrael}">
+                        <TextBlock Style="{StaticResource headersDetails}" Text="רמת לימוד:  " />
+                        <TextBlock Text="{Binding Path=SkillLevelShow}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource hideStackPanelsForStudentFromWorld}">
+                        <TextBlock Style="{StaticResource headersDetails}" Text="רמת לימוד רצויה:  " />
+                        <TextBlock Text="{Binding Path=DesiredSkillLevelShow}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource stackPanelStyleForSimpelStudent}">
+                        <TextBlock Style="{StaticResource headersDetails}" Text="סגנון לימוד:  " />
+                        <TextBlock Text="{Binding Path=LearningStyleShow}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource hideLeng}">
+                        <TextBlock Style="{StaticResource headersDetails}" Text="שפות נוספות:  " />
+                        <TextBlock Text="{Binding Path=LanguagesShow}" />
+                    </StackPanel>
+                </WrapPanel>
                 <!--#endregion-->
 
             </DockPanel>
 
             <!--#region Matching Suggestions-->
-            <Expander
-                Width="300"
-                Height="300"
-                Margin="20,0,0,0"
-                Style="{StaticResource hideSuggestions}">
-                <Expander.Header>
-                    <TextBlock
-                        FontSize="18"
-                        FontWeight="DemiBold"
-                        Text="הצעות להתאמה" />
-                </Expander.Header>
-                <GroupBox>
-                    <StackPanel>
-                        <StackPanel Margin="0,0,0,20">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Button
-                                    x:Name="compFirstMatchBtn"
-                                    HorizontalAlignment="Left"
-                                    Click="compFirstMatchBtn_Click"
-                                    Content="השווה"
-                                    Style="{StaticResource MaterialDesignFlatButton}" />
-                                <Button
-                                    x:Name="clearCBFirstMatchBtn"
-                                    Grid.Column="2"
-                                    HorizontalAlignment="Right"
-                                    Click="clearCBFirstMatchBtn_Click"
-                                    Content="נקה"
-                                    Style="{StaticResource MaterialDesignFlatButton}" />
-                                <Button
-                                    x:Name="matchFirstBtn"
-                                    Grid.Column="1"
-                                    Click="matchFirstBtn_Click"
-                                    Content="התאם"
-                                    Style="{StaticResource MaterialDesignFlatButton}" />
-                            </Grid>
-                            <ComboBox
-                                x:Name="cbFirstMatching"
-                                Width="256"
-                                Margin="0,0,0,5"
-                                materialDesign:HintAssist.Hint="התאמה ראשונה"
-                                ItemsSource="{Binding Path=FirstSuggestStudents}"
-                                Style="{StaticResource MaterialDesignFilledComboBox}" />
-                        </StackPanel>
-                        <StackPanel>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Button
-                                    x:Name="compSecondeMatchBtn"
-                                    HorizontalAlignment="Left"
-                                    Click="compSecondeMatchBtn_Click"
-                                    Content="השווה"
-                                    Style="{StaticResource MaterialDesignFlatButton}" />
-                                <Button
-                                    x:Name="matchSecondeBtn"
-                                    Grid.Column="1"
-                                    Click="matchSecondeBtn_Click"
-                                    Content="התאם"
-                                    Style="{StaticResource MaterialDesignFlatButton}" />
-                                <Button
-                                    x:Name="clearCBSecondeMatchBtn"
-                                    Grid.Column="2"
-                                    HorizontalAlignment="Right"
-                                    Click="clearCBSecondeMatchBtn_Click"
-                                    Content="נקה"
-                                    Style="{StaticResource MaterialDesignFlatButton}" />
-                            </Grid>
-                            <ComboBox
-                                x:Name="cbSecondeMatching"
-                                Width="256"
-                                Margin="0,0,0,5"
-                                materialDesign:HintAssist.Hint="התאמה שנייה"
-                                ItemsSource="{Binding Path=SecondeSuggestStudents}"
-                                Style="{StaticResource MaterialDesignFilledComboBox}" />
-                        </StackPanel>
-                    </StackPanel>
-                </GroupBox>
-            </Expander>
+            <StackPanel Margin="35,30,0,0" Style="{StaticResource hideSuggestions}">
+                <materialDesign:DialogHost CloseOnClickAway="True">
+                    <materialDesign:DialogHost.DialogContent>
+                        <GroupBox>
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,20">
+                                    <Button
+                                        x:Name="CloseButtenForDialog"
+                                        Width="25"
+                                        Height="25"
+                                        Margin="5"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                        Style="{StaticResource MaterialDesignIconButton}">
+                                        <materialDesign:PackIcon Kind="Close" />
+                                    </Button>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Button
+                                            x:Name="compFirstMatchBtn"
+                                            HorizontalAlignment="Left"
+                                            Click="compFirstMatchBtn_Click"
+                                            Content="השווה"
+                                            Style="{StaticResource MaterialDesignFlatButton}" />
+                                        <Button
+                                            x:Name="clearCBFirstMatchBtn"
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Right"
+                                            Click="clearCBFirstMatchBtn_Click"
+                                            Content="נקה"
+                                            Style="{StaticResource MaterialDesignFlatButton}" />
+                                        <Button
+                                            x:Name="matchFirstBtn"
+                                            Grid.Column="1"
+                                            Click="matchFirstBtn_Click"
+                                            Content="התאם"
+                                            Style="{StaticResource MaterialDesignFlatButton}" />
+                                    </Grid>
+                                    <ComboBox
+                                        x:Name="cbFirstMatching"
+                                        Width="256"
+                                        Margin="0,0,0,5"
+                                        materialDesign:HintAssist.Hint="התאמה ראשונה"
+                                        ItemsSource="{Binding Path=FirstSuggestStudents}"
+                                        Style="{StaticResource MaterialDesignFilledComboBox}" />
+                                </StackPanel>
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Button
+                                            x:Name="compSecondeMatchBtn"
+                                            HorizontalAlignment="Left"
+                                            Click="compSecondeMatchBtn_Click"
+                                            Content="השווה"
+                                            Style="{StaticResource MaterialDesignFlatButton}" />
+                                        <Button
+                                            x:Name="matchSecondeBtn"
+                                            Grid.Column="1"
+                                            Click="matchSecondeBtn_Click"
+                                            Content="התאם"
+                                            Style="{StaticResource MaterialDesignFlatButton}" />
+                                        <Button
+                                            x:Name="clearCBSecondeMatchBtn"
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Right"
+                                            Click="clearCBSecondeMatchBtn_Click"
+                                            Content="נקה"
+                                            Style="{StaticResource MaterialDesignFlatButton}" />
+                                    </Grid>
+                                    <ComboBox
+                                        x:Name="cbSecondeMatching"
+                                        Width="256"
+                                        Margin="0,0,0,5"
+                                        materialDesign:HintAssist.Hint="התאמה שנייה"
+                                        ItemsSource="{Binding Path=SecondeSuggestStudents}"
+                                        Style="{StaticResource MaterialDesignFilledComboBox}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+                    </materialDesign:DialogHost.DialogContent>
+                    <Button
+                        Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                        Content="הצעות להתאמה"
+                        Style="{StaticResource MaterialDesignOutlinedButton}" />
+                </materialDesign:DialogHost>
+            </StackPanel>
             <!--#endregion-->
 
         </StackPanel>
@@ -416,8 +427,9 @@
         <!--#region Open QA-->
         <ListBox
             x:Name="lbOpneQA"
-            Width="760"
-            Height="270"
+            Width="600"
+            Height="430"
+            Margin="0,5,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             ScrollViewer.CanContentScroll="False">
@@ -444,15 +456,6 @@
                 </Expander.Header>
                 <StackPanel Style="{StaticResource contentOfOpenQ}">
                     <TextBlock Text="{Binding DesiredLearningTimeShow}" />
-                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
-                        <materialDesign:PopupBox.ToggleContent>
-                            <materialDesign:PackIcon Kind="Eye" />
-                        </materialDesign:PopupBox.ToggleContent>
-                        <StackPanel Margin="20">
-                            <TextBlock Text="{Binding DesiredLearningTimeShow}" />
-                        </StackPanel>
-                    </materialDesign:PopupBox>
-
                 </StackPanel>
             </Expander>
             <Expander Style="{StaticResource expanderStyle}">
@@ -460,14 +463,6 @@
                     <TextBlock Style="{StaticResource headers}" Text="{Binding OpenQuestionsHeaders[Personal information]}" />
                 </Expander.Header>
                 <StackPanel Style="{StaticResource contentOfOpenQ}">
-                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
-                        <materialDesign:PopupBox.ToggleContent>
-                            <materialDesign:PackIcon Kind="Eye" />
-                        </materialDesign:PopupBox.ToggleContent>
-                        <StackPanel Margin="20">
-                            <TextBlock Text="{Binding OpenQuestionsDict[Personal information]}" />
-                        </StackPanel>
-                    </materialDesign:PopupBox>
                     <TextBlock Text="{Binding OpenQuestionsDict[Personal information]}" />
                 </StackPanel>
             </Expander>
@@ -476,14 +471,6 @@
                     <TextBlock Style="{StaticResource headers}" Text="{Binding OpenQuestionsHeaders[Personality trates]}" />
                 </Expander.Header>
                 <StackPanel Style="{StaticResource contentOfOpenQ}">
-                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
-                        <materialDesign:PopupBox.ToggleContent>
-                            <materialDesign:PackIcon Kind="Eye" />
-                        </materialDesign:PopupBox.ToggleContent>
-                        <StackPanel Margin="20">
-                            <TextBlock Text="{Binding OpenQuestionsDict[Personality trates]}" />
-                        </StackPanel>
-                    </materialDesign:PopupBox>
                     <TextBlock Text="{Binding OpenQuestionsDict[Personality trates]}" />
                 </StackPanel>
             </Expander>
@@ -492,14 +479,6 @@
                     <TextBlock Style="{StaticResource headers}" Text="{Binding OpenQuestionsHeaders[What are your hopes and expectations from this program]}" />
                 </Expander.Header>
                 <StackPanel Style="{StaticResource contentOfOpenQ}">
-                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
-                        <materialDesign:PopupBox.ToggleContent>
-                            <materialDesign:PackIcon Kind="Eye" />
-                        </materialDesign:PopupBox.ToggleContent>
-                        <StackPanel Margin="20">
-                            <TextBlock Text="{Binding OpenQuestionsDict[What are your hopes and expectations from this program]}" />
-                        </StackPanel>
-                    </materialDesign:PopupBox>
                     <TextBlock Text="{Binding OpenQuestionsDict[What are your hopes and expectations from this program]}" />
                 </StackPanel>
             </Expander>
@@ -508,14 +487,6 @@
                     <TextBlock Style="{StaticResource headers}" Text="{Binding OpenQuestionsHeaders[Additional information]}" />
                 </Expander.Header>
                 <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
-                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
-                        <materialDesign:PopupBox.ToggleContent>
-                            <materialDesign:PackIcon Kind="Eye" />
-                        </materialDesign:PopupBox.ToggleContent>
-                        <StackPanel Margin="20">
-                            <TextBlock Text="{Binding OpenQuestionsDict[Additional information]}" />
-                        </StackPanel>
-                    </materialDesign:PopupBox>
                     <TextBlock Text="{Binding OpenQuestionsDict[Additional information]}" />
                 </StackPanel>
             </Expander>
@@ -524,14 +495,6 @@
                     <TextBlock Style="{StaticResource headers}" Text="{Binding OpenQuestionsHeaders[Who introduced you to this program]}" />
                 </Expander.Header>
                 <StackPanel Style="{StaticResource contentOfOpenQ}">
-                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
-                        <materialDesign:PopupBox.ToggleContent>
-                            <materialDesign:PackIcon Kind="Eye" />
-                        </materialDesign:PopupBox.ToggleContent>
-                        <StackPanel Margin="20">
-                            <TextBlock Text="{Binding OpenQuestionsDict[Who introduced you to this program]}" />
-                        </StackPanel>
-                    </materialDesign:PopupBox>
                     <TextBlock Text="{Binding OpenQuestionsDict[Who introduced you to this program]}" />
                 </StackPanel>
             </Expander>
@@ -540,14 +503,6 @@
                     <TextBlock Style="{StaticResource headers}" Text="{Binding OpenQuestionsHeaders[Anything else you would like to tell us]}" />
                 </Expander.Header>
                 <StackPanel Style="{StaticResource contentOfOpenQ}">
-                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
-                        <materialDesign:PopupBox.ToggleContent>
-                            <materialDesign:PackIcon Kind="Eye" />
-                        </materialDesign:PopupBox.ToggleContent>
-                        <StackPanel Margin="20">
-                            <TextBlock Text="{Binding OpenQuestionsDict[Anything else you would like to tell us]}" />
-                        </StackPanel>
-                    </materialDesign:PopupBox>
                     <TextBlock Text="{Binding OpenQuestionsDict[Anything else you would like to tell us]}" />
                 </StackPanel>
             </Expander>
@@ -557,14 +512,6 @@
                 </Expander.Header>
                 <StackPanel Style="{StaticResource contentOfOpenQ}">
                     <TextBlock Text="{Binding OpenQuestionsDict[Country and City of residence]}" />
-                    <materialDesign:PopupBox PlacementMode="TopAndAlignCentres">
-                        <materialDesign:PopupBox.ToggleContent>
-                            <materialDesign:PackIcon Kind="Eye" />
-                        </materialDesign:PopupBox.ToggleContent>
-                        <StackPanel Margin="20">
-                            <TextBlock Text="{Binding OpenQuestionsDict[Country and City of residence]}" />
-                        </StackPanel>
-                    </materialDesign:PopupBox>
                 </StackPanel>
             </Expander>
         </ListBox>

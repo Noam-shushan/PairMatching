@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Configuration;
 using System.Threading.Tasks;
-using MongoDB.Driver.Builders;
 
 namespace DalMongo
 {
@@ -13,7 +12,7 @@ namespace DalMongo
     /// </summary>
     public class MongoCrud
     {
-        private IMongoDatabase db;
+        private readonly IMongoDatabase db;
 
         /// <summary>
         /// Constroctor to MongoCrud.<br/>

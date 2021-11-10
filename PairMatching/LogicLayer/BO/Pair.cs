@@ -20,10 +20,6 @@ namespace BO
             var res = pairDo.CopyPropertiesToNew(typeof(Pair)) as Pair;
             res.StudentFromIsrael = createSimpleStudentFunc(pairDo.StudentFromIsraelId);
             res.StudentFromWorld = createSimpleStudentFunc(pairDo.StudentFromWorldId);
-            //foreach(var n in pairDo.Notes)
-            //{
-            //    res.Notes.Add(n.CopyPropertiesToNew(typeof(Note)) as Note);
-            //}
             return res;
         }
 

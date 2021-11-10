@@ -21,21 +21,16 @@ namespace LogicLayer
         /// <summary>
         /// The spreadsheet range of rows and colunms 
         /// </summary>
-        public string Range => "A2:Z";
+        public string Range { get; }
 
         /// <summary>
         /// The spreadsheet name
         /// </summary>
         public string SheetName => "Shalhevet Regestration form תשפ\"א(תגובות)";
 
-        /// <summary>
-        /// The spreadsheet last date of update 
-        /// </summary>
-        public DateTime LastUpdate { get; set; }
-
-        public EnglishDiscriptor(LastDataOfSpredsheet lastDateOfUpdate)
+        public EnglishDiscriptor(SpredsheetLastRange lastRange)
         {
-            LastUpdate = lastDateOfUpdate.EnglishSheets;
+            Range = lastRange.EnglishSheets;
             SpreadsheetId = ConfigurationManager.AppSettings["english spreadsheet id"];
         }
 
@@ -113,6 +108,8 @@ namespace LogicLayer
                     return PrefferdTracks.PIRKEY_AVOT;
                 case "No preference":
                     return PrefferdTracks.DONT_MATTER;
+                case "independent learning subject":
+                    return PrefferdTracks.IndependentLearning;
             }
             return PrefferdTracks.DONT_MATTER;
         }

@@ -34,7 +34,7 @@ namespace DalMongo
         #region Counters
         private readonly Counters _counters = Counters.Instance;
 
-        private LastDataOfSpredsheet _lastDateOfSheets = new LastDataOfSpredsheet();
+        private SpredsheetLastRange _lastRangeOfSheets = new SpredsheetLastRange();
 
         #endregion
 
@@ -219,11 +219,11 @@ namespace DalMongo
         #endregion
 
         #region Last update of the data tables
-        public void UpdateLastDateOfSheets(LastDataOfSpredsheet lastDateOfSheets)
+        public void UpdateSheetsLastRange(SpredsheetLastRange lastDateOfSheets)
         {
             try
             {
-                _lastDateOfSheets = lastDateOfSheets;
+                _lastRangeOfSheets = lastDateOfSheets;
                 db
                     .UpsertRecord(countersAndLastDataOfSpredsheetTable, lastDateOfSheets.Id, lastDateOfSheets);
             }
@@ -233,20 +233,18 @@ namespace DalMongo
             }
         }
 
-        public LastDataOfSpredsheet GetLastDateOfSheets()
+        public SpredsheetLastRange GetSheetsLastRang()
         {
             try
             {
-                var lastDate = db
-                    .LoadeRecordById<LastDataOfSpredsheet>(countersAndLastDataOfSpredsheetTable, _lastDateOfSheets.Id);
-                if(lastDate is null)
+                var lastRange = db
+                    .LoadeRecordById<SpredsheetLastRange>(countersAndLastDataOfSpredsheetTable, _lastRangeOfSheets.Id);
+                if(lastRange is null)
                 {
-                    return _lastDateOfSheets;
+                    return _lastRangeOfSheets;
                 }
-                lastDate.EnglishSheets = lastDate.EnglishSheets.ToLocalTime();
-                lastDate.HebrewSheets = lastDate.HebrewSheets.ToLocalTime();
-                _lastDateOfSheets = lastDate;
-                return lastDate;
+                _lastRangeOfSheets = lastRange;
+                return lastRange;
             }
             catch (Exception ex)
             {
