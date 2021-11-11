@@ -97,7 +97,7 @@ namespace Gui.Controlers
                 {
                     var first = logicLayer.GetStudent(suggestStudent.SuggestStudentId);
                     int id = await logicLayer.MatchAsync(selectedStudent, first);
-                    
+
                     var mainWin = Application.Current.MainWindow as MainWindow;
                     mainWin.RefreshMyStudentsView();
                     mainWin.RefreshMyPairView();
@@ -116,4 +116,3 @@ namespace Gui.Controlers
         }
     }
 }
-

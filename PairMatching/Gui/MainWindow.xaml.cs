@@ -10,6 +10,7 @@ using BO;
 using System.Globalization;
 using System.ComponentModel;
 using Gui.Controlers;
+using Gui.ViewModels;
 
 namespace Gui
 {
@@ -18,7 +19,9 @@ namespace Gui
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private readonly ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
+        private ILogicLayer logicLayer;
+
+        private StudnetsListViewModel studnetsList;
 
         #region Dependency Properties
         public event PropertyChangedEventHandler PropertyChanged;
@@ -114,6 +117,12 @@ namespace Gui
             InitializeComponent();
         }
 
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            logicLayer = LogicFactory.GetLogicFactory();
+            await Initialize();
+        }
+
         #region Update data
         static bool isUpdate = false;
         private async Task Initialize()
@@ -150,12 +159,6 @@ namespace Gui
                 Messages.MessageBoxError(ex.Message);
             }
             IsLoadedData = false;
-        }
-
-        
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            await Initialize();
         }
 
         private async void updateBtn_Click(object sender, RoutedEventArgs e)

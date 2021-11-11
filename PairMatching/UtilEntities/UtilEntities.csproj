@@ -41,11 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CopyTools.cs" />
     <Compile Include="Dictionaries.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="LearningTime.cs" />
     <Compile Include="Note.cs" />
+    <Compile Include="OpenQuestion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StudentMatchingHistory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -156,7 +156,7 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                         <GridViewColumn
-                            Width="100"
+                            Width="140"
                             DisplayMemberBinding="{Binding Path=PrefferdTracksShow}"
                             HeaderContainerStyle="{StaticResource HeadersStyle}">
                             <GridViewColumn.HeaderTemplate>

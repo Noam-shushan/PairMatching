@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using UtilEntities;
 
-namespace DO
+namespace UtilEntities
 {
     public class StudentMatchingHistory
     {
@@ -16,3 +15,4 @@ namespace DO
         public bool IsActive { get; set; }
     }
 }
+

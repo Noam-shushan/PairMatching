@@ -32,9 +32,9 @@ namespace Gui.Controlers
         /// </summary>
         public bool IsSimpleView
         {
-            get => _isSimpleView; 
+            get => _isSimpleView;
             set
-            { 
+            {
                 _isSimpleView = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsSimpleView"));
             }
@@ -86,7 +86,7 @@ namespace Gui.Controlers
                 if (Messages.MessageBoxConfirmation($"בטוח שברצונך להתאים את {first.Name} ל- {second.Name}?"))
                 {
                     int id = await logicLayer.MatchAsync(first, second);
-                    
+
                     var mainWin = Application.Current.MainWindow as MainWindow;
                     mainWin.RefreshMyStudentsView();
                     mainWin.RefreshMyPairView();
@@ -246,7 +246,7 @@ namespace Gui.Controlers
 
         private void filterBtn_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
     }
 }

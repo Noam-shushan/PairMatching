@@ -602,9 +602,9 @@ namespace LogicLayer
             }
         }
 
-        private DO.StudentMatchingHistory GetNewMatchingHistory(BO.Student secondeStudent, PrefferdTracks track)
+        private StudentMatchingHistory GetNewMatchingHistory(BO.Student secondeStudent, PrefferdTracks track)
         {
-            var matchHistoryFirst = new DO.StudentMatchingHistory
+            var matchHistoryFirst = new StudentMatchingHistory
             {
                 DateOfMatch = DateTime.Now,
                 IsUnMatch = false,

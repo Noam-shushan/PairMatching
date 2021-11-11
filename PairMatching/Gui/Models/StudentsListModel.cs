@@ -8,15 +8,14 @@ using LogicLayer;
 
 namespace Gui.Models
 {
-    public class StudentsModel
+    public class StudentsListModel
     {
-        private readonly ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
+        // private readonly ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
 
         public List<Student> Students { get; set; }
 
-        public StudentsModel()
+        public StudentsListModel()
         {
-            Students = new List<Student>(logicLayer.StudentList);
         }
     }
 }

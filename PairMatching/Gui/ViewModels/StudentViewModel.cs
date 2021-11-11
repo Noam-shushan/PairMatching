@@ -1,65 +1,88 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media;
-using DO;
-using LogicLayer;
+using BO;
 using UtilEntities;
 
-namespace BO
+namespace Gui.ViewModels
 {
-    public class Student : IEquatable<Student>
+    public class StudentViewModel : INotifyPropertyChanged
     {
+        private Student _student;
+
+        public StudentViewModel(Student student)
+        {
+            _student = student;
+        }
+
         /// <summary>
         /// the id number of the student
         /// </summary>
-        public int Id { get; set; }
+        public int Id { get => _student.Id; }
 
-        /// <summary>
-        /// is this student as deleted from the database
-        /// </summary>
-        public bool IsDeleted { get; set; }
-
-        public bool IsSimpleStudent { get; set; } = false;
+        public bool IsSimpleStudent { get => _student.IsSimpleStudent; }
 
         /// <summary>
         /// the name of the student
         /// </summary>
-        public string Name { get; set; }
+        public string Name 
+        { 
+            get => _student.Name;
+        }
 
         /// <summary>
         /// the country of the student
         /// </summary>
-        public string Country { get; set; }
+        public string Country 
+        { 
+            get => _student.Country;
+            set
+            {
+                _student.Country = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Country"));
+            } 
+        }
 
         /// <summary>
         /// the email of the student
         /// </summary>
-        public string Email { get; set; }
+        public string Email
+        {
+            get => _student.Email;
+            set
+            {
+                _student.Email = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Email"));
+            }
+        }
 
         /// <summary>
         /// the phone number of the student
         /// </summary>
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber
+        {
+            get => _student.PhoneNumber;
+            set
+            {
+                _student.PhoneNumber = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PhoneNumber"));
+            }
+        }
 
         /// <summary>
         /// the gender of the student
         /// </summary>
-        public Genders Gender { get; set; }
+        public string Gender
+        {
+            get => Dictionaries.GendersDict[_student.Gender];
+        }
 
-        public string GenderShow { get => Dictionaries.GendersDict[Gender]; }
+        public bool IsMatch { get => _student.IsMatch; }
 
-        public bool IsMatch { get => MatchTo.Count() > 0; }
-
-        /// <summary>
-        /// Desired learning time and day
-        /// </summary>
-        public IEnumerable<LearningTime> DesiredLearningTime { get; set; } = new List<LearningTime>();
-
-        public string DesiredLearningTimeShow
+        public string DesiredLearningTime
         {
             get
             {
@@ -67,13 +90,13 @@ namespace BO
                 {
                     return "";
                 }
-                var diffVal = MatchinHouers.GetDifferenceUtc(UtcOffset).Hours;
-                var diff = !IsFromIsrael ? $"\nהפרש זמן מישראל: {Math.Abs(diffVal)} שעות " + (diffVal < 0 ? "אחורה" : "קדימה")  : "";
-                return string.Join("\n", from l in DesiredLearningTime
-                              let day = Dictionaries.DaysDict[l.Day] + " : "
-                              let time = string.Join(", ", from t in l.TimeInDay
-                                                          select Dictionaries.TimesInDayDict[t])
-                              select day + time) + diff;
+                var diffVal = _student.DiffFromIsrael;
+                var diff = !IsFromIsrael ? $"\nהפרש זמן מישראל: {Math.Abs(diffVal)} שעות " + (diffVal < 0 ? "אחורה" : "קדימה") : "";
+                return string.Join("\n", from l in _student.DesiredLearningTime
+                                         let day = Dictionaries.DaysDict[l.Day] + " : "
+                                         let time = string.Join(", ", from t in l.TimeInDay
+                                                                      select Dictionaries.TimesInDayDict[t])
+                                         select day + time) + diff;
             }
         }
 
@@ -89,14 +112,21 @@ namespace BO
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}
         /// </summary>
-        public List<PrefferdTracks> PrefferdTracks { get; set; } = new List<PrefferdTracks>();
 
-        public string PrefferdTracksShow => string.Join(",\n", from p in PrefferdTracks
-                                                               select Dictionaries.PrefferdTracksDict[p]);
+        public string PrefferdTracks 
+        {
+            get => string.Join(",\n", from p in _student.PrefferdTracks
+                                      select Dictionaries.PrefferdTracksDict[p]);
+            set
+            {
+                _student.PrefferdTracks = new List<PrefferdTracks>
+                {
+                    Dictionaries.PrefferdTracksDictInverse[value]
+                };
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PrefferdTracks"));
+            }
+        }
         public DateTime DateOfRegistered { get; set; }
-
-        public List<StudentMatchingHistory> MatchingHistories { get; set; } =
-                new List<StudentMatchingHistory>();
 
         public List<StudentMatchingHistoryShow> MatchingHistoriesShow { get; set; } =
         new List<StudentMatchingHistoryShow>();
@@ -188,63 +218,39 @@ namespace BO
 
         public List<string> Languages { get; set; } = new List<string>();
 
-        public string LanguagesShow 
+        public string LanguagesShow
         {
-            get => Languages.Count() == 0 ? "" : string.Join(", ", Languages); 
+            get => Languages.Count() == 0 ? "" : string.Join(", ", Languages);
         }
 
         public MoreLanguages MoreLanguages { get; set; }
 
         public bool IsKnowMoreLanguages { get => Languages.Count() > 0; }
 
-        public IEnumerable<SuggestStudent> FirstSuggestStudents { get; set; }
+        public IEnumerable<SuggestStudent> FirstSuggestStudents { get => _student.FirstSuggestStudents; }
 
-        public IEnumerable<SuggestStudent> SecondeSuggestStudents { get; set; }
+        public IEnumerable<SuggestStudent> SecondeSuggestStudents { get => _student.SecondeSuggestStudents; }
 
-        public Dictionary<string, string> OpenQuestionsDict { get; set; }
-
-        public IEnumerable<OpenQuestion> OpenQuestions { get; set; }
-
-        public List<Note> Notes { get; set; } = new List<Note>();
-
-        public int DiffFromIsrael { get => MatchinHouers.GetDifferenceUtc(UtcOffset).Hours; }
-
-        public override string ToString()
+        Dictionary<string, string> _openQuestionsDict;
+        public Dictionary<string, string> OpenQuestionsDict
         {
-            return $"Name: {Name}\n" +
-                $"Country: {Country}\n" +
-                $"Gender: {Gender}";
+            get
+            {
+                if(_openQuestionsDict == null)
+                {
+                    _openQuestionsDict = new Dictionary<string, string>();
+                    foreach (var o in _student.OpenQuestions)
+                    {
+                        _openQuestionsDict.Add(o.Question, o.Answer.SpliceText(10));
+                    }
+                }
+                return _openQuestionsDict;
+            }
         }
 
-        public override bool Equals(object obj) => Equals(obj as Student);
 
-        public override int GetHashCode() => (Id, Name).GetHashCode();
+        public List<Note> Notes { get => _student.Notes; }
 
-        public bool IsInTheSuggestStudents(Student student)
-        {
-            if (FirstSuggestStudents != null
-                    && FirstSuggestStudents.Any(s => s.SuggestStudentId == student.Id))
-            {
-                return true;
-            }
-
-            if (SecondeSuggestStudents != null
-                && SecondeSuggestStudents.Any(s => s.SuggestStudentId == student.Id))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public bool Equals(Student other)
-        {
-            if (other is null)
-            {
-                return false;
-            }
-
-            return Id == other.Id;
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }
-

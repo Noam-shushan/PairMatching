@@ -103,6 +103,11 @@ namespace LogicLayer
         public async Task<string> ReadAsync(IStudentDescriptor studentDescriptor)
         {
             string result = studentDescriptor.Range;
+            var rangeTemp = studentDescriptor.Range;
+            var rowNumStr = rangeTemp
+                .Substring(rangeTemp.IndexOf("A") + 1,
+                rangeTemp.IndexOf(":") - 1);
+            int rowNumber = int.Parse(rowNumStr);
             await Task.Run(() =>
             {
                 var table = sheetReader.ReadEntries(studentDescriptor);
@@ -111,7 +116,7 @@ namespace LogicLayer
                     return;
 
                 // seve the last range that read in the spredsheet
-                result = $"A{table.Count + 1}:Z";
+                result = $"A{table.Count + rowNumber}:Z";
 
                 if(studentDescriptor is HebrewDescriptor)
                 {
@@ -203,7 +208,10 @@ namespace LogicLayer
         private DateTime GetDate(string dateFormat)
         {
             DateTime result;
-            DateTime.TryParse(dateFormat, out result);
+            if(!DateTime.TryParse(dateFormat, out result))
+            {
+                return new DateTime();
+            }
             return result;
         }
 
@@ -221,34 +229,34 @@ namespace LogicLayer
             return result;
         }
 
-        private static IEnumerable<DO.OpenQuestion> GetQandAheb(List<string> row)
+        private static IEnumerable<OpenQuestion> GetQandAheb(List<string> row)
         {
-            var result = new List<DO.OpenQuestion>();
-            result.Add(new DO.OpenQuestion
+            var result = new List<OpenQuestion>();
+            result.Add(new OpenQuestion
             {
                 Answer = row[indexHebSheet["Personal information"]],
                 Question = "Personal information"
             });
 
-            result.Add(new DO.OpenQuestion
+            result.Add(new OpenQuestion
             {
                 Answer = row[indexHebSheet["What are your hopes and expectations from this program"]],
                 Question = "What are your hopes and expectations from this program"
             });
 
-            result.Add(new DO.OpenQuestion
+            result.Add(new OpenQuestion
             {
                 Answer = row[indexHebSheet["Personality trates"]],
                 Question = "Personality trates"
             });
 
-            result.Add(new DO.OpenQuestion
+            result.Add(new OpenQuestion
             {
                 Answer = row[indexHebSheet["Who introduced you to this program"]],
                 Question = "Who introduced you to this program"
             });
 
-            result.Add(new DO.OpenQuestion
+            result.Add(new OpenQuestion
             {
                 Answer = row[indexHebSheet["Additional information"]],
                 Question = "Additional information"
@@ -257,46 +265,46 @@ namespace LogicLayer
             return result;
         }
 
-        private static IEnumerable<DO.OpenQuestion> GetQandAeng(List<string> row)
+        private static IEnumerable<OpenQuestion> GetQandAeng(List<string> row)
         {
-            var result = new List<DO.OpenQuestion>();
-            result.Add(new DO.OpenQuestion
+            var result = new List<OpenQuestion>();
+            result.Add(new OpenQuestion
             {
                 Answer = row[indexEngSheet["Personal information"]],
                 Question = "Personal information"
             });
 
-            result.Add(new DO.OpenQuestion
+            result.Add(new OpenQuestion
             {
                 Answer = row[indexEngSheet["What are your hopes and expectations from this program"]],
                 Question = "What are your hopes and expectations from this program"
             });
 
-            result.Add(new DO.OpenQuestion
+            result.Add(new OpenQuestion
             {
                 Answer = row[indexEngSheet["Personality trates"]],
                 Question = "Personality trates"
             });
 
-            result.Add(new DO.OpenQuestion
+            result.Add(new OpenQuestion
             {
                 Answer = row[indexEngSheet["Who introduced you to this program"]],
                 Question = "Who introduced you to this program"
             });
 
-            result.Add(new DO.OpenQuestion
+            result.Add(new OpenQuestion
             {
                 Answer = row[indexEngSheet["Additional information"]],
                 Question = "Additional information"
             });
 
-            result.Add(new DO.OpenQuestion
+            result.Add(new OpenQuestion
             {
                 Answer = row[indexEngSheet["Country and City of residence"]],
                 Question = "Country and City of residence"
             });
 
-            result.Add(new DO.OpenQuestion
+            result.Add(new OpenQuestion
             {
                 Answer = row[indexEngSheet["Anything else you would like to tell us"]],
                 Question = "Anything else you would like to tell us"

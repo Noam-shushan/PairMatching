@@ -31,7 +31,7 @@
     <UpdateUrl>https://pairmatching.azurewebsites.net/</UpdateUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.htm</WebPage>
-    <ApplicationRevision>24</ApplicationRevision>
+    <ApplicationRevision>25</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -118,7 +118,7 @@
     </Compile>
     <Compile Include="Models\NotesModel.cs" />
     <Compile Include="Models\RecordCollection.cs" />
-    <Compile Include="Models\StudentsModel.cs" />
+    <Compile Include="Models\StudentsListModel.cs" />
     <Compile Include="SendOpenEmail.xaml.cs">
       <DependentUpon>SendOpenEmail.xaml</DependentUpon>
     </Compile>
@@ -128,7 +128,10 @@
     <Compile Include="Controlers\StudentsListControl.xaml.cs">
       <DependentUpon>StudentsListControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\MatchingHistoryViewModel.cs" />
     <Compile Include="ViewModels\NotesViewModel.cs" />
+    <Compile Include="ViewModels\StudentViewModel.cs" />
+    <Compile Include="ViewModels\StudnetsListViewModel.cs" />
     <Page Include="AddStudentWin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

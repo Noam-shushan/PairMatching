@@ -4,6 +4,7 @@ using System.Windows;
 using BO;
 using LogicLayer;
 using Gui.Controlers;
+using UtilEntities;
 
 namespace Gui
 {

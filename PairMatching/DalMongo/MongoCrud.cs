@@ -71,8 +71,7 @@ namespace DalMongo
         public void UpsertRecord<T>(string table, int id, T record)
         {
             var collection = db.GetCollection<T>(table);
-
-            var result = collection.ReplaceOne(
+            collection.ReplaceOne(
                 new BsonDocument("_id", id),
                 record, 
                 new ReplaceOptions { IsUpsert = true });

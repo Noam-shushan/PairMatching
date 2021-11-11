@@ -22,7 +22,8 @@
                         <Border
                             Name="br"
                             Width="30"
-                            Height="{Binding Data}"
+                            Height="{Binding Percentage}"
+                            MinWidth="1"
                             Margin="3,10,3,10"
                             Background="{Binding Color}"
                             BorderBrush="{Binding Color}"

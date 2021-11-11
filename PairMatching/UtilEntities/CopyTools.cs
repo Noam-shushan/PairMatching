@@ -2,8 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-
-namespace LogicLayer
+namespace UtilEntities
 {
     /// <summary>
     /// Copy tool functions
@@ -87,3 +86,4 @@ namespace LogicLayer
         }
     }
 }
+

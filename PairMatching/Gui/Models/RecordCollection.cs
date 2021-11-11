@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Gui
 {
@@ -12,13 +13,25 @@ namespace Gui
         {
             Random rand = new Random();
 
+            int max = barValues.Max(b => b.Value);
             foreach (BO.Bar barVal in barValues)
             {
                 var color = Color.FromRgb((byte)rand.Next(120, 180), 
                     (byte)rand.Next(100, 160), 
                     (byte)rand.Next(110, 170));
-                Add(new Record(barVal.Value, new SolidColorBrush(color), barVal.BarName));
+                Add(new Record 
+                {
+                    Color = new SolidColorBrush(color),
+                    Data = barVal.Value,
+                    Name = barVal.BarName,
+                    Percentage = GetPercentage(barVal.Value, max)
+                });
             }
+        }
+
+        private double GetPercentage(int val, int max)
+        {
+            return (200 * val) / max;
         }
 
     }
@@ -43,13 +56,9 @@ namespace Gui
             }
         }
 
+        public double Percentage { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Record(int value, Brush color, string name)
-        {
-            Data = value;
-            Color = color;
-            Name = name;
-        }
     }
 }

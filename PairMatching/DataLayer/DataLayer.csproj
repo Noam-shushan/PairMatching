@@ -53,9 +53,7 @@
     <Compile Include="DO\DalExceptions.cs" />
     <Compile Include="DO\SpredsheetLastRange.cs" />
     <Compile Include="DO\Pair.cs" />
-    <Compile Include="DO\OpenQuestion.cs" />
     <Compile Include="DO\Student.cs" />
-    <Compile Include="DO\StudentMatchingHistory.cs" />
     <Compile Include="IDataLayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -66,6 +64,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
