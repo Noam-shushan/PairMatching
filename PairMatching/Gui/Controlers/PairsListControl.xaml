@@ -6,10 +6,10 @@
     xmlns:local="clr-namespace:Gui.Controlers"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:myns="clr-namespace:Gui.Controlers"
+    xmlns:myns="clr-namespace:Gui.Converters"
     x:Name="pairListControl"
-    d:DesignHeight="500"
-    d:DesignWidth="1150"
+    Width="1150"
+    Height="570"
     Background="{DynamicResource MaterialDesignPaper}"
     FlowDirection="RightToLeft"
     FontFamily="{DynamicResource MaterialDesignFont}"
@@ -21,6 +21,7 @@
     TextOptions.TextRenderingMode="Auto"
     mc:Ignorable="d">
     <UserControl.Resources>
+        <myns:OrdinalConverter x:Key="OrdinalConverter" />
         <Style x:Key="pairDetailsFilds" TargetType="TextBlock">
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="TextDecorations" Value="Underline" />
@@ -77,7 +78,7 @@
             x:Name="lvPairs"
             Grid.Column="0"
             Width="1150"
-            Height="570"
+            Height="540"
             VerticalAlignment="Top"
             ItemsSource="{Binding}"
             MouseDoubleClick="lvPairs_MouseDoubleClick"
@@ -108,7 +109,6 @@
                 <Style TargetType="DataGridRow">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 </Style>
-                <myns:OrdinalConverter x:Key="OrdinalConverter" />
                 <DataTemplate x:Key="OrdinalColumnDataTemplate">
                     <TextBlock HorizontalAlignment="Right" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Converter={StaticResource ResourceKey=OrdinalConverter}}" />
                 </DataTemplate>

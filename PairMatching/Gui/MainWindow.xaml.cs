@@ -129,14 +129,14 @@ namespace Gui
         {
             bool isNeedToUpdate = false;
             IsLoadedData = true;
-            try
-            {
-                isNeedToUpdate = await logicLayer.ReadDataFromSpredsheetAsync();
-            }
-            catch (Exception ex2)
-            {
-                Messages.MessageBoxError(ex2.Message);
-            }
+            //try
+            //{
+            //    isNeedToUpdate = await logicLayer.ReadDataFromSpredsheetAsync();
+            //}
+            //catch (Exception ex2)
+            //{
+            //    Messages.MessageBoxError(ex2.Message);
+            //}
             try
             {
                 if (!isNeedToUpdate && isUpdate)
@@ -172,6 +172,7 @@ namespace Gui
         {
             IsStatisticsUi = true;
             statistics.DataContext = new RecordCollection(logicLayer.GetStatistics());
+            //new Window1().Show();
         }
 
         #region Students UI

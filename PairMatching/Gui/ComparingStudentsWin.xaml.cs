@@ -5,6 +5,7 @@ using BO;
 using LogicLayer;
 using Gui.Controlers;
 using UtilEntities;
+using Gui.ViewModels;
 
 namespace Gui
 {
@@ -46,9 +47,6 @@ namespace Gui
 
             studentFromIsrael.DataContext = _fromIsrael;
             studentFromWorld.DataContext = _fromWolrd;
-
-            studentFromIsrael.SetHeightOfOpenQA(height:430, width:600);
-            studentFromWorld.SetHeightOfOpenQA(height: 430, width: 600);
         }
 
         private async void matchBtn_Click(object sender, RoutedEventArgs e)

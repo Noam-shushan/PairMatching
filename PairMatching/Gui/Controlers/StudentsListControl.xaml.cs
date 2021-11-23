@@ -83,11 +83,12 @@ namespace Gui.Controlers
             {
                 var first = selectedList.First();
                 var second = selectedList.Last();
+                var mainWin = Application.Current.MainWindow as MainWindow;
                 if (Messages.MessageBoxConfirmation($"בטוח שברצונך להתאים את {first.Name} ל- {second.Name}?"))
                 {
+                    mainWin.IsLoadedData = true;
                     int id = await logicLayer.MatchAsync(first, second);
-
-                    var mainWin = Application.Current.MainWindow as MainWindow;
+                    mainWin.IsLoadedData = false;
                     mainWin.RefreshMyStudentsView();
                     mainWin.RefreshMyPairView();
                 }
@@ -171,7 +172,6 @@ namespace Gui.Controlers
             {
                 Messages.MessageBoxError(ex.Message);
             }
-
         }
 
         private void sendEmaileToStudentsBtn_Click(object sender, RoutedEventArgs e)
@@ -247,6 +247,34 @@ namespace Gui.Controlers
         private void filterBtn_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private async void deleteManyStudentBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedStudents = logicLayer.StudentList.Where(s => s.IsSelected);
+            int len = selectedStudents.Count();
+            if (len == 0)
+            {
+                Messages.MessageBoxWarning("בחר משתתף אחד או יותר כדי למחוק");
+                return;
+            }
+            try
+            {
+                if (Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את {len} המשתתפים שבחרת?"))
+                {
+                    foreach(var s in selectedStudents)
+                    {
+                        await logicLayer.RemoveStudentAsync(s.Id);
+                    }
+
+                    var mainWin = Application.Current.MainWindow as MainWindow;
+                    mainWin.RefreshMyStudentsView();
+                }
+            }
+            catch (Exception ex)
+            {
+                Messages.MessageBoxError(ex.Message);
+            }
         }
     }
 }

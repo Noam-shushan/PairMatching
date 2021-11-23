@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Globalization;
 
-namespace Gui.Controlers
+namespace Gui.Converters
 {
     /// <summary>
     /// Converter class for convert from ListViewItem to number of row 

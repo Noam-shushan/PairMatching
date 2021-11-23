@@ -109,7 +109,7 @@ namespace LogicLayer
         /// </summary>
         /// <param name="isTest">For testing purposes</param>
         /// <returns>The smtp client</returns>
-        private SmtpClient GetSmtpClient(bool isTest = false)
+        private SmtpClient GetSmtpClient(bool isTest = true)
         {
             return isTest ?
                 // Sender for testing the system

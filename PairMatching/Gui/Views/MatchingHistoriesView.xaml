@@ -1,0 +1,99 @@
+﻿<UserControl
+    x:Class="Gui.Views.MatchingHistoriesView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Gui.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="matchingHistoriesView"
+    Background="{DynamicResource MaterialDesignPaper}"
+    DataContext="{Binding ElementName=matchingHistoriesView, Path=CurrentMatchingHistoriesVM}"
+    FlowDirection="RightToLeft"
+    FontFamily="{DynamicResource MaterialDesignFont}"
+    FontSize="14"
+    TextElement.FontSize="13"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
+    mc:Ignorable="d">
+    <StackPanel>
+        <StackPanel
+            Margin="0,0,0,10"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal">
+            <TextBlock FontSize="15" Text="תאריך הרשמה:   " />
+            <TextBlock FontSize="15" Text="{Binding Path=DateOfRegistered, StringFormat='dd/MM/yyyy'}" />
+        </StackPanel>
+        <ListView
+            x:Name="lvHistory"
+            MinHeight="80"
+            MaxHeight="250"
+            ItemsSource="{Binding MatchingHistories}">
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn
+                            DisplayMemberBinding="{Binding Path=DateOfMatch, StringFormat='dd/MM/yyyy'}"
+                            Header="תאריך התאמה"
+                            HeaderContainerStyle="{StaticResource HeadersStyle}" />
+                        <GridViewColumn
+                            Width="130"
+                            DisplayMemberBinding="{Binding Path=MatchStudentName}"
+                            Header="הותאם ל"
+                            HeaderContainerStyle="{StaticResource HeadersStyle}" />
+                        <GridViewColumn Header="חברותא פעילה?" HeaderContainerStyle="{StaticResource HeadersStyle}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <TextBlock.Style>
+                                            <Style BasedOn="{StaticResource MaterialDesignBody1TextBlock}" TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                        <Setter Property="Text" Value="כן" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                                        <Setter Property="Text" Value="לא" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="חברותא נמחקה?" HeaderContainerStyle="{StaticResource HeadersStyle}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <TextBlock.Style>
+                                            <Style BasedOn="{StaticResource MaterialDesignBody1TextBlock}" TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsUnMatch}" Value="True">
+                                                        <Setter Property="Text" Value="כן" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsUnMatch}" Value="False">
+                                                        <Setter Property="Text" Value="לא" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn
+                            DisplayMemberBinding="{Binding Path=DateOfUnMatch}"
+                            Header="תאריך מחיקה"
+                            HeaderContainerStyle="{StaticResource HeadersStyle}" />
+                        <GridViewColumn
+                            DisplayMemberBinding="{Binding Path=TracksHistory}"
+                            Header="היסטורית מסלולים"
+                            HeaderContainerStyle="{StaticResource HeadersStyle}" />
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </StackPanel>
+</UserControl>

@@ -97,15 +97,9 @@ namespace Gui.Controlers
                     {
                         foreach (var pair in selectedPairs)
                         {
-                            await logicLayer.SendEmailToPairAsync(pair, EmailTypes.ToSecretaryPairBroke);
-                            await logicLayer.RemovePairAsync(pair);
-                            await logicLayer.SendEmailToPairAsync(pair, EmailTypes.PairBroke);
-
+                            await RemovePairAsync(pair);
                         }
-
-                        var mainWin = Application.Current.MainWindow as MainWindow;
-                        mainWin.RefreshMyStudentsView();
-                        SetItemSource();
+                        await logicLayer.UpdateAsync();
                     }
                 }
                 else
@@ -113,13 +107,8 @@ namespace Gui.Controlers
                     if (Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את החברותא {selectedPairs.First()} ?"))
                     {
                         var pair = selectedPairs.First();
-                        await logicLayer.RemovePairAsync(pair);
-                        await logicLayer.SendEmailToPairAsync(pair, EmailTypes.PairBroke);
-                        await logicLayer.SendEmailToPairAsync(pair, EmailTypes.ToSecretaryPairBroke);
-                        
-                        var mainWin = Application.Current.MainWindow as MainWindow;
-                        mainWin.RefreshMyStudentsView();
-                        SetItemSource();
+                        await RemovePairAsync(pair);
+                        await logicLayer.UpdateAsync();
                     }
                 }
             }
@@ -223,29 +212,39 @@ namespace Gui.Controlers
             }
         }
 
-        private async void deletePairBtn_Click(object sender, RoutedEventArgs e)
+        private async Task RemovePairAsync(Pair pairToRem)
         {
             IsLoadingData = true;
-            var selectedPair = (sender as Button).DataContext as Pair;
             try
             {
-                if (selectedPair != null)
+                bool notifyByEmail = false;
+                if (pairToRem.IsActive && Messages.MessageBoxConfirmation("האם לשלוח מייל לחברותא על ביטול חברותא?"))
                 {
-                    if (Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את החברותא {selectedPair}?"))
-                    {
-                        await logicLayer.RemovePairAsync(selectedPair);
-                        
-                        var mainWin = Application.Current.MainWindow as MainWindow;
-                        mainWin.RefreshMyStudentsView();
-                        SetItemSource();
-                    }
+                    notifyByEmail = true;
                 }
+                await logicLayer.RemovePairAsync(pairToRem.Id, notifyByEmail);
+                var mainWin = Application.Current.MainWindow as MainWindow;
+                mainWin.RefreshMyStudentsView();
+                SetItemSource();
             }
             catch (Exception ex)
             {
                 Messages.MessageBoxError(ex.Message);
             }
             IsLoadingData = false;
+        }
+
+        private async void deletePairBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedPair = (sender as Button).DataContext as Pair;
+            if(selectedPair != null)
+            {
+                if(Messages.MessageBoxConfirmation($"האם אתה בטוח שברצונך למחוק את החברותא {selectedPair}?"))
+                {
+                    await RemovePairAsync(selectedPair);
+                    await logicLayer.UpdateAsync();
+                }
+            }
         }
 
         private async void activePairBtn_Click(object sender, RoutedEventArgs e)

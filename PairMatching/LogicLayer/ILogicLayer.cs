@@ -171,7 +171,7 @@ namespace LogicLayer
         /// </summary>
         /// <param name="pair">The pair to renove</param>
         /// <returns></returns>
-        Task RemovePairAsync(BO.Pair pair);
+        Task RemovePairAsync(int pairId, bool notifyByEmail);
 
         /// <summary>
         /// Update pair in the database

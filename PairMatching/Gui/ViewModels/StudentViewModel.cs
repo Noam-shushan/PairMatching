@@ -5,17 +5,55 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BO;
+using Gui.Commands;
+using Gui.Views;
+using LogicLayer;
 using UtilEntities;
 
 namespace Gui.ViewModels
 {
     public class StudentViewModel : INotifyPropertyChanged
     {
+        private readonly ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
+
         private Student _student;
+
+        public UpdateStudentCommand UpdateStudent { get; set; }
+
+        public CompareTwoStudentsCommand CompareTo { get; set; }
 
         public StudentViewModel(Student student)
         {
             _student = student;
+            Notes = new NotesViewModel(_student.Notes)
+            {
+                IsStudent = true
+            };
+
+            MatchingHistories = new MatchingHistoriesViewModel(_student.MatchingHistories)
+            {
+                DateOfRegistered = _student.DateOfRegistered
+            };
+
+            UpdateStudent = new UpdateStudentCommand();
+
+            CompareTo = new CompareTwoStudentsCommand();
+
+            UpdateStudent.Update += UpdateStudent_Update;
+            CompareTo.Compare += CompareTo_Compare;
+        }
+
+        private void CompareTo_Compare(CompareTwoStudentsViewModel compareTwoStudents)
+        {
+            new CompareTwoStudentsView(compareTwoStudents).Show();
+        }
+
+        private void UpdateStudent_Update(StudentViewModel studentViewModel)
+        {
+            if (IsChanged)
+            {
+                logicLayer.UpdateStudent(_student);
+            }
         }
 
         /// <summary>
@@ -42,7 +80,7 @@ namespace Gui.ViewModels
             set
             {
                 _student.Country = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Country"));
+                OnPropertyChanged("Country");
             } 
         }
 
@@ -55,7 +93,7 @@ namespace Gui.ViewModels
             set
             {
                 _student.Email = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Email"));
+                OnPropertyChanged("Email");
             }
         }
 
@@ -68,7 +106,7 @@ namespace Gui.ViewModels
             set
             {
                 _student.PhoneNumber = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PhoneNumber"));
+                OnPropertyChanged("PhoneNumber");
             }
         }
 
@@ -82,6 +120,7 @@ namespace Gui.ViewModels
 
         public bool IsMatch { get => _student.IsMatch; }
 
+        private string _desiredLearningTime;
         public string DesiredLearningTime
         {
             get
@@ -90,13 +129,18 @@ namespace Gui.ViewModels
                 {
                     return "";
                 }
+                if (!string.IsNullOrEmpty(_desiredLearningTime))
+                {
+                    return _desiredLearningTime;
+                }
                 var diffVal = _student.DiffFromIsrael;
                 var diff = !IsFromIsrael ? $"\nהפרש זמן מישראל: {Math.Abs(diffVal)} שעות " + (diffVal < 0 ? "אחורה" : "קדימה") : "";
-                return string.Join("\n", from l in _student.DesiredLearningTime
+                _desiredLearningTime = string.Join("\n", from l in _student.DesiredLearningTime
                                          let day = Dictionaries.DaysDict[l.Day] + " : "
                                          let time = string.Join(", ", from t in l.TimeInDay
                                                                       select Dictionaries.TimesInDayDict[t])
                                          select day + time) + diff;
+                return _desiredLearningTime;
             }
         }
 
@@ -109,123 +153,92 @@ namespace Gui.ViewModels
             }
         }
 
+        private string _prefferdTracks;
         /// <summary>
         /// Prefferd tracks of lernning {TANYA, TALMUD, PARASHA ...}
         /// </summary>
-
         public string PrefferdTracks 
         {
-            get => string.Join(",\n", from p in _student.PrefferdTracks
-                                      select Dictionaries.PrefferdTracksDict[p]);
+            get 
+            {
+                if (!string.IsNullOrEmpty(_prefferdTracks))
+                {
+                    return _prefferdTracks;
+                }
+                _prefferdTracks = string.Join(",\n", from p in _student.PrefferdTracks
+                                                     select Dictionaries.PrefferdTracksDict[p]);
+                return _prefferdTracks;
+            }
+            
             set
             {
                 _student.PrefferdTracks = new List<PrefferdTracks>
                 {
                     Dictionaries.PrefferdTracksDictInverse[value]
                 };
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PrefferdTracks"));
+                OnPropertyChanged("PrefferdTracks");
             }
         }
         public DateTime DateOfRegistered { get; set; }
 
-        public List<StudentMatchingHistoryShow> MatchingHistoriesShow { get; set; } =
-        new List<StudentMatchingHistoryShow>();
+        public MatchingHistoriesViewModel MatchingHistories { get; set; }
 
-        public bool IsSelected { get; set; }
+        private bool _isSelected = false;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                OnPropertyChanged("IsSelected");
+            }
+        }
 
         public bool IsOpenToMatch
         {
-            get => !IsSimpleStudent && (MatchTo.Count() < PrefferdNumberOfMatchs);
+            get => _student.IsOpenToMatch;
         }
 
-        /// <summary>
-        /// the prefferd gender to lern with
-        /// </summary>
-        public Genders PrefferdGender { get; set; }
 
-        public string PrefferdGenderShow { get => Dictionaries.GendersDict[PrefferdGender]; }
+        public string PrefferdGender { get => Dictionaries.GendersDict[_student.PrefferdGender]; }
 
-        /// <summary>
-        ///  Desired level of english from the other pair
-        /// </summary>
-        public EnglishLevels DesiredEnglishLevel { get; set; }
-
-        /// <summary>
-        ///  level of english
-        /// </summary>
-        public EnglishLevels EnglishLevel { get; set; }
-
-        /// <summary>
-        ///  Desired level of skiil from the other pair
-        /// </summary>
-        public SkillLevels DesiredSkillLevel { get; set; }
-
-        /// <summary>
-        /// level of skiil 
-        /// </summary>
-        public SkillLevels SkillLevel { get; set; }
-
-        /// <summary>
-        /// learning style 
-        /// </summary>
-        public LearningStyles LearningStyle { get; set; }
-
-        public string LearningStyleShow
+        public string LearningStyle
         {
-            get => Dictionaries.LearningStylesDict[LearningStyle];
+            get => Dictionaries.LearningStylesDict[_student.LearningStyle];
         }
 
-        public string SkillLevelShow
+        public string SkillLevel
         {
-            get => !IsFromIsrael ? Dictionaries.SkillLevelsDict[SkillLevel] : "";
+            get => !_student.IsFromIsrael ? Dictionaries.SkillLevelsDict[_student.SkillLevel] : "";
         }
 
-        public string EnglishLevelShow
+        public string EnglishLevel
         {
-            get => IsFromIsrael ? Dictionaries.EnglishLevelsDict[EnglishLevel] : "";
+            get => _student.IsFromIsrael ? Dictionaries.EnglishLevelsDict[_student.EnglishLevel] : "";
         }
 
-        public string DesiredEnglishLevelShow
+        public string DesiredEnglishLevel
         {
-            get => !IsFromIsrael ? Dictionaries.DesiredEnglishLevelsDict[DesiredEnglishLevel] : "";
+            get => !_student.IsFromIsrael ? Dictionaries.DesiredEnglishLevelsDict[_student.DesiredEnglishLevel] : "";
         }
 
-        public string DesiredSkillLevelShow
+        public string DesiredSkillLevel
         {
-            get => IsFromIsrael ? Dictionaries.SkillLevelsDict[DesiredSkillLevel] : "";
+            get => _student.IsFromIsrael ? Dictionaries.SkillLevelsDict[_student.DesiredSkillLevel] : "";
         }
 
-        public bool IsFromIsrael { get => Country == "Israel"; }
+        public bool IsFromIsrael { get => _student.IsFromIsrael; }
 
-
-        /// <summary>
-        /// the utc offset of the student
-        /// </summary>
-        public TimeSpan UtcOffset { get; set; }
-
-        /// <summary>
-        /// the id of the student that match to this.
-        /// </summary>
-        public List<int> MatchTo { get; set; } = new List<int>();
-
-        public string MatchToShow { get; set; }
-
-        public int PrefferdNumberOfMatchs { get; set; }
-
-        public string InfoAbout { get; set; } = "";
+        public string MatchTo { get => _student.MatchToShow; }
 
         public bool IsCompereWin { get; set; }
 
-        public List<string> Languages { get; set; } = new List<string>();
-
-        public string LanguagesShow
+        public string Languages
         {
-            get => Languages.Count() == 0 ? "" : string.Join(", ", Languages);
+            get => _student.Languages.Count() == 0 ? "" : string.Join(", ", _student.Languages);
         }
 
-        public MoreLanguages MoreLanguages { get; set; }
-
-        public bool IsKnowMoreLanguages { get => Languages.Count() > 0; }
+        public bool IsKnowMoreLanguages { get => _student.IsKnowMoreLanguages; }
 
         public IEnumerable<SuggestStudent> FirstSuggestStudents { get => _student.FirstSuggestStudents; }
 
@@ -248,9 +261,16 @@ namespace Gui.ViewModels
             }
         }
 
+        public NotesViewModel Notes { get; set; }
 
-        public List<Note> Notes { get => _student.Notes; }
+        public bool IsChanged { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+            IsChanged = true;
+        }
     }
 }

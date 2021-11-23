@@ -7,8 +7,8 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="studentsListControl"
-    d:DesignHeight="450"
-    d:DesignWidth="500"
+    Width="430"
+    Height="560"
     Background="{DynamicResource MaterialDesignPaper}"
     FlowDirection="RightToLeft"
     FontFamily="{DynamicResource MaterialDesignFont}"
@@ -278,14 +278,30 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
 
-                        <GridViewColumn Width="60" HeaderContainerStyle="{StaticResource hideColumnWheneSimpleViewStyle}">
+                        <GridViewColumn Width="60">
+                            <GridViewColumn.HeaderContainerStyle>
+                                <Style BasedOn="{StaticResource MaterialDesignIconButton}" TargetType="{x:Type GridViewColumnHeader}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                </Style>
+                            </GridViewColumn.HeaderContainerStyle>
+                            <GridViewColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        x:Name="deleteManyStudentBtn"
+                                        Click="deleteManyStudentBtn_Click"
+                                        Style="{StaticResource MaterialDesignIconButton}"
+                                        ToolTip="מחק מספר רב של משתתפים">
+                                        <materialDesign:PackIcon Kind="Delete" />
+                                    </Button>
+                                </DataTemplate>
+                            </GridViewColumn.HeaderTemplate>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button
                                         x:Name="deleteStudentBtn"
                                         Click="deleteStudent_Click"
                                         Style="{StaticResource MaterialDesignIconButton}"
-                                        ToolTip="מחק תלמיד זה">
+                                        ToolTip="מחק משתתף זה">
                                         <materialDesign:PackIcon Kind="Delete" />
                                     </Button>
                                 </DataTemplate>

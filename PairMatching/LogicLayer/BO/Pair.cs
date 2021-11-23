@@ -10,7 +10,7 @@ using UtilEntities;
 
 namespace BO
 {
-    public class Pair
+    public class Pair : IEquatable<Pair>
     {
 
         public Pair() { }
@@ -79,6 +79,22 @@ namespace BO
         public override string ToString()
         {
             return $"חברותא א: {StudentFromIsrael.Name} , חברותא ב: {StudentFromWorld.Name}";
+        }
+
+        public bool Equals(Pair other)
+        {
+            if(other == null)
+            {
+                return false;
+            }
+            return other.Id == Id;
+        }
+
+        public override bool Equals(object obj) => Equals(obj as Pair);
+
+        public override int GetHashCode()
+        {
+            return (Id, StudentFromIsraelId, StudentFromWorldId).GetHashCode();
         }
     }
 }

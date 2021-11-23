@@ -291,37 +291,38 @@ namespace LogicLayer
             try
             {
                 var studToRem = GetStudent(id);
-                if (_studentList.Any(s => s.MatchTo.Contains(id)))
-                {
-                    var matchPairOfThisStud = studToRem.IsFromIsrael ?
-                        _pairList
-                        .ToList()
-                        .FindAll(p => p.StudentFromIsraelId == id) 
-                    :
-                        _pairList
-                        .ToList()
-                        .FindAll(p => p.StudentFromWorldId == id);
-                    if (matchPairOfThisStud != null && matchPairOfThisStud.Count > 0)
-                    {
-                        List<Task> tasks = new List<Task>();
-                        foreach(var pairToRem in matchPairOfThisStud)
-                        {
-                            tasks.Add(RemovePairAsync(pairToRem));
-                        }
-                        await Task.WhenAll(tasks);
-                    }
-                }
+                await RemovePairFromStudent(studToRem);
 
                 _studentList.Remove(studToRem);
                 dal.RemoveStudent(id);
             }
             catch(DO.BadStudentException ex1)
             {
-                new BO.BadStudentException(ex1.Message, id);
+                throw new BO.BadStudentException(ex1.Message, id);
             }
             catch (Exception ex2)
             {
                 throw new Exception(ex2.Message);
+            }
+        }
+
+        private async Task RemovePairFromStudent(BO.Student student)
+        {
+            if (_studentList.Any(s => s.MatchTo.Contains(student.Id)))
+            {
+                var matchPairOfThisStud = _pairList
+                    .Where(p => p.StudentFromIsraelId == student.Id
+                    || p.StudentFromWorldId == student.Id)
+                    .ToList();
+                if (matchPairOfThisStud != null && matchPairOfThisStud.Count() > 0)
+                {
+                    List<Task> tasks = new List<Task>();
+                    foreach (var pairToRem in matchPairOfThisStud)
+                    {
+                        tasks.Add(RemovePairAsync(pairToRem.Id, false));
+                    }
+                    await Task.WhenAll(tasks);
+                }
             }
         }
 
@@ -635,13 +636,19 @@ namespace LogicLayer
         /// </summary>
         /// <param name="pair">The pair to renove</param>
         /// <returns></returns>
-        public async Task RemovePairAsync(BO.Pair pair)
+        public async Task RemovePairAsync(int pairId ,bool notifyByEmail)
+        {
+            var pair = GetPair(pairId);
+            await RemoveOnePairAsync(pair, notifyByEmail);
+        }
+
+        private async Task RemoveOnePairAsync(BO.Pair pair, bool notifyByEmail)
         {
             try
             {
                 var studFromIsraelDO = dal.GetStudent(pair.StudentFromIsrael.Id);
                 var studFromWorldDO = dal.GetStudent(pair.StudentFromWorld.Id);
-                
+
                 studFromIsraelDO.MatchTo.Remove(studFromWorldDO.Id);
                 studFromWorldDO.MatchTo.Remove(studFromIsraelDO.Id);
 
@@ -657,21 +664,21 @@ namespace LogicLayer
                 matchHisWorld.IsUnMatch = true;
                 matchHisWorld.DateOfUnMatch = DateTime.Now;
 
-                
+
 
                 dal.UpdateStudent(studFromIsraelDO);
                 dal.UpdateStudent(studFromWorldDO);
 
                 var pairDO = pair.CopyPropertiesToNew(typeof(DO.Pair)) as DO.Pair;
-                if (pair.IsActive)
+                if (pair.IsActive && notifyByEmail)
                 {
                     await SendEmailToPairAsync(pair, EmailTypes.PairBroke);
                     await SendEmailToPairAsync(pair, EmailTypes.ToSecretaryPairBroke);
                 }
 
                 pairDO.IsActive = false;
+                _pairList.Remove(pair);
                 dal.RemovePair(pairDO);
-                await UpdateAsync();
             }
             catch (DO.BadPairException)
             {
@@ -1008,26 +1015,30 @@ namespace LogicLayer
         #region Pairs helper functions
         private PrefferdTracks GetPrefferdTrackOfPair(BO.Student firstStud, BO.Student secondeStud)
         {
-            firstStud.PrefferdTracks.Contains(PrefferdTracks.TANYA); 
-            secondeStud.PrefferdTracks.Contains(PrefferdTracks.TANYA);
+            var result = PrefferdTracks.DONT_MATTER;
             if (firstStud.PrefferdTracks.Count() == 0
                 && secondeStud.PrefferdTracks.Count() != 0)
             {
-                secondeStud.PrefferdTracks.First();
+                result = secondeStud.PrefferdTracks.FirstOrDefault(p => p != PrefferdTracks.DONT_MATTER);
             }
             else if(firstStud.PrefferdTracks.Count() != 0
                 && secondeStud.PrefferdTracks.Count() == 0)
             {
-                return firstStud.PrefferdTracks.First();
+                result = firstStud.PrefferdTracks.FirstOrDefault(p => p != PrefferdTracks.DONT_MATTER);
             }
             else if(firstStud.PrefferdTracks.Count() == 0
                 && secondeStud.PrefferdTracks.Count() == 0)
             {
                 return PrefferdTracks.DONT_MATTER;
             }
-        
-            return firstStud.PrefferdTracks.Contains(PrefferdTracks.DONT_MATTER) ?
-                secondeStud.PrefferdTracks.First() : firstStud.PrefferdTracks.First();
+            else
+            {
+                result = firstStud.PrefferdTracks.Contains(PrefferdTracks.DONT_MATTER) ?
+                    secondeStud.PrefferdTracks.FirstOrDefault(p => p != PrefferdTracks.DONT_MATTER)
+                    : firstStud.PrefferdTracks.FirstOrDefault(p => p != PrefferdTracks.DONT_MATTER);
+            }
+            
+            return result == default ? PrefferdTracks.DONT_MATTER : result;
         }
 
         private BO.SimpleStudent GetSimpleStudent(int id)

@@ -31,7 +31,7 @@
     <UpdateUrl>https://pairmatching.azurewebsites.net/</UpdateUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.htm</WebPage>
-    <ApplicationRevision>25</ApplicationRevision>
+    <ApplicationRevision>28</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -84,6 +84,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Workflow.ComponentModel" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -105,10 +106,15 @@
     <Compile Include="AddStudentWin.xaml.cs">
       <DependentUpon>AddStudentWin.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Commands\AddNoteCommand.cs" />
+    <Compile Include="Commands\CompareTwoStudentsCommand.cs" />
+    <Compile Include="Commands\MatchCommand.cs" />
+    <Compile Include="Commands\UpdateStudentCommand.cs" />
     <Compile Include="Converters\OrdinalConverter.cs" />
     <Compile Include="Controlers\StatisticsControl.xaml.cs">
       <DependentUpon>StatisticsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\StudentAndSuggestStudentConverter.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Controlers\NoteControl.xaml.cs">
       <DependentUpon>NoteControl.xaml</DependentUpon>
@@ -116,9 +122,7 @@
     <Compile Include="Controlers\PairsListControl.xaml.cs">
       <DependentUpon>PairsListControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\NotesModel.cs" />
     <Compile Include="Models\RecordCollection.cs" />
-    <Compile Include="Models\StudentsListModel.cs" />
     <Compile Include="SendOpenEmail.xaml.cs">
       <DependentUpon>SendOpenEmail.xaml</DependentUpon>
     </Compile>
@@ -128,10 +132,30 @@
     <Compile Include="Controlers\StudentsListControl.xaml.cs">
       <DependentUpon>StudentsListControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\CompareTwoStudentsViewModel.cs" />
+    <Compile Include="ViewModels\MatchingHistoriesViewModel.cs" />
     <Compile Include="ViewModels\MatchingHistoryViewModel.cs" />
     <Compile Include="ViewModels\NotesViewModel.cs" />
     <Compile Include="ViewModels\StudentViewModel.cs" />
     <Compile Include="ViewModels\StudnetsListViewModel.cs" />
+    <Compile Include="Views\CompareTwoStudentsView.xaml.cs">
+      <DependentUpon>CompareTwoStudentsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MatchingHistoriesView.xaml.cs">
+      <DependentUpon>MatchingHistoriesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NotesView.xaml.cs">
+      <DependentUpon>NotesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StudentsListView.xaml.cs">
+      <DependentUpon>StudentsListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StudentView.xaml.cs">
+      <DependentUpon>StudentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Window1.xaml.cs">
+      <DependentUpon>Window1.xaml</DependentUpon>
+    </Compile>
     <Page Include="AddStudentWin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -176,6 +200,30 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controlers\StudentsListControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CompareTwoStudentsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MatchingHistoriesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NotesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StudentsListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StudentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

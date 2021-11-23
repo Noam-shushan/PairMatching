@@ -1,0 +1,40 @@
+﻿<Window
+    x:Class="Gui.Views.CompareTwoStudentsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Gui.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="CompWin"
+    Title="השווה משתתפים"
+    Width="1200"
+    Height="800"
+    Background="{DynamicResource MaterialDesignPaper}"
+    FlowDirection="RightToLeft"
+    FontFamily="{DynamicResource MaterialDesignFont}"
+    FontSize="15"
+    TextElement.FontSize="13"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
+    WindowState="Maximized"
+    mc:Ignorable="d">
+    <Window.DataContext>
+        <Binding ElementName="CompWin" Path="CurrentTwoStudentsVM" />
+    </Window.DataContext>
+    <Grid>
+        <StackPanel Orientation="Horizontal">
+            <GroupBox
+                Margin="0,0,10,0"
+                BorderBrush="BlueViolet"
+                Header="תלמיד מישראל">
+                <local:StudentView CurrentStudentVM="{Binding StudentFromIsrael}" />
+            </GroupBox>
+            <GroupBox BorderBrush="BlueViolet" Header="תלמיד מהתפוצות">
+                <local:StudentView CurrentStudentVM="{Binding StudentFromWorld}" />
+            </GroupBox>
+        </StackPanel>
+
+    </Grid>
+</Window>
