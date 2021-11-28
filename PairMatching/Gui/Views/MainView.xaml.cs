@@ -1,0 +1,40 @@
+﻿using Gui.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+
+namespace Gui.Views
+{
+    /// <summary>
+    /// Interaction logic for MainView.xaml
+    /// </summary>
+    public partial class MainView : Window
+    {
+        public MainViewModel CurrentMainViewModel
+        {
+            get { return (MainViewModel)GetValue(CurrentMainViewModelProperty); }
+            set { SetValue(CurrentMainViewModelProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CurrentMainViewModel.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CurrentMainViewModelProperty =
+            DependencyProperty.Register("CurrentMainViewModel", typeof(MainViewModel), typeof(MainView));
+
+
+        public MainView()
+        {
+            InitializeComponent();
+            CurrentMainViewModel = new MainViewModel();
+        }
+    }
+}

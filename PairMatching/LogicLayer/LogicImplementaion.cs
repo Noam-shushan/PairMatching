@@ -129,10 +129,6 @@ namespace LogicLayer
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PairList"));
             }
         }
-
-
-        public List<BO.SimpleStudent> StudentWithUnvalidEmail { get; set; } =
-             new List<BO.SimpleStudent>();
         #endregion
 
         #region Singleton referens of the logic layer
@@ -228,6 +224,7 @@ namespace LogicLayer
                 {
                     _studentList = new ObservableCollection<BO.Student>(CreateAllStudents());
                     BuildAllStudents();
+                    EmailAddressChecker.NotifyOnNotValidAddrress(_studentList.ToList());
                     _pairList = new ObservableCollection<BO.Pair>(GetAllPairs());
                 });
             }
@@ -732,18 +729,12 @@ namespace LogicLayer
                     }
                 }
                 catch (FormatException) // the email addres of the student is not valid
-                {   // add to the the list og unvalid email students to notefiy the gui
-                    StudentWithUnvalidEmail.Add(new BO.SimpleStudent
-                    {
-                        Id = s.Id,
-                        Name = s.Name,
-                        Email = s.Email
-                    });
-                    continue;
+                {
+                   continue;
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(ex.Message);
+                    await emailSender.Error(ex);
                 }
             }
         }
@@ -858,13 +849,13 @@ namespace LogicLayer
         /// <param name="body">The body of the email</param>
         /// <param name="fileAttachment">File name to attach to the email</param>
         /// <returns></returns>
-        public async Task SendOpenEmailAsync(string to, string subject, string body, string fileAttachment = "")
+        public async Task SendOpenEmailAsync(string to, string subject, string body, IEnumerable<string> fileAttachments)
         {
             await emailSender
                 .To(to)
                 .Subject(subject)
                 .Template(new StringBuilder().Append(body))
-                .SendOpenMailAsync(fileAttachment);
+                .SendOpenMailAsync(fileAttachments);
         }
         #endregion
 

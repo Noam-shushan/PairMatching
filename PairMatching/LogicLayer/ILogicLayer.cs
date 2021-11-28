@@ -40,11 +40,6 @@ namespace LogicLayer
         /// List of all pairs
         /// </summary>
         ObservableCollection<BO.Pair> PairList { get; set; }
-
-        /// <summary>
-        /// List of new student that thire email addres is not valid
-        /// </summary>
-        List<BO.SimpleStudent> StudentWithUnvalidEmail { get; set; } 
         #endregion
 
         #region Students
@@ -148,7 +143,7 @@ namespace LogicLayer
         /// <param name="body">The body of the email</param>
         /// <param name="fileAttachment">File name to attach to the email</param>
         /// <returns></returns>
-        Task SendOpenEmailAsync(string to, string subject, string body, string fileAttachment = "");
+        Task SendOpenEmailAsync(string to, string subject, string body, IEnumerable<string> fileAttachments);
         #endregion
 
         #region Pair

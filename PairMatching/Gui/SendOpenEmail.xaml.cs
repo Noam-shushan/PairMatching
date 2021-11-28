@@ -14,9 +14,18 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using LogicLayer;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace Gui
 {
+
+    public class File
+    {
+        public string FileName { get; set; }
+
+        public string FilePath { get; set; }
+    }
+
     /// <summary>
     /// Interaction logic for SendOpenEmail.xaml
     /// </summary>
@@ -27,28 +36,7 @@ namespace Gui
         
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private string _fileName = "";
-        public string FileName
-        {
-            get => _fileName;
-            set
-            {
-                _fileName = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileName"));
-            }
-        }
-
-        private string _filePath = "";
-
-        public string FilePath 
-        { 
-            get => _filePath; 
-            set
-            {
-                _filePath = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FilePath"));
-            } 
-        }
+        public ObservableCollection<File> Files { get; set; } = new ObservableCollection<File>();
 
         public string StudentName { get; set; }
 
@@ -79,7 +67,8 @@ namespace Gui
             }
             try
             {
-                await logicLayer.SendOpenEmailAsync(Email, tbSubject.Text, tbBody.Text, FilePath);
+                await logicLayer.SendOpenEmailAsync(Email, tbSubject.Text, tbBody.Text, 
+                    from f in Files select f.FilePath);
                 isSend = true;
                 Messages.MessageBoxSimple("המייל נשלח בהצלחה");
             }
@@ -87,32 +76,47 @@ namespace Gui
             {
                 Messages.MessageBoxError(ex.Message);
             }
-            finally
-            {
-                FilePath = FileName = "";
-            }
             if (isSend)
             {
+                Files.Clear();
                 Close();
             }
         }
 
         private void attachmentBtn_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            OpenFileDialog openFileDialog = new OpenFileDialog()
+            {
+                Multiselect = true
+            };
 
             var response = openFileDialog.ShowDialog();
-            
+            if(!openFileDialog.CheckPathExists)
+            {
+                Messages.MessageBoxError("קובץ לא קיים");
+            }
             if(response == true)
             {
-                FileName = openFileDialog.SafeFileName;
-                FilePath = openFileDialog.FileName;
+                var temp = openFileDialog.SafeFileNames.Zip(openFileDialog.FileNames, 
+                    (fn, fp) => new File
+                    {
+                        FileName = fn,
+                        FilePath = fp
+                    });
+                foreach(var f in temp)
+                {
+                    Files.Add(f);
+                }
             }
         }
 
         private void remFileAttchBtn_Click(object sender, RoutedEventArgs e)
         {
-            FilePath = FileName = "";
+            var file = (sender as Button).DataContext as File;
+            if(file != null)
+            {
+                Files.Remove(file);
+            }
         }
     }
 }

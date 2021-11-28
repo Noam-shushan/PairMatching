@@ -31,7 +31,7 @@
     <UpdateUrl>https://pairmatching.azurewebsites.net/</UpdateUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.htm</WebPage>
-    <ApplicationRevision>28</ApplicationRevision>
+    <ApplicationRevision>29</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -107,6 +107,7 @@
       <DependentUpon>AddStudentWin.xaml</DependentUpon>
     </Compile>
     <Compile Include="Commands\AddNoteCommand.cs" />
+    <Compile Include="Commands\ChangeMainViewCommand.cs" />
     <Compile Include="Commands\CompareTwoStudentsCommand.cs" />
     <Compile Include="Commands\MatchCommand.cs" />
     <Compile Include="Commands\UpdateStudentCommand.cs" />
@@ -133,28 +134,43 @@
       <DependentUpon>StudentsListControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\CompareTwoStudentsViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MatchingHistoriesViewModel.cs" />
     <Compile Include="ViewModels\MatchingHistoryViewModel.cs" />
+    <Compile Include="ViewModels\NavigationBarViewModel.cs" />
     <Compile Include="ViewModels\NotesViewModel.cs" />
+    <Compile Include="ViewModels\PairsListViewModel.cs" />
+    <Compile Include="ViewModels\PairViewModel.cs" />
+    <Compile Include="ViewModels\StatisticsViewModel.cs" />
     <Compile Include="ViewModels\StudentViewModel.cs" />
-    <Compile Include="ViewModels\StudnetsListViewModel.cs" />
+    <Compile Include="ViewModels\StudentsListViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\CompareTwoStudentsView.xaml.cs">
       <DependentUpon>CompareTwoStudentsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MainView.xaml.cs">
+      <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MatchingHistoriesView.xaml.cs">
       <DependentUpon>MatchingHistoriesView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MenuBarView.xaml.cs">
+      <DependentUpon>MenuBarView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\NotesView.xaml.cs">
       <DependentUpon>NotesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PairsView.xaml.cs">
+      <DependentUpon>PairsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StatisticsView.xaml.cs">
+      <DependentUpon>StatisticsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\StudentsListView.xaml.cs">
       <DependentUpon>StudentsListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\StudentView.xaml.cs">
       <DependentUpon>StudentView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Window1.xaml.cs">
-      <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
     <Page Include="AddStudentWin.xaml">
       <SubType>Designer</SubType>
@@ -207,11 +223,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\MainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MatchingHistoriesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\MenuBarView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\NotesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PairsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StatisticsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -220,10 +252,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\StudentView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Window1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

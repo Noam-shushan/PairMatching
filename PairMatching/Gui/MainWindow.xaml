@@ -180,7 +180,54 @@
                 Click="updateBtn_Click"
                 Content="עדכן נתונים"
                 Style="{StaticResource MaterialDesignFlatButton}" />
-            <MenuItem Width="540" IsEnabled="False" />
+            <materialDesign:PopupBox>
+                <materialDesign:PopupBox.ToggleContent>
+                    <TextBlock Style="{StaticResource MaterialDesignButtonTextBlock}" Text="הודעות מערכת" />
+                </materialDesign:PopupBox.ToggleContent>
+                <StackPanel Margin="10">
+                    <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Text="מיילים לא תקינים:" />
+                    <ListView
+                        x:Name="lvNotifcations"
+                        Height="300"
+                        ItemsSource="{Binding}">
+                        <ListView.View>
+                            <GridView>
+                                <GridView.Columns>
+                                    <GridViewColumn
+                                        DisplayMemberBinding="{Binding StudentName}"
+                                        Header="שם"
+                                        HeaderContainerStyle="{StaticResource HeadersStyle}" />
+                                    <GridViewColumn
+                                        DisplayMemberBinding="{Binding EmailAddress}"
+                                        Header="כתובת אימייל"
+                                        HeaderContainerStyle="{StaticResource HeadersStyle}" />
+                                    <GridViewColumn Header="סטטוס" HeaderContainerStyle="{StaticResource HeadersStyle}">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock>
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding AddressStatus}" Value="Empty">
+                                                                    <Setter Property="Text" Value="חסר" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding AddressStatus}" Value="NotValid">
+                                                                    <Setter Property="Text" Value="לא תקין" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+            </materialDesign:PopupBox>
+            <MenuItem Width="350" IsEnabled="False" />
             <Image Source="https://www.steinsaltz-center.org.il/sysvault/sysimg/sitelogo.png" />
         </Menu>
         <!--#endregion-->

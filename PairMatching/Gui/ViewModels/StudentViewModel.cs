@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using BO;
 using Gui.Commands;
 using Gui.Views;
@@ -22,6 +23,10 @@ namespace Gui.ViewModels
 
         public CompareTwoStudentsCommand CompareTo { get; set; }
 
+        public NotesViewModel Notes { get; set; }
+
+        public MatchingHistoriesViewModel MatchingHistories { get; set; }
+
         public StudentViewModel(Student student)
         {
             _student = student;
@@ -36,10 +41,9 @@ namespace Gui.ViewModels
             };
 
             UpdateStudent = new UpdateStudentCommand();
+            UpdateStudent.Update += UpdateStudent_Update;
 
             CompareTo = new CompareTwoStudentsCommand();
-
-            UpdateStudent.Update += UpdateStudent_Update;
             CompareTo.Compare += CompareTo_Compare;
         }
 
@@ -181,8 +185,6 @@ namespace Gui.ViewModels
         }
         public DateTime DateOfRegistered { get; set; }
 
-        public MatchingHistoriesViewModel MatchingHistories { get; set; }
-
         private bool _isSelected = false;
         public bool IsSelected
         {
@@ -261,7 +263,6 @@ namespace Gui.ViewModels
             }
         }
 
-        public NotesViewModel Notes { get; set; }
 
         public bool IsChanged { get; private set; }
 

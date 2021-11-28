@@ -2,14 +2,14 @@
     x:Class="Gui.Views.StudentView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:Gui.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Gui.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:myns="clr-namespace:Gui.Converters"
     x:Name="studentView"
-    Width="800"
-    Height="650"
+    Width="auto"
+    Height="auto"
     Background="{DynamicResource MaterialDesignPaper}"
     DataContext="{Binding ElementName=studentView, Path=CurrentStudentVM}"
     FlowDirection="RightToLeft"
@@ -22,7 +22,7 @@
     TextOptions.TextRenderingMode="Auto"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <myns:StudentAndSuggestStudentConverter x:Key="ConvertToCompare" />
+        <converters:StudentAndSuggestStudentConverter x:Key="ConvertToCompare" />
 
         <Style x:Key="headers" TargetType="TextBlock">
             <Setter Property="FontWeight" Value="Bold" />
@@ -171,7 +171,7 @@
                                 Height="25"
                                 Kind="History" />
                         </materialDesign:PopupBox.ToggleContent>
-                        <local:MatchingHistoriesView CurrentMatchingHistoriesVM="{Binding MatchingHistories}" />
+                        <local:MatchingHistoriesView CurrentMatchingHistoriesVM="{Binding ElementName=studentView, Path=CurrentStudentVM.MatchingHistories, Mode=TwoWay}" />
                     </materialDesign:PopupBox>
 
                     <!--#region Notes-->
@@ -186,7 +186,7 @@
                             <materialDesign:PackIcon Kind="Pencil" />
                         </Button>
                         <materialDesign:DialogHost.DialogContent>
-                            <local:NotesView CurrentNotesVM="{Binding Notes}" />
+                            <local:NotesView CurrentNotesVM="{Binding ElementName=studentView, Path=CurrentStudentVM.Notes, Mode=TwoWay}" />
                         </materialDesign:DialogHost.DialogContent>
                     </materialDesign:DialogHost>
                     <!--#endregion-->
@@ -302,14 +302,15 @@
                                         <Button
                                             x:Name="compSecondeMatchBtn"
                                             HorizontalAlignment="Left"
+                                            Command="{Binding CompareTo}"
                                             Content="השווה"
                                             Style="{StaticResource MaterialDesignFlatButton}">
-                                            <!--<Button.CommandParameter>
+                                            <Button.CommandParameter>
                                                 <MultiBinding Converter="{StaticResource ConvertToCompare}">
                                                     <Binding ElementName="cbSecondeMatching" Path="SelectedItem" />
                                                     <Binding ElementName="studentView" Path="CurrentStudentVM" />
-                                                </MultiBinding>-->
-                                            <!--</Button.CommandParameter>-->
+                                                </MultiBinding>
+                                            </Button.CommandParameter>
                                         </Button>
 
                                         <Button
@@ -347,8 +348,8 @@
         <!--#region Open QA-->
         <ListBox
             x:Name="lbOpneQA"
-            Width="600"
-            Height="430"
+            Height="460"
+            MaxWidth="800"
             Margin="0,5,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"

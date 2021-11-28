@@ -197,7 +197,7 @@ namespace Gui.Controlers
                 StudentName = selectedStudents.Count() > 5 ? "כל המסומנים" :
                                 string.Join(", ", from s in selectedStudents
                                                   select s.Name),
-                Email = string.Join(", ", from s in selectedStudents
+                Email = string.Join(",", from s in selectedStudents
                                           select s.Email)
             }.Show();
         }

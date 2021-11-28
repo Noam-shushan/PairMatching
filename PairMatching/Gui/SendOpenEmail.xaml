@@ -59,20 +59,35 @@
                 ToolTip="הוסף קובץ">
                 <materialDesign:PackIcon Kind="Paperclip" />
             </Button>
-            <Button
-                x:Name="remFileAttchBtn"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Click="remFileAttchBtn_Click"
-                Style="{StaticResource MaterialDesignIconButton}"
-                ToolTip="הסר קובץ">
-                <materialDesign:PackIcon Kind="CloseBoxesOutline" />
-            </Button>
-            <Label x:Name="filePathLable" Content="{Binding ElementName=openEmail, Path=FileName}" />
+            <ItemsControl MaxHeight="150" ItemsSource="{Binding ElementName=openEmail, Path=Files}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel MaxWidth="500" Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="5">
+                            <TextBlock Text="{Binding FileName}" />
+                            <Button
+                                x:Name="remFileAttchBtn"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Click="remFileAttchBtn_Click"
+                                Style="{StaticResource MaterialDesignIconButton}"
+                                ToolTip="הסר קובץ">
+                                <materialDesign:PackIcon Kind="CloseBoxesOutline" />
+                            </Button>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
         <Button
             x:Name="sendBtn"
             Width="100"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
             Click="sendBtn_Click"
             Content="שלח מייל" />
     </StackPanel>

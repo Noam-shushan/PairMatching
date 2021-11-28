@@ -30,7 +30,7 @@
             x:Name="lvHistory"
             MinHeight="80"
             MaxHeight="250"
-            ItemsSource="{Binding MatchingHistories}">
+            ItemsSource="{Binding Path=MatchingHistoriesList}">
             <ListView.View>
                 <GridView>
                     <GridView.Columns>

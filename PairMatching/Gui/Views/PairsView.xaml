@@ -1,0 +1,282 @@
+﻿<UserControl
+    x:Class="Gui.Views.PairsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:Gui.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Gui.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="pairsView"
+    Width="1150"
+    Height="570"
+    Background="{DynamicResource MaterialDesignPaper}"
+    DataContext="{Binding ElementName=pairsView, Path=CurrentPairsVM}"
+    FlowDirection="RightToLeft"
+    FontFamily="{DynamicResource MaterialDesignFont}"
+    FontSize="14"
+    TextElement.FontSize="13"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:OrdinalConverter x:Key="OrdinalConverter" />
+        <Style x:Key="pairDetailsFilds" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="TextDecorations" Value="Underline" />
+        </Style>
+
+        <DataTemplate x:Key="pairDetails" DataType="{x:Type ListViewItem}">
+            <StackPanel DataContext="{Binding}">
+                <StackPanel Margin="5" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource pairDetailsFilds}" Text="שם:  " />
+                    <TextBlock Text="{Binding Path=Name}" />
+                </StackPanel>
+                <StackPanel Margin="5" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource pairDetailsFilds}" Text="מייל:  " />
+                    <TextBlock Text="{Binding Path=Email}" />
+                </StackPanel>
+                <StackPanel Margin="5" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource pairDetailsFilds}" Text="טלפון:  " />
+                    <TextBlock Text="{Binding Path=PhoneNumber}" />
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+    <StackPanel>
+        <!--#region Search-->
+        <Grid Width="150" HorizontalAlignment="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Button x:Name="searchBtn" Style="{DynamicResource MaterialDesignToolButton}">
+                <materialDesign:PackIcon Kind="Search" Opacity=".56" />
+            </Button>
+            <TextBox
+                x:Name="tbSearch"
+                Grid.Column="1"
+                MinWidth="150"
+                VerticalAlignment="Center"
+                materialDesign:HintAssist.Hint="חיפוש"
+                materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                BorderBrush="#28a7e7" />
+        </Grid>
+        <!--#endregion-->
+
+        <!--#region Pairs-->
+        <ListView
+            x:Name="lvPairs"
+            Grid.Column="0"
+            Width="1150"
+            Height="540"
+            VerticalAlignment="Top"
+            ItemsSource="{Binding Pairs}"
+            ScrollViewer.CanContentScroll="False">
+            <!--<ListView.Style>
+                <Style BasedOn="{StaticResource MaterialDesignListView}" TargetType="ListView">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=pairListControl, Path=IsLoadingData}" Value="True">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=pairListControl, Path=IsLoadingData}" Value="False">
+                            <Setter Property="IsEnabled" Value="True" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.Style>-->
+            <ListView.ItemContainerStyle>
+                <Style BasedOn="{StaticResource MaterialDesignGridViewItem}" TargetType="ListViewItem">
+                    <Setter Property="ToolTip" Value="לחץ פעמיים על מנת לראות השוואה מלאה" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsActive}" Value="True">
+                            <Setter Property="Background" Value="#bee1cf" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.Resources>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+                <DataTemplate x:Key="OrdinalColumnDataTemplate">
+                    <TextBlock HorizontalAlignment="Right" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Converter={StaticResource ResourceKey=OrdinalConverter}}" />
+                </DataTemplate>
+            </ListView.Resources>
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn
+                            Width="30"
+                            CellTemplate="{StaticResource ResourceKey=OrdinalColumnDataTemplate}"
+                            Header="#" />
+                        <GridViewColumn Width="60" HeaderContainerStyle="{StaticResource HeadersStyle}">
+                            <GridViewColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <CheckBox x:Name="selectAllPairCB" />
+                                </DataTemplate>
+                            </GridViewColumn.HeaderTemplate>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn
+                            Width="250"
+                            Header="משתתף מישראל"
+                            HeaderContainerStyle="{StaticResource HeadersStyle}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ContentPresenter Content="{Binding StudentFromIsrael}" ContentTemplate="{StaticResource ResourceKey=pairDetails}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn
+                            Width="250"
+                            Header="משתתף מהתפוצות"
+                            HeaderContainerStyle="{StaticResource HeadersStyle}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ContentPresenter Content="{Binding StudentFromWorld}" ContentTemplate="{StaticResource ResourceKey=pairDetails}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn
+                            Width="140"
+                            DisplayMemberBinding="{Binding Path=PrefferdTracks}"
+                            HeaderContainerStyle="{StaticResource HeadersStyle}">
+                            <GridViewColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <ComboBox
+                                        x:Name="cbTracksFilter"
+                                        materialDesign:HintAssist.HelperTextStyle="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                        materialDesign:HintAssist.Hint="מסלול"
+                                        ItemsSource="{Binding TracksNames}"
+                                        ToolTip="סנן לפי מסלול" />
+                                </DataTemplate>
+                            </GridViewColumn.HeaderTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="60">
+                            <GridViewColumn.HeaderContainerStyle>
+                                <Style BasedOn="{StaticResource MaterialDesignIconButton}" TargetType="{x:Type GridViewColumnHeader}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                </Style>
+                            </GridViewColumn.HeaderContainerStyle>
+                            <GridViewColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        x:Name="sendEmaileForAllPairsBtn"
+                                        Style="{StaticResource MaterialDesignIconButton}"
+                                        ToolTip="שלח מייל לכל המסומנים">
+                                        <materialDesign:PackIcon Kind="EmailSend" />
+                                    </Button>
+                                </DataTemplate>
+                            </GridViewColumn.HeaderTemplate>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        x:Name="sendEmaileToPairBtn"
+                                        Style="{StaticResource MaterialDesignIconButton}"
+                                        ToolTip="שלח מייל לחברותא">
+                                        <materialDesign:PackIcon Kind="EmailSend" />
+                                    </Button>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="60" HeaderContainerStyle="{StaticResource HeadersStyle}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <materialDesign:DialogHost
+                                        Background="Gray"
+                                        CloseOnClickAway="True"
+                                        Identifier="infoAboutDialog">
+                                        <materialDesign:DialogHost.DialogContent>
+                                            <StackPanel Margin="15" HorizontalAlignment="Center">
+                                                <local:NotesView CurrentNotesVM="{Binding Notes}" />
+                                                <ComboBox
+                                                    x:Name="cbTracksEdit"
+                                                    Width="150"
+                                                    Margin="20,10,0,20"
+                                                    HorizontalAlignment="Left"
+                                                    materialDesign:HintAssist.Hint="שנה מסלול"
+                                                    ItemsSource="{Binding TracksNames}" />
+                                                <Button
+                                                    x:Name="editPairBtn"
+                                                    Grid.Column="0"
+                                                    Width="100"
+                                                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                                    Content="החל" />
+                                            </StackPanel>
+                                        </materialDesign:DialogHost.DialogContent>
+                                        <Button
+                                            Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                                            Style="{StaticResource MaterialDesignIconButton}"
+                                            ToolTip="ערוך חברותא">
+                                            <materialDesign:PackIcon Kind="Pencil" />
+                                        </Button>
+                                    </materialDesign:DialogHost>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="60">
+                            <GridViewColumn.HeaderContainerStyle>
+                                <Style BasedOn="{StaticResource MaterialDesignIconButton}" TargetType="{x:Type GridViewColumnHeader}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                </Style>
+                            </GridViewColumn.HeaderContainerStyle>
+                            <GridViewColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        x:Name="deleteAllPairBtn"
+                                        Style="{StaticResource MaterialDesignIconButton}"
+                                        ToolTip="מחק חברותות מסומנות">
+                                        <materialDesign:PackIcon Kind="Delete" />
+                                    </Button>
+                                </DataTemplate>
+                            </GridViewColumn.HeaderTemplate>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        x:Name="deletePairBtn"
+                                        Style="{StaticResource MaterialDesignIconButton}"
+                                        ToolTip="מחק חברותא">
+                                        <materialDesign:PackIcon Kind="Delete" />
+                                    </Button>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        x:Name="activePairBtn"
+                                        Width="100"
+                                        Content="הפעל"
+                                        ToolTip="הפעל חברותא">
+                                        <Button.Style>
+                                            <Style BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="Button">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=IsActive}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <!--#endregion-->
+    </StackPanel>
+</UserControl>

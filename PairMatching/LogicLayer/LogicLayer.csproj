@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Email\CreateEmailTemplate.cs" />
+    <Compile Include="Email\EmailAddressChecker.cs" />
     <Compile Include="LogicFactory.cs" />
     <Compile Include="BO\LogicExceptions.cs" />
     <Compile Include="BO\Pair.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="LogicImplementaion.cs" />
     <Compile Include="FindMatching\Matching.cs" />
     <Compile Include="FindMatching\MatchinHouers.cs" />
+    <Compile Include="Notifications.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Email\SendEmail.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

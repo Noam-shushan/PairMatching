@@ -19,10 +19,14 @@ namespace Gui.Converters
         {
             var first = values[0] as SuggestStudent;
             var secondStudVM = values[1] as StudentViewModel;
-            var firstStudt = logicLayer.GetStudent(first.SuggestStudentId);
-            var firstStudVM = new StudentViewModel(firstStudt);
-            return new CompareTwoStudentsViewModel(firstStudVM, secondStudVM);
+            if(first != null && secondStudVM != null)
+            {
+                var firstStudt = logicLayer.GetStudent(first.SuggestStudentId);
+                var firstStudVM = new StudentViewModel(firstStudt);
+                return new CompareTwoStudentsViewModel(firstStudVM, secondStudVM);
+            }
 
+            return null;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

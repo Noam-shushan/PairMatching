@@ -10,7 +10,7 @@ namespace Gui.ViewModels
 {
     public class MatchingHistoriesViewModel
     {
-        public ObservableCollection<MatchingHistoryViewModel> MatchingHistories { get; set; }
+        public ObservableCollection<MatchingHistoryViewModel> MatchingHistoriesList { get; set; }
 
         public DateTime DateOfRegistered { get; set; }
 
@@ -21,7 +21,7 @@ namespace Gui.ViewModels
             {
                 temp.Add(new MatchingHistoryViewModel(mh));
             }
-            MatchingHistories = new ObservableCollection<MatchingHistoryViewModel>(temp);
+            MatchingHistoriesList = new ObservableCollection<MatchingHistoryViewModel>(temp);
         }
     }
 }

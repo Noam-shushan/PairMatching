@@ -7,9 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="CompWin"
     Title="השווה משתתפים"
-    Width="1200"
+    Width="1400"
     Height="800"
     Background="{DynamicResource MaterialDesignPaper}"
+    DataContext="{Binding ElementName=CompWin, Path=CurrentTwoStudentsVM}"
     FlowDirection="RightToLeft"
     FontFamily="{DynamicResource MaterialDesignFont}"
     FontSize="15"
@@ -20,21 +21,23 @@
     TextOptions.TextRenderingMode="Auto"
     WindowState="Maximized"
     mc:Ignorable="d">
-    <Window.DataContext>
-        <Binding ElementName="CompWin" Path="CurrentTwoStudentsVM" />
-    </Window.DataContext>
     <Grid>
-        <StackPanel Orientation="Horizontal">
-            <GroupBox
-                Margin="0,0,10,0"
-                BorderBrush="BlueViolet"
-                Header="תלמיד מישראל">
-                <local:StudentView CurrentStudentVM="{Binding StudentFromIsrael}" />
-            </GroupBox>
-            <GroupBox BorderBrush="BlueViolet" Header="תלמיד מהתפוצות">
-                <local:StudentView CurrentStudentVM="{Binding StudentFromWorld}" />
-            </GroupBox>
-        </StackPanel>
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
+        <GroupBox
+            Grid.Column="0"
+            Margin="0,0,10,0"
+            BorderBrush="BlueViolet"
+            Header="תלמיד מישראל">
+            <local:StudentView CurrentStudentVM="{Binding ElementName=CompWin, Path=CurrentTwoStudentsVM.StudentFromIsrael}" />
+        </GroupBox>
+        <GroupBox
+            Grid.Column="1"
+            BorderBrush="BlueViolet"
+            Header="תלמיד מהתפוצות">
+            <local:StudentView CurrentStudentVM="{Binding ElementName=CompWin, Path=CurrentTwoStudentsVM.StudentFromWorld}" />
+        </GroupBox>
     </Grid>
 </Window>

@@ -37,6 +37,7 @@ namespace LogicLayer
         /// The template of the email body
         /// </summary>
         private StringBuilder _template = new StringBuilder();
+        
         readonly CreateEmailTemplate emailTemplateCreator = new CreateEmailTemplate();
 
         /// <summary>
@@ -71,6 +72,8 @@ namespace LogicLayer
                 mailSettings.Smtp.Network.UserName);
         }
 
+
+        List<string> tempTo;
         /// <summary>
         /// Set the destination address of the email
         /// </summary>
@@ -79,6 +82,20 @@ namespace LogicLayer
         public SendEmail To(string to)
         {
             _to = to;
+            var validAdrress = new List<string>();
+            var adrreses = to.Split(',');
+            foreach (var addr in adrreses)
+            {
+                var emailStatus = EmailAddressChecker.CheckEmailAddress(addr);
+                if(emailStatus == EmailAddressStatus.Valid)
+                {
+                    validAdrress.Add(addr);
+                }
+            }
+            tempTo = new List<string>(validAdrress);
+            _to = string.Join(", ", validAdrress)
+                .Replace("\n", "")
+                .Replace("\r", "");
             return this;
         }
 
@@ -113,7 +130,13 @@ namespace LogicLayer
         {
             return isTest ?
                 // Sender for testing the system
-                new SmtpClient { Host = "localhost", Port = 25, EnableSsl = false } :
+                new SmtpClient 
+                { 
+                    Host = "localhost", 
+                    Port = 25, 
+                    EnableSsl = false, 
+                    DeliveryFormat = SmtpDeliveryFormat.International 
+                } :
                 // Sender for the app
                 new SmtpClient
                 {
@@ -122,7 +145,8 @@ namespace LogicLayer
                     UseDefaultCredentials = smtp.Network.DefaultCredentials,
                     Credentials = new NetworkCredential(smtp.From, smtp.Network.Password),
                     EnableSsl = smtp.Network.EnableSsl,
-                    DeliveryMethod = smtp.DeliveryMethod
+                    DeliveryMethod = smtp.DeliveryMethod,
+                    DeliveryFormat = smtp.DeliveryFormat
                 };
         }
 
@@ -131,28 +155,71 @@ namespace LogicLayer
         /// </summary>
         /// <param name="fileAttachment">file name to attach to the email</param>
         /// <returns></returns>
-        public async Task SendOpenMailAsync(string fileAttachment = "")
+        public async Task SendOpenMailAsync(IEnumerable<string> fileAttachments = null)
         {
             if (_to == string.Empty)
             {
-                throw new Exception("Missing destination address to send email");
+                //throw new Exception("Missing destination address to send email");
+                return;
             }
 
             SmtpClient client = GetSmtpClient();
 
+            //foreach(var ad in tempTo)
+            //{
+            //    try
+            //    {
+            //        using (var messege = new MailMessage(FromMail.Address,
+            //            ad, _subject, _template.ToString()))
+            //        {
+            //            if (fileAttachments != null)
+            //            {
+            //                foreach (var f in fileAttachments)
+            //                {
+            //                    if (!File.Exists(f))
+            //                    {
+            //                        throw new Exception("File not found");
+            //                    }
+            //                }
+
+            //                foreach (var f in fileAttachments)
+            //                {
+            //                    messege.Attachments.Add(new Attachment(f));
+            //                }
+            //            }
+            //            await Task.Run(() => client.Send(messege));
+            //        }
+            //    }
+            //    catch (FormatException) // Not valid email eddres
+            //    {
+            //        //throw new FormatException($"The Email address {_to} is not valid");
+            //        continue;
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        //throw new Exception(ex.Message);
+            //        continue;
+            //    }
+            //}
             try
             {
-                using (var messege = new MailMessage(FromMail.Address, 
+                using (var messege = new MailMessage(FromMail.Address,
                     _to, _subject, _template.ToString()))
                 {
-                    if (fileAttachment != "")
+                    if (fileAttachments != null)
                     {
-                        if (!File.Exists(fileAttachment))
+                        foreach (var f in fileAttachments)
                         {
-                            throw new Exception("File not found");
+                            if (!File.Exists(f))
+                            {
+                                throw new Exception("File not found");
+                            }
                         }
-                        Attachment attachment = new Attachment(fileAttachment);
-                        messege.Attachments.Add(attachment);
+
+                        foreach (var f in fileAttachments)
+                        {
+                            messege.Attachments.Add(new Attachment(f));
+                        }
                     }
                     await Task.Run(() => client.Send(messege));
                 }
@@ -175,7 +242,8 @@ namespace LogicLayer
         {
             if (_to == string.Empty)
             {
-                throw new Exception("Missing destination address to send email");
+                //throw new Exception("Missing destination address to send email");
+                return;
             }
 
             SmtpClient client = GetSmtpClient();

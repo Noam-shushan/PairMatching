@@ -25,22 +25,19 @@ namespace Gui.Views
     {
 
 
-        public StudnetsListViewModel CurrentStudentsListVM
+        public StudentsListViewModel CurrentStudentsListVM
         {
-            get { return (StudnetsListViewModel)GetValue(CurrentStudentsListVMProperty); }
+            get { return (StudentsListViewModel)GetValue(CurrentStudentsListVMProperty); }
             set { SetValue(CurrentStudentsListVMProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for CurrentStudentsListVM.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CurrentStudentsListVMProperty =
-            DependencyProperty.Register("CurrentStudentsListVM", typeof(StudnetsListViewModel), typeof(StudentsListView));
-
-        private ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
+            DependencyProperty.Register("CurrentStudentsListVM", typeof(StudentsListViewModel), typeof(StudentsListView));
 
         public StudentsListView()
         {
             InitializeComponent();
-            CurrentStudentsListVM = new StudnetsListViewModel(logicLayer.StudentList.ToList());
         }
     }
 }

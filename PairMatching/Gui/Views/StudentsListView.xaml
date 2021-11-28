@@ -7,7 +7,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="studentsListView"
-    Width="1400"
+    Width="auto"
     Height="650"
     Background="{DynamicResource MaterialDesignPaper}"
     DataContext="{Binding ElementName=studentsListView, Path=CurrentStudentsListVM}"
@@ -20,7 +20,6 @@
     TextOptions.TextFormattingMode="Ideal"
     TextOptions.TextRenderingMode="Auto"
     mc:Ignorable="d">
-
     <UserControl.Resources>
         <Style
             x:Key="hideColumnWheneSimpleViewStyle"
@@ -195,7 +194,7 @@
                 Height="500"
                 ItemsSource="{Binding Students}"
                 ScrollViewer.CanContentScroll="False"
-                SelectedItem="{Binding SelectedStudent}">
+                SelectedItem="{Binding SelectedStudent, Mode=TwoWay}">
                 <ListView.ItemContainerStyle>
                     <Style BasedOn="{StaticResource MaterialDesignGridViewItem}" TargetType="ListViewItem">
                         <Setter Property="ToolTip" Value="לחץ על מנת לראות התאמות ופרטים" />
@@ -285,7 +284,17 @@
             <!--#endregion-->
 
         </StackPanel>
-
-        <local:StudentView Grid.Column="1" CurrentStudentVM="{Binding ElementName=lvStudents, Path=SelectedItem}" />
+        <StackPanel Grid.Column="1">
+            <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSelectAny}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
+            <local:StudentView CurrentStudentVM="{Binding ElementName=lvStudents, Path=SelectedItem}" />
+        </StackPanel>
     </Grid>
 </UserControl>

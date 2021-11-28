@@ -21,7 +21,7 @@ namespace Gui
     {
         private ILogicLayer logicLayer;
 
-        private StudnetsListViewModel studnetsList;
+        private StudentsListViewModel studnetsList;
 
         #region Dependency Properties
         public event PropertyChangedEventHandler PropertyChanged;
@@ -147,12 +147,7 @@ namespace Gui
 
                 await logicLayer.UpdateAsync();
                 isUpdate = true;
-                if (logicLayer.StudentWithUnvalidEmail.Count > 0)
-                {
-                    var result = string.Join(",\n", 
-                        from s in logicLayer.StudentWithUnvalidEmail select s.Name);
-                    Messages.MessageBoxWarning($"הכתובות מייל של התלמידים הבאים:\n {result} אינן חוקיות");
-                }
+                lvNotifcations.ItemsSource = Notifications.Instance.NotValidEmailAdrress;
             }
             catch (Exception ex)
             {
@@ -172,7 +167,7 @@ namespace Gui
         {
             IsStatisticsUi = true;
             statistics.DataContext = new RecordCollection(logicLayer.GetStatistics());
-            //new Window1().Show();
+            new Views.MainView().Show();
         }
 
         #region Students UI

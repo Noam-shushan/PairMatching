@@ -1,25 +1,33 @@
-﻿using System;
+﻿using LogicLayer;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Media;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Media;
 
-namespace Gui
+namespace Gui.ViewModels
 {
-    class RecordCollection : ObservableCollection<Record>
+    public class StatisticsViewModel : ViewModelBase
     {
-        public RecordCollection(List<BO.Bar> barValues)
+        private ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
+
+        public ObservableCollection<Record> Records { get; set; }
+
+        public StatisticsViewModel()
         {
             Random rand = new Random();
-
+            List<BO.Bar> barValues = logicLayer.GetStatistics();
             int max = barValues.Max(b => b.Value);
+            Records = new ObservableCollection<Record>();
             foreach (BO.Bar barVal in barValues)
             {
-                var color = Color.FromRgb((byte)rand.Next(120, 180), 
-                    (byte)rand.Next(100, 160), 
+                var color = Color.FromRgb((byte)rand.Next(120, 180),
+                    (byte)rand.Next(100, 160),
                     (byte)rand.Next(110, 170));
-                Add(new Record 
+                Records.Add(new Record
                 {
                     Color = new SolidColorBrush(color),
                     Data = barVal.Value,
@@ -36,7 +44,7 @@ namespace Gui
 
     }
 
-    class Record : INotifyPropertyChanged
+    public class Record : INotifyPropertyChanged
     {
         public Brush Color { set; get; }
 
