@@ -9,7 +9,6 @@
     x:Name="studentsListView"
     Width="auto"
     Height="650"
-    Background="{DynamicResource MaterialDesignPaper}"
     DataContext="{Binding ElementName=studentsListView, Path=CurrentStudentsListVM}"
     FlowDirection="RightToLeft"
     FontFamily="{DynamicResource MaterialDesignFont}"

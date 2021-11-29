@@ -13,7 +13,7 @@ namespace Gui.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ViewModelBase CurrentViewModel
+        public MainViewModelBase CurrentViewModel
         {
             get => NavigationBar.SelectedViewModel;
         }

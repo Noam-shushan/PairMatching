@@ -5,7 +5,7 @@ using UtilEntities;
 
 namespace Gui.ViewModels
 {
-    public class PairViewModel : INotifyPropertyChanged
+    public class PairViewModel : ViewModelBase
     {
         private Pair _pair;
 
@@ -37,7 +37,7 @@ namespace Gui.ViewModels
             set 
             {
                 _pair.DateOfUpdate = value;
-                OnPropertyChanged("DateOfUpdate");
+                OnPropertyChanged(nameof(DateOfUpdate));
             }
         }
 
@@ -47,7 +47,7 @@ namespace Gui.ViewModels
             set
             {
                 _pair.DateOfDelete = value;
-                OnPropertyChanged("DateOfDelete");
+                OnPropertyChanged(nameof(DateOfDelete));
             }
         }
 
@@ -57,7 +57,7 @@ namespace Gui.ViewModels
             set
             {
                 _pair.IsActive = value;
-                OnPropertyChanged("IsActive");
+                OnPropertyChanged(nameof(IsActive));
             }
         }
 
@@ -67,20 +67,8 @@ namespace Gui.ViewModels
             set
             {
                 _pair.PrefferdTracks = Dictionaries.PrefferdTracksDictInverse[value];
-                OnPropertyChanged("PrefferdTracks");
+                OnPropertyChanged(nameof(PrefferdTracks));
             }
-        }
-
-        public bool IsSelected { get; set; }
-
-        public bool IsChanged { get; private set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string propName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
-            IsChanged = true;
         }
     }
 }

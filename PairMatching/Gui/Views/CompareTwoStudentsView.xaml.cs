@@ -19,8 +19,19 @@ namespace Gui.Views
     /// Interaction logic for CompareTwoStudentView.xaml
     /// </summary>
     public partial class CompareTwoStudentsView : Window
-    {
-        public CompareTwoStudentsViewModel CurrentTwoStudentsVM { get; set; }
+    { 
+
+        public CompareTwoStudentsViewModel CurrentTwoStudentsVM
+        {
+            get { return (CompareTwoStudentsViewModel)GetValue(CurrentTwoStudentsVMProperty); }
+            set { SetValue(CurrentTwoStudentsVMProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CurrentTwoStudentsVM.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CurrentTwoStudentsVMProperty =
+            DependencyProperty.Register("CurrentTwoStudentsVM", typeof(CompareTwoStudentsViewModel), typeof(CompareTwoStudentsView));
+
+
 
         public CompareTwoStudentsView(CompareTwoStudentsViewModel twoStudentsViewModel)
         {
@@ -28,6 +39,8 @@ namespace Gui.Views
             CurrentTwoStudentsVM = twoStudentsViewModel;
             CurrentTwoStudentsVM.StudentFromIsrael.IsCompereWin = true;
             CurrentTwoStudentsVM.StudentFromWorld.IsCompereWin = true;
+            
+            
         }
     }
 }

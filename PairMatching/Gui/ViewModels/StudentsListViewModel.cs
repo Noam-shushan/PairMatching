@@ -10,10 +10,8 @@ using BO;
 
 namespace Gui.ViewModels
 {
-    public class StudentsListViewModel : ViewModelBase, INotifyPropertyChanged
+    public class StudentsListViewModel : MainViewModelBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public ObservableCollection<StudentViewModel> Students { get; set; }
 
         private bool _isSelectAny = false;
@@ -23,7 +21,7 @@ namespace Gui.ViewModels
             set
             {
                 _isSelectAny = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsSelectAny"));
+                OnPropertyChanged("IsSelectAny");
             }
         }
 
@@ -39,7 +37,7 @@ namespace Gui.ViewModels
                 {
                     IsSelectAny = true;
                 }
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedStudent"));
+                OnPropertyChanged("SelectedStudent");
             }
         }
 

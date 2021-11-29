@@ -82,8 +82,14 @@
     <Reference Include="MaterialDesignThemes.Wpf, Version=4.3.0.82, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.4.3.0-ci82\lib\net452\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MicrosoftExpressionInteractions.3.0.40218.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Expression.Blend.Sdk.1.0.2\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Workflow.ComponentModel" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -116,6 +122,8 @@
       <DependentUpon>StatisticsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\StudentAndSuggestStudentConverter.cs" />
+    <Compile Include="Converters\StudentVMToStudentConverter.cs" />
+    <Compile Include="Converters\TempPair.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Controlers\NoteControl.xaml.cs">
       <DependentUpon>NoteControl.xaml</DependentUpon>
@@ -135,15 +143,18 @@
     </Compile>
     <Compile Include="ViewModels\CompareTwoStudentsViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\MakeMatch.cs" />
     <Compile Include="ViewModels\MatchingHistoriesViewModel.cs" />
     <Compile Include="ViewModels\MatchingHistoryViewModel.cs" />
     <Compile Include="ViewModels\NavigationBarViewModel.cs" />
     <Compile Include="ViewModels\NotesViewModel.cs" />
     <Compile Include="ViewModels\PairsListViewModel.cs" />
     <Compile Include="ViewModels\PairViewModel.cs" />
+    <Compile Include="ViewModels\RecordViewModel.cs" />
     <Compile Include="ViewModels\StatisticsViewModel.cs" />
     <Compile Include="ViewModels\StudentViewModel.cs" />
     <Compile Include="ViewModels\StudentsListViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModelBase.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\CompareTwoStudentsView.xaml.cs">
       <DependentUpon>CompareTwoStudentsView.xaml</DependentUpon>

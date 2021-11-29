@@ -10,7 +10,7 @@ using System;
 
 namespace Gui.ViewModels
 {
-    public class PairsListViewModel : ViewModelBase
+    public class PairsListViewModel : MainViewModelBase
     {
         public List<string> TracksNames { get; set; }
 

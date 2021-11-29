@@ -14,12 +14,12 @@ namespace Gui.ViewModels
 
     public class NavigationBarViewModel : INotifyPropertyChanged
     {
-        private ViewModelBase _selectedViewModel;
+        private MainViewModelBase _selectedViewModel;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public event Action ViewChanged;
-        public ViewModelBase SelectedViewModel 
+        public MainViewModelBase SelectedViewModel 
         { 
             get => _selectedViewModel;
             set

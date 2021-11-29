@@ -10,7 +10,7 @@ using Gui.Commands;
 
 namespace Gui.ViewModels
 {
-    public class NotesViewModel : INotifyPropertyChanged
+    public class NotesViewModel : ViewModelBase
     {
         public ObservableCollection<Note> Notes { get; set; }
 
@@ -20,11 +20,11 @@ namespace Gui.ViewModels
         /// </summary>
         public bool IsStudent
         {
-            get { return _isStudent; }
+            get => _isStudent; 
             set
             {
                 _isStudent = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsStudent"));
+                OnPropertyChanged(nameof(IsStudent));
             }
         }
 
@@ -44,7 +44,5 @@ namespace Gui.ViewModels
                 // add to studnet
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

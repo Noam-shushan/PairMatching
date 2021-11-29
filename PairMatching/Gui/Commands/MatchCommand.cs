@@ -5,12 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BO;
+using Gui.Converters;
 
 namespace Gui.Commands
 {
     public class MatchCommand : ICommand
     {
-        public event Func<Student, Student, Task> MathcAsync;
+        public event Func<Student, Student, Task<bool>> MathcAsync;
+
+        public bool IsMatch { get; set; }
 
         public event EventHandler CanExecuteChanged
         {
@@ -26,9 +29,11 @@ namespace Gui.Commands
 
         public async void Execute(object parameter)
         {
-            if(MathcAsync != null)
+            var tempPair = parameter as TempPair;
+
+            if (MathcAsync != null && tempPair != null)
             {
-                await MathcAsync(null, null);
+                IsMatch = await MathcAsync(tempPair.First, tempPair.Second);
             }
         }
     }

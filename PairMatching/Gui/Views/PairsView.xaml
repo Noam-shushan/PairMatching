@@ -10,7 +10,6 @@
     x:Name="pairsView"
     Width="1150"
     Height="570"
-    Background="{DynamicResource MaterialDesignPaper}"
     DataContext="{Binding ElementName=pairsView, Path=CurrentPairsVM}"
     FlowDirection="RightToLeft"
     FontFamily="{DynamicResource MaterialDesignFont}"

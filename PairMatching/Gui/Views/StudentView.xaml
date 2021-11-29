@@ -10,7 +10,6 @@
     x:Name="studentView"
     Width="auto"
     Height="auto"
-    Background="{DynamicResource MaterialDesignPaper}"
     DataContext="{Binding ElementName=studentView, Path=CurrentStudentVM}"
     FlowDirection="RightToLeft"
     FontFamily="{DynamicResource MaterialDesignFont}"
@@ -270,8 +269,17 @@
                                         <Button
                                             x:Name="compFirstMatchBtn"
                                             HorizontalAlignment="Left"
+                                            Command="{Binding CompareTo}"
                                             Content="השווה"
-                                            Style="{StaticResource MaterialDesignFlatButton}" />
+                                            Style="{StaticResource MaterialDesignFlatButton}">
+                                            <Button.CommandParameter>
+                                                <MultiBinding Converter="{StaticResource ConvertToCompare}">
+                                                    <Binding ElementName="cbFirstMatching" Path="SelectedItem" />
+                                                    <Binding ElementName="studentView" Path="CurrentStudentVM" />
+                                                </MultiBinding>
+                                            </Button.CommandParameter>
+                                        </Button>
+
                                         <Button
                                             x:Name="clearCBFirstMatchBtn"
                                             Grid.Column="2"
@@ -322,6 +330,8 @@
                                             x:Name="clearCBSecondeMatchBtn"
                                             Grid.Column="2"
                                             HorizontalAlignment="Right"
+                                            Command="{x:Null}"
+                                            CommandTarget="{Binding ElementName=cbSecondeMatching, Path=SelectedItem}"
                                             Content="נקה"
                                             Style="{StaticResource MaterialDesignFlatButton}" />
                                     </Grid>

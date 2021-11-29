@@ -13,7 +13,7 @@ using UtilEntities;
 
 namespace Gui.ViewModels
 {
-    public class StudentViewModel : INotifyPropertyChanged
+    public class StudentViewModel : ViewModelBase
     {
         private readonly ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
 
@@ -84,7 +84,7 @@ namespace Gui.ViewModels
             set
             {
                 _student.Country = value;
-                OnPropertyChanged("Country");
+                OnPropertyChanged(nameof(Country));
             } 
         }
 
@@ -97,7 +97,7 @@ namespace Gui.ViewModels
             set
             {
                 _student.Email = value;
-                OnPropertyChanged("Email");
+                OnPropertyChanged(nameof(Email));
             }
         }
 
@@ -110,7 +110,7 @@ namespace Gui.ViewModels
             set
             {
                 _student.PhoneNumber = value;
-                OnPropertyChanged("PhoneNumber");
+                OnPropertyChanged(nameof(PhoneNumber));
             }
         }
 
@@ -180,19 +180,7 @@ namespace Gui.ViewModels
                 {
                     Dictionaries.PrefferdTracksDictInverse[value]
                 };
-                OnPropertyChanged("PrefferdTracks");
-            }
-        }
-        public DateTime DateOfRegistered { get; set; }
-
-        private bool _isSelected = false;
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set
-            {
-                _isSelected = value;
-                OnPropertyChanged("IsSelected");
+                OnPropertyChanged(nameof(PrefferdTracks));
             }
         }
 
@@ -200,7 +188,6 @@ namespace Gui.ViewModels
         {
             get => _student.IsOpenToMatch;
         }
-
 
         public string PrefferdGender { get => Dictionaries.GendersDict[_student.PrefferdGender]; }
 
@@ -233,7 +220,16 @@ namespace Gui.ViewModels
 
         public string MatchTo { get => _student.MatchToShow; }
 
-        public bool IsCompereWin { get; set; }
+        bool _isCompereWin;
+        public bool IsCompereWin 
+        { 
+            get => _isCompereWin;
+            set
+            {
+                _isCompereWin = value;
+                OnPropertyChanged(nameof(IsCompereWin));
+            } 
+        }
 
         public string Languages
         {
@@ -261,17 +257,6 @@ namespace Gui.ViewModels
                 }
                 return _openQuestionsDict;
             }
-        }
-
-
-        public bool IsChanged { get; private set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string propName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
-            IsChanged = true;
         }
     }
 }
