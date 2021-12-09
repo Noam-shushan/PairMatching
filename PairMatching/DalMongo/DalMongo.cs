@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using DataLayer;
 using DO;
+
 
 namespace DalMongo
 {
@@ -13,7 +15,28 @@ namespace DalMongo
         private static readonly MongoCrud db = new MongoCrud("Shalhevet");
 
         #region Singleton
-        public static IDataLayer Instance { get; } = new DalMongo();
+
+        private static IDataLayer _instance;
+
+        private static readonly object _loke = new object();
+
+        public static IDataLayer Instance 
+        {
+            get
+            {
+                if(_instance == null)
+                {
+                    lock (_loke)
+                    {
+                        if(_instance == null)
+                        {
+                            _instance = new DalMongo();
+                        }
+                    }
+                }
+                return _instance;
+            } 
+        }
 
         private DalMongo()
         {
@@ -39,7 +62,7 @@ namespace DalMongo
         #endregion
 
         public async Task SaveAllDataFromSpredsheetAsync()
-        {
+        {        
             await db.InsertManyAsync(studentsTable, DataSource.StudentsList);
             db.UpsertRecord(countersAndLastDataOfSpredsheetTable, _counters.Id, _counters);
         }
@@ -104,14 +127,73 @@ namespace DalMongo
             throw new BadStudentException($"can not find studet number {id} or this student is deletet", id);
         }
 
+        private Student CopySafe(Student fromDB, Student fromSheet)
+        {
+            foreach (PropertyInfo propTo in fromDB.GetType().GetProperties())
+            {
+                if(propTo.Name == "MatchTo" || propTo.Name == "Name" || propTo.Name == "Email"
+                    || propTo.Name == "Notes" || propTo.Name == "MatchingHistories"
+                    || propTo.Name == "IsSimpleStudent" || propTo.Name == "Id")
+                {
+                    continue;
+                }
+                PropertyInfo propFrom = typeof(Student).GetProperty(propTo.Name);
+                if (propFrom == null)
+                {
+                    continue;
+                }
+
+                var value = propFrom.GetValue(fromSheet, null);
+                if (value != null)
+                {
+                    propTo.SetValue(fromDB, value);
+                }
+            }
+            return fromDB;
+        }
+
+        private Student Clone(Student original)
+        {
+            Student copyToObject = new Student();
+
+            foreach (PropertyInfo propertyInfo in typeof(Student).GetProperties())
+            {
+                if (propertyInfo.CanWrite)
+                {
+                    propertyInfo.SetValue(copyToObject, propertyInfo.GetValue(original, null), null);
+                }
+            }
+
+            return copyToObject;
+        }
+
         public IEnumerable<Student> GetAllStudents()
         {
             try
             {
                 var students = db.LoadeRecords<Student>(studentsTable);
+
+
+                //TODO fix some broken Data
+                //var dops = from s in students
+                //           group s by s.Name;
+
+                //var l = from s1 in students
+                //        where !s1.IsSimpleStudent
+                //        from s2 in DataSource.StudentsList
+                //        where s1.Email == s2.Email && s1.Name == s1.Name
+                //        select CopySafe(Clone(s1), Clone(s2));
+
+                //foreach(var s in l)
+                //{
+                //    db.UpsertRecord(studentsTable, s.Id, s);
+                //}
+
+
                 return from s in students
                        where !s.IsDeleted
                        select s;
+
             }
             catch (Exception ex)
             { 

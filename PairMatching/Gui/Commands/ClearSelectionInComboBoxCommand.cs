@@ -4,14 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Gui.Converters;
-using Gui.ViewModels;
 
 namespace Gui.Commands
 {
-    public class CompareTwoStudentsCommand : ICommand
+    public class ClearSelectionInComboBoxCommand : ICommand
     {
-        public event Action<TempPair> Compare;
+        public event Action Clear;
 
         public event EventHandler CanExecuteChanged
         {
@@ -25,12 +23,7 @@ namespace Gui.Commands
         }
 
         public void Execute(object parameter)
-        {
-            var studentsToCompare = parameter as TempPair;
-            if(Compare != null && studentsToCompare != null)
-            {
-                Compare(studentsToCompare);
-            }
+        {//todo not working
         }
     }
 }

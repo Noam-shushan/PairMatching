@@ -7,6 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using DataLayer;
 using UtilEntities;
+using LogicLayer.Email;
+using LogicLayer.FindMatching;
+using LogicLayer.GoogleSheet;
 
 namespace LogicLayer
 {
@@ -16,7 +19,7 @@ namespace LogicLayer
     internal class LogicImplementaion : ILogicLayer, INotifyPropertyChanged
     {
         // tha singelton of the data layer 
-        private readonly IDataLayer dal = DalFactory.GetDal();
+        private readonly IDataLayer dal;
 
         // maching object to cheack all the condition to make a match
         private readonly Matching matcher = Matching.Instance;
@@ -132,9 +135,32 @@ namespace LogicLayer
         #endregion
 
         #region Singleton referens of the logic layer
-        public static ILogicLayer Instance { get; } = new LogicImplementaion();
+        private static ILogicLayer _instance;
 
-        private LogicImplementaion() { }
+        private static readonly object _loke = new object();
+
+        public static ILogicLayer Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (_loke)
+                    {
+                        if (_instance == null)
+                        {
+                            _instance = new LogicImplementaion();
+                        }
+                    }
+                }
+                return _instance;
+            }
+        }
+
+        private LogicImplementaion() 
+        {
+            dal = DalFactory.GetDal();
+        }
         #endregion
 
         #region Statistics
@@ -273,9 +299,9 @@ namespace LogicLayer
         /// Search students by prefix of thire name 
         /// </summary>
         /// <param name="preifxName">The prefix that cams from the Gui</param>
-        public void SearchStudents(string preifxName)
+        public void SearchStudents(string subtext)
         {
-            StudentListFilter = s => s.Name.StartsWith(preifxName, StringComparison.InvariantCultureIgnoreCase);
+            StudentListFilter = s => SearchText(s.Name, subtext);
         }
 
         /// <summary>
@@ -623,8 +649,15 @@ namespace LogicLayer
         {
             var pairsList = dal.GetAllPairs();
             return from p in pairsList
-                   select new BO.Pair()
-                    .CreateFromDO(p, GetSimpleStudent);
+                   select CreatePairFromDO(p, GetSimpleStudent);
+        }
+
+        public BO.Pair CreatePairFromDO(DO.Pair pairDo, Func<int, BO.SimpleStudent> createSimpleStudentFunc)
+        {
+            var res = pairDo.CopyPropertiesToNew(typeof(BO.Pair)) as BO.Pair;
+            res.StudentFromIsrael = createSimpleStudentFunc(pairDo.StudentFromIsraelId);
+            res.StudentFromWorld = createSimpleStudentFunc(pairDo.StudentFromWorldId);
+            return res;
         }
 
         /// <summary>
@@ -909,9 +942,9 @@ namespace LogicLayer
             foreach (var stud in _studentList)
             {
                 // Get the names of the students that thy paired with
-                stud.MatchToShow = string.Join(", ", from s in _studentList
-                                                     where stud.MatchTo.Contains(s.Id)
-                                                    select s.Name);
+                stud.MatchToShow = from s in _studentList
+                                   where stud.MatchTo.Contains(s.Id)
+                                   select s;
 
                 if (stud.IsOpenToMatch)
                 {
@@ -1034,19 +1067,21 @@ namespace LogicLayer
 
         private BO.SimpleStudent GetSimpleStudent(int id)
         {
-            var studDO = dal.GetStudent(id);
-            var simpleStudent = studDO.CopyPropertiesToNew(typeof(BO.SimpleStudent)) as BO.SimpleStudent;
+            var stud = GetStudent(id);
+            var simpleStudent = stud.CopyPropertiesToNew(typeof(BO.SimpleStudent)) as BO.SimpleStudent;
             return simpleStudent;
         }
 
         public void SearchPairs(string text)
         {
-            PairListFilter = p => 
-            p.StudentFromIsrael.
-            Name.StartsWith(text, StringComparison.InvariantCultureIgnoreCase)
-            || 
-            p.StudentFromWorld.
-            Name.StartsWith(text, StringComparison.InvariantCultureIgnoreCase);
+            PairListFilter = p =>
+            SearchText(p.StudentFromIsrael.Name, text) ||
+                SearchText(p.StudentFromWorld.Name, text);
+        }
+
+        private bool SearchText(string text, string subtext)
+        {
+            return text.ToLower().Contains(subtext.ToLower());
         }
         #endregion
     }

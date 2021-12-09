@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using UtilEntities;
+using LogicLayer.Email;
 
 namespace LogicLayer
 {

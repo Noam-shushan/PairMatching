@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Gui.ViewModels
 {
-    public abstract class MainViewModelBase : INotifyPropertyChanged
+    public class MainViewModelBase : INotifyPropertyChanged
     {
         protected void OnPropertyChanged(string propName)
         {

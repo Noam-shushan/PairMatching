@@ -8,16 +8,13 @@ namespace DataLayer
         [BsonId]
         public int Id { get; } = 1;
 
-        static int _studentCounter = 0;
+        int _studentCounter = 0;
 
-        static int _pairCounter = 0;
+        int _pairCounter = 0;
 
         public static Counters Instance { get; } = new Counters();
 
-        Counters() 
-        {
-            
-        }
+        Counters() {}
 
         public int StudentCounter
         {

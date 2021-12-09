@@ -11,17 +11,6 @@ namespace BO
 {
     public class Pair : IEquatable<Pair>
     {
-
-        public Pair() { }
-
-        public Pair CreateFromDO(DO.Pair pairDo, Func<int, SimpleStudent> createSimpleStudentFunc)
-        {
-            var res = pairDo.CopyPropertiesToNew(typeof(Pair)) as Pair;
-            res.StudentFromIsrael = createSimpleStudentFunc(pairDo.StudentFromIsraelId);
-            res.StudentFromWorld = createSimpleStudentFunc(pairDo.StudentFromWorldId);
-            return res;
-        }
-
         public List<Note> Notes { get; set; } = new List<Note>();
 
         public void EditPrefferdTracks(string track)

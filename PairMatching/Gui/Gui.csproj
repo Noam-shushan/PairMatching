@@ -31,7 +31,7 @@
     <UpdateUrl>https://pairmatching.azurewebsites.net/</UpdateUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.htm</WebPage>
-    <ApplicationRevision>29</ApplicationRevision>
+    <ApplicationRevision>32</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -114,9 +114,12 @@
     </Compile>
     <Compile Include="Commands\AddNoteCommand.cs" />
     <Compile Include="Commands\ChangeMainViewCommand.cs" />
+    <Compile Include="Commands\ClearSelectionInComboBoxCommand.cs" />
     <Compile Include="Commands\CompareTwoStudentsCommand.cs" />
     <Compile Include="Commands\MatchCommand.cs" />
+    <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\UpdateStudentCommand.cs" />
+    <Compile Include="Converters\DataContextToStudentVMConvetor.cs" />
     <Compile Include="Converters\OrdinalConverter.cs" />
     <Compile Include="Controlers\StatisticsControl.xaml.cs">
       <DependentUpon>StatisticsControl.xaml</DependentUpon>
@@ -143,7 +146,6 @@
     </Compile>
     <Compile Include="ViewModels\CompareTwoStudentsViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\MakeMatch.cs" />
     <Compile Include="ViewModels\MatchingHistoriesViewModel.cs" />
     <Compile Include="ViewModels\MatchingHistoryViewModel.cs" />
     <Compile Include="ViewModels\NavigationBarViewModel.cs" />

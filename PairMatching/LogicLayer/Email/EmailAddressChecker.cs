@@ -5,7 +5,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogicLayer
+namespace LogicLayer.Email
 {
     public enum EmailAddressStatus { Valid, NotValid, Empty }
 

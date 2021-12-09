@@ -21,6 +21,10 @@ namespace UtilEntities
         {
             foreach (PropertyInfo propTo in to.GetType().GetProperties())
             {
+                if (!propTo.CanWrite)
+                {
+                    continue;
+                }
                 PropertyInfo propFrom = typeof(S).GetProperty(propTo.Name);
                 if (propFrom == null)
                 {

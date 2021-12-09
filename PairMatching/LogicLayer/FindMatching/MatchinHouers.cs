@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using UtilEntities;
 
-namespace LogicLayer
+namespace LogicLayer.FindMatching
 {
     // TODO: find the problem with the day after 
     internal class MatchinHouers
     {
-        private static Matching matcher = Matching.Instance;
+        private static readonly Matching matcher = Matching.Instance;
 
         private static readonly Dictionary<TimesInDay, TimeInterval> BoundryOfTimeInDay =
                 new Dictionary<TimesInDay, TimeInterval>()

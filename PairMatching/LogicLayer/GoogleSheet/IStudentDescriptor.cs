@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using DO;
 using UtilEntities;
 
-namespace LogicLayer
+namespace LogicLayer.GoogleSheet
 {
     /// <summary>
     /// Interface for deciphering the values ​​on the columns for a student's properties

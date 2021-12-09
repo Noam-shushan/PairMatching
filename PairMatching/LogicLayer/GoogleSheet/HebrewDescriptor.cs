@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using UtilEntities;
 
-namespace LogicLayer
+namespace LogicLayer.GoogleSheet
 {
     internal class HebrewDescriptor : IStudentDescriptor
     {

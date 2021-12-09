@@ -9,7 +9,6 @@
     x:Name="noteControl"
     Width="800"
     MaxHeight="650"
-    Background="{DynamicResource MaterialDesignPaper}"
     FlowDirection="RightToLeft"
     FontFamily="{DynamicResource MaterialDesignFont}"
     FontSize="14"

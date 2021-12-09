@@ -7,9 +7,8 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="studentControl"
-    MaxWidth="800"
-    MaxHeight="650"
-    Background="{DynamicResource MaterialDesignPaper}"
+    Width="auto"
+    Height="auto"
     FontFamily="{DynamicResource MaterialDesignFont}"
     FontSize="14"
     TextElement.FontSize="13"
@@ -135,11 +134,21 @@
         <StackPanel Orientation="Horizontal">
 
             <DockPanel>
-                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                    <TextBlock FontSize="20" Text="{Binding Path=Name}" />
+                <StackPanel
+                    MinHeight="50"
+                    DockPanel.Dock="Top"
+                    Orientation="Horizontal">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        Text="{Binding Path=Name}" />
 
                     <!--#region Contact info-->
-                    <materialDesign:PopupBox Margin="10,0,0,0" ToolTip="פרטי קשר">
+                    <materialDesign:PopupBox
+                        Margin="10,0,0,0"
+                        StaysOpen="True"
+                        ToolTip="פרטי קשר">
                         <materialDesign:PopupBox.ToggleContent>
                             <materialDesign:PackIcon
                                 Width="25"
@@ -150,18 +159,27 @@
                         <StackPanel Margin="10">
                             <StackPanel Style="{StaticResource myStackPanelStyle}">
                                 <TextBlock Style="{StaticResource headersDetails}" Text="טלפון:  " />
-                                <TextBlock Text="{Binding Path=PhoneNumber}" />
+                                <TextBox
+                                    IsReadOnly="True"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    Text="{Binding Path=PhoneNumber}" />
                             </StackPanel>
                             <StackPanel Margin="0,8">
                                 <TextBlock Style="{StaticResource headersDetails}" Text="אימייל:  " />
-                                <TextBlock Text="{Binding Path=Email}" />
+                                <TextBox
+                                    IsReadOnly="True"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    Text="{Binding Path=Email}" />
                             </StackPanel>
                         </StackPanel>
                     </materialDesign:PopupBox>
                     <!--#endregion-->
 
                     <!--#region History-->
-                    <materialDesign:PopupBox Margin="10,0,0,0" ToolTip="היסטוריה">
+                    <materialDesign:PopupBox
+                        Margin="10,0,0,0"
+                        StaysOpen="True"
+                        ToolTip="היסטוריה">
                         <materialDesign:PopupBox.ToggleContent>
                             <materialDesign:PackIcon
                                 Width="25"
@@ -259,15 +277,19 @@
                                 Width="800"
                                 IsStudent="True" />
                         </materialDesign:DialogHost.DialogContent>
-                        <Button
-                            Width="25"
-                            Height="25"
-                            Margin="10,0,00,0"
-                            Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
-                            Style="{StaticResource MaterialDesignIconButton}"
-                            ToolTip="הוסף הערות למשתתף זה">
-                            <materialDesign:PackIcon Kind="Pencil" />
-                        </Button>
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <materialDesign:Badged Badge="{Binding Notes.Count}">
+                                <Button
+                                    Width="25"
+                                    Height="25"
+                                    Margin="10,0,00,0"
+                                    Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                                    Style="{StaticResource MaterialDesignIconButton}"
+                                    ToolTip="הוסף הערות למשתתף זה">
+                                    <materialDesign:PackIcon Kind="Pencil" />
+                                </Button>
+                            </materialDesign:Badged>
+                        </Grid>
                     </materialDesign:DialogHost>
                     <!--#endregion-->
 
@@ -277,7 +299,31 @@
                 <WrapPanel MaxWidth="600">
                     <StackPanel Style="{StaticResource hideStackPanelForNotMathc}">
                         <TextBlock Style="{StaticResource headersDetails}" Text="הותאם ל:  " />
-                        <TextBlock Text="{Binding Path=MatchToShow}" />
+                        <ItemsControl ItemsSource="{Binding Path=MatchToShow}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel MaxWidth="200" Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <Hyperlink Click="Hyperlink_Click" ToolTip="הצג משתתף">
+                                            <Hyperlink.Style>
+                                                <Style TargetType="Hyperlink">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsCompereWin}" Value="True">
+                                                            <Setter Property="IsEnabled" Value="False" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Hyperlink.Style>
+                                            <Run Text="{Binding Path=Name, Mode=OneWay}" />
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
                     <StackPanel Style="{StaticResource myStackPanelStyle}">
                         <TextBlock Style="{StaticResource headersDetails}" Text="ארץ: " />
@@ -326,103 +372,89 @@
 
             <!--#region Matching Suggestions-->
             <StackPanel Margin="35,30,0,0" Style="{StaticResource hideSuggestions}">
-                <materialDesign:DialogHost CloseOnClickAway="True">
-                    <materialDesign:DialogHost.DialogContent>
-                        <GroupBox>
-                            <StackPanel>
-                                <StackPanel Margin="0,0,0,20">
+                <materialDesign:PopupBox StaysOpen="True">
+                    <GroupBox>
+                        <StackPanel>
+                            <StackPanel Margin="0,0,0,20">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
                                     <Button
-                                        x:Name="CloseButtenForDialog"
-                                        Width="25"
-                                        Height="25"
-                                        Margin="5"
+                                        x:Name="compFirstMatchBtn"
+                                        HorizontalAlignment="Left"
+                                        Click="compFirstMatchBtn_Click"
+                                        Content="השווה"
+                                        Style="{StaticResource MaterialDesignFlatButton}" />
+                                    <Button
+                                        x:Name="clearCBFirstMatchBtn"
+                                        Grid.Column="2"
                                         HorizontalAlignment="Right"
-                                        VerticalAlignment="Top"
-                                        Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                                        Style="{StaticResource MaterialDesignIconButton}">
-                                        <materialDesign:PackIcon Kind="Close" />
-                                    </Button>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition />
-                                            <ColumnDefinition />
-                                            <ColumnDefinition />
-                                        </Grid.ColumnDefinitions>
-                                        <Button
-                                            x:Name="compFirstMatchBtn"
-                                            HorizontalAlignment="Left"
-                                            Click="compFirstMatchBtn_Click"
-                                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                                            Content="השווה"
-                                            Style="{StaticResource MaterialDesignFlatButton}" />
-                                        <Button
-                                            x:Name="clearCBFirstMatchBtn"
-                                            Grid.Column="2"
-                                            HorizontalAlignment="Right"
-                                            Click="clearCBFirstMatchBtn_Click"
-                                            Content="נקה"
-                                            Style="{StaticResource MaterialDesignFlatButton}" />
-                                        <Button
-                                            x:Name="matchFirstBtn"
-                                            Grid.Column="1"
-                                            Click="matchFirstBtn_Click"
-                                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                                            Content="התאם"
-                                            Style="{StaticResource MaterialDesignFlatButton}" />
-                                    </Grid>
-                                    <ComboBox
-                                        x:Name="cbFirstMatching"
-                                        Width="256"
-                                        Margin="0,0,0,5"
-                                        materialDesign:HintAssist.Hint="התאמה ראשונה"
-                                        ItemsSource="{Binding Path=FirstSuggestStudents}"
-                                        Style="{StaticResource MaterialDesignFilledComboBox}" />
-                                </StackPanel>
-                                <StackPanel>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition />
-                                            <ColumnDefinition />
-                                            <ColumnDefinition />
-                                        </Grid.ColumnDefinitions>
-                                        <Button
-                                            x:Name="compSecondeMatchBtn"
-                                            HorizontalAlignment="Left"
-                                            Click="compSecondeMatchBtn_Click"
-                                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                                            Content="השווה"
-                                            Style="{StaticResource MaterialDesignFlatButton}" />
-                                        <Button
-                                            x:Name="matchSecondeBtn"
-                                            Grid.Column="1"
-                                            Click="matchSecondeBtn_Click"
-                                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                                            Content="התאם"
-                                            Style="{StaticResource MaterialDesignFlatButton}" />
-                                        <Button
-                                            x:Name="clearCBSecondeMatchBtn"
-                                            Grid.Column="2"
-                                            HorizontalAlignment="Right"
-                                            Click="clearCBSecondeMatchBtn_Click"
-                                            Content="נקה"
-                                            Style="{StaticResource MaterialDesignFlatButton}" />
-                                    </Grid>
-                                    <ComboBox
-                                        x:Name="cbSecondeMatching"
-                                        Width="256"
-                                        Margin="0,0,0,5"
-                                        materialDesign:HintAssist.Hint="התאמה שנייה"
-                                        ItemsSource="{Binding Path=SecondeSuggestStudents}"
-                                        Style="{StaticResource MaterialDesignFilledComboBox}" />
-                                </StackPanel>
+                                        Click="clearCBFirstMatchBtn_Click"
+                                        Content="נקה"
+                                        Style="{StaticResource MaterialDesignFlatButton}" />
+                                    <Button
+                                        x:Name="matchFirstBtn"
+                                        Grid.Column="1"
+                                        Click="matchFirstBtn_Click"
+                                        Content="התאם"
+                                        Style="{StaticResource MaterialDesignFlatButton}" />
+                                </Grid>
+                                <ComboBox
+                                    x:Name="cbFirstMatching"
+                                    Width="256"
+                                    Margin="0,0,0,5"
+                                    materialDesign:HintAssist.Hint="התאמה ראשונה"
+                                    ItemsSource="{Binding Path=FirstSuggestStudents}"
+                                    Style="{StaticResource MaterialDesignFilledComboBox}" />
                             </StackPanel>
-                        </GroupBox>
-                    </materialDesign:DialogHost.DialogContent>
-                    <Button
-                        Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
-                        Content="הצעות להתאמה"
-                        Style="{StaticResource MaterialDesignOutlinedButton}" />
-                </materialDesign:DialogHost>
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Button
+                                        x:Name="compSecondeMatchBtn"
+                                        HorizontalAlignment="Left"
+                                        Click="compSecondeMatchBtn_Click"
+                                        Content="השווה"
+                                        Style="{StaticResource MaterialDesignFlatButton}" />
+                                    <Button
+                                        x:Name="matchSecondeBtn"
+                                        Grid.Column="1"
+                                        Click="matchSecondeBtn_Click"
+                                        Content="התאם"
+                                        Style="{StaticResource MaterialDesignFlatButton}" />
+                                    <Button
+                                        x:Name="clearCBSecondeMatchBtn"
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Right"
+                                        Click="clearCBSecondeMatchBtn_Click"
+                                        Content="נקה"
+                                        Style="{StaticResource MaterialDesignFlatButton}" />
+                                </Grid>
+                                <ComboBox
+                                    x:Name="cbSecondeMatching"
+                                    Width="256"
+                                    Margin="0,0,0,5"
+                                    materialDesign:HintAssist.Hint="התאמה שנייה"
+                                    ItemsSource="{Binding Path=SecondeSuggestStudents}"
+                                    Style="{StaticResource MaterialDesignFilledComboBox}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+                    <materialDesign:PopupBox.ToggleContent>
+                        <TextBlock
+                            FontSize="17"
+                            FontWeight="DemiBold"
+                            Foreground="#673ab7"
+                            Text="הצעות להתאמה" />
+                    </materialDesign:PopupBox.ToggleContent>
+                </materialDesign:PopupBox>
             </StackPanel>
             <!--#endregion-->
 

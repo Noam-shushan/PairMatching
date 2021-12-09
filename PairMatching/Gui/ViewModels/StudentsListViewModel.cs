@@ -12,6 +12,7 @@ namespace Gui.ViewModels
 {
     public class StudentsListViewModel : MainViewModelBase
     {
+
         public ObservableCollection<StudentViewModel> Students { get; set; }
 
         private bool _isSelectAny = false;

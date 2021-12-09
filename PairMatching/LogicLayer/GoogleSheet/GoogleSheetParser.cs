@@ -6,7 +6,7 @@ using DataLayer;
 using UtilEntities;
 
 
-namespace LogicLayer
+namespace LogicLayer.GoogleSheet
 {
     /// <summary>
     /// Google Sheet parser that descript the values in the spreadsheet table.<br/>
@@ -207,12 +207,7 @@ namespace LogicLayer
 
         private DateTime GetDate(string dateFormat)
         {
-            DateTime result;
-            if(!DateTime.TryParse(dateFormat, out result))
-            {
-                return new DateTime();
-            }
-            return result;
+            return !DateTime.TryParse(dateFormat, out DateTime result) ? new DateTime() : result;
         }
 
         private static IEnumerable<LearningTime> GetLearningTime(List<string> row, IStudentDescriptor studentDescriptor)
@@ -231,84 +226,88 @@ namespace LogicLayer
 
         private static IEnumerable<OpenQuestion> GetQandAheb(List<string> row)
         {
-            var result = new List<OpenQuestion>();
-            result.Add(new OpenQuestion
+            var result = new List<OpenQuestion>
             {
-                Answer = row[indexHebSheet["Personal information"]],
-                Question = "Personal information"
-            });
+                new OpenQuestion
+                {
+                    Answer = row[indexHebSheet["Personal information"]],
+                    Question = "Personal information"
+                },
 
-            result.Add(new OpenQuestion
-            {
-                Answer = row[indexHebSheet["What are your hopes and expectations from this program"]],
-                Question = "What are your hopes and expectations from this program"
-            });
+                new OpenQuestion
+                {
+                    Answer = row[indexHebSheet["What are your hopes and expectations from this program"]],
+                    Question = "What are your hopes and expectations from this program"
+                },
 
-            result.Add(new OpenQuestion
-            {
-                Answer = row[indexHebSheet["Personality trates"]],
-                Question = "Personality trates"
-            });
+                new OpenQuestion
+                {
+                    Answer = row[indexHebSheet["Personality trates"]],
+                    Question = "Personality trates"
+                },
 
-            result.Add(new OpenQuestion
-            {
-                Answer = row[indexHebSheet["Who introduced you to this program"]],
-                Question = "Who introduced you to this program"
-            });
+                new OpenQuestion
+                {
+                    Answer = row[indexHebSheet["Who introduced you to this program"]],
+                    Question = "Who introduced you to this program"
+                },
 
-            result.Add(new OpenQuestion
-            {
-                Answer = row[indexHebSheet["Additional information"]],
-                Question = "Additional information"
-            });
+                new OpenQuestion
+                {
+                    Answer = row[indexHebSheet["Additional information"]],
+                    Question = "Additional information"
+                }
+            };
 
             return result;
         }
 
         private static IEnumerable<OpenQuestion> GetQandAeng(List<string> row)
         {
-            var result = new List<OpenQuestion>();
-            result.Add(new OpenQuestion
+            var result = new List<OpenQuestion>
             {
-                Answer = row[indexEngSheet["Personal information"]],
-                Question = "Personal information"
-            });
+                new OpenQuestion
+                {
+                    Answer = row[indexEngSheet["Personal information"]],
+                    Question = "Personal information"
+                },
 
-            result.Add(new OpenQuestion
-            {
-                Answer = row[indexEngSheet["What are your hopes and expectations from this program"]],
-                Question = "What are your hopes and expectations from this program"
-            });
+                new OpenQuestion
+                {
+                    Answer = row[indexEngSheet["What are your hopes and expectations from this program"]],
+                    Question = "What are your hopes and expectations from this program"
+                },
 
-            result.Add(new OpenQuestion
-            {
-                Answer = row[indexEngSheet["Personality trates"]],
-                Question = "Personality trates"
-            });
+                new OpenQuestion
+                {
+                    Answer = row[indexEngSheet["Personality trates"]],
+                    Question = "Personality trates"
+                },
 
-            result.Add(new OpenQuestion
-            {
-                Answer = row[indexEngSheet["Who introduced you to this program"]],
-                Question = "Who introduced you to this program"
-            });
+                new OpenQuestion
+                {
+                    Answer = row[indexEngSheet["Who introduced you to this program"]],
+                    Question = "Who introduced you to this program"
+                },
 
-            result.Add(new OpenQuestion
-            {
-                Answer = row[indexEngSheet["Additional information"]],
-                Question = "Additional information"
-            });
+                new OpenQuestion
+                {
+                    Answer = row[indexEngSheet["Additional information"]],
+                    Question = "Additional information"
+                },
 
-            result.Add(new OpenQuestion
-            {
-                Answer = row[indexEngSheet["Country and City of residence"]],
-                Question = "Country and City of residence"
-            });
+                new OpenQuestion
+                {
+                    Answer = row[indexEngSheet["Country and City of residence"]],
+                    Question = "Country and City of residence"
+                },
 
-            result.Add(new OpenQuestion
-            {
-                Answer = row[indexEngSheet["Anything else you would like to tell us"]],
-                Question = "Anything else you would like to tell us"
-            });
+                new OpenQuestion
+                {
+                    Answer = row[indexEngSheet["Anything else you would like to tell us"]],
+                    Question = "Anything else you would like to tell us"
+                }
+            };
             return result;
         }
     }

@@ -4,6 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:Gui.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:local="clr-namespace:Gui.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -21,8 +23,8 @@
     TextOptions.TextRenderingMode="Auto"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <converters:StudentAndSuggestStudentConverter x:Key="ConvertToCompare" />
-
+        <converters:StudentAndSuggestStudentConverter x:Key="ConvertToMatchAndComp" />
+        <converters:DataContextToStudentVMConvetor x:Key="ConvertToStudentVM" />
         <Style x:Key="headers" TargetType="TextBlock">
             <Setter Property="FontWeight" Value="Bold" />
         </Style>
@@ -196,7 +198,30 @@
                 <WrapPanel MaxWidth="600">
                     <StackPanel Style="{StaticResource hideStackPanelForNotMathc}">
                         <TextBlock Style="{StaticResource headersDetails}" Text="הותאם ל:  " />
-                        <TextBlock Text="{Binding Path=MatchTo}" />
+                        <ListBox x:Name="matchStudents" ItemsSource="{Binding Path=MatchTo}">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel MaxWidth="200" Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <Hyperlink x:Name="goToMatchStudent" ToolTip="הצג משתתף">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Click" SourceName="{Binding ElementName=goToMatchStudent}">
+                                                    <ei:ChangePropertyAction
+                                                        PropertyName="CurrentStudentVM"
+                                                        TargetObject="{Binding ElementName=studentView}"
+                                                        Value="{Binding ElementName=matchStudents, Path=SelectedItem}" />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                            <Run Text="{Binding Path=Name, Mode=OneWay}" />
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </StackPanel>
                     <StackPanel Style="{StaticResource myStackPanelStyle}">
                         <TextBlock Style="{StaticResource headersDetails}" Text="ארץ: " />
@@ -242,6 +267,7 @@
                 <!--#endregion-->
 
             </DockPanel>
+
             <!--#region Matching Suggestions-->
             <StackPanel Margin="35,30,0,0" Style="{StaticResource hideSuggestions}">
                 <materialDesign:DialogHost CloseOnClickAway="True">
@@ -273,24 +299,40 @@
                                             Content="השווה"
                                             Style="{StaticResource MaterialDesignFlatButton}">
                                             <Button.CommandParameter>
-                                                <MultiBinding Converter="{StaticResource ConvertToCompare}">
+                                                <MultiBinding Converter="{StaticResource ConvertToMatchAndComp}" UpdateSourceTrigger="PropertyChanged">
                                                     <Binding ElementName="cbFirstMatching" Path="SelectedItem" />
                                                     <Binding ElementName="studentView" Path="CurrentStudentVM" />
                                                 </MultiBinding>
                                             </Button.CommandParameter>
                                         </Button>
-
                                         <Button
                                             x:Name="clearCBFirstMatchBtn"
                                             Grid.Column="2"
                                             HorizontalAlignment="Right"
                                             Content="נקה"
-                                            Style="{StaticResource MaterialDesignFlatButton}" />
+                                            Style="{StaticResource MaterialDesignFlatButton}">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Click">
+                                                    <ei:ChangePropertyAction
+                                                        PropertyName="SelectedItem"
+                                                        TargetObject="{Binding ElementName=cbFirstMatching}"
+                                                        Value="{x:Null}" />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </Button>
                                         <Button
                                             x:Name="matchFirstBtn"
                                             Grid.Column="1"
+                                            Command="{Binding MakeMatch}"
                                             Content="התאם"
-                                            Style="{StaticResource MaterialDesignFlatButton}" />
+                                            Style="{StaticResource MaterialDesignFlatButton}">
+                                            <Button.CommandParameter>
+                                                <MultiBinding Converter="{StaticResource ConvertToMatchAndComp}" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding ElementName="cbFirstMatching" Path="SelectedItem" />
+                                                    <Binding ElementName="studentView" Path="CurrentStudentVM" />
+                                                </MultiBinding>
+                                            </Button.CommandParameter>
+                                        </Button>
                                     </Grid>
                                     <ComboBox
                                         x:Name="cbFirstMatching"
@@ -314,26 +356,40 @@
                                             Content="השווה"
                                             Style="{StaticResource MaterialDesignFlatButton}">
                                             <Button.CommandParameter>
-                                                <MultiBinding Converter="{StaticResource ConvertToCompare}">
+                                                <MultiBinding Converter="{StaticResource ConvertToMatchAndComp}" UpdateSourceTrigger="PropertyChanged">
                                                     <Binding ElementName="cbSecondeMatching" Path="SelectedItem" />
                                                     <Binding ElementName="studentView" Path="CurrentStudentVM" />
                                                 </MultiBinding>
                                             </Button.CommandParameter>
                                         </Button>
-
                                         <Button
                                             x:Name="matchSecondeBtn"
                                             Grid.Column="1"
+                                            Command="{Binding MakeMatch}"
                                             Content="התאם"
-                                            Style="{StaticResource MaterialDesignFlatButton}" />
+                                            Style="{StaticResource MaterialDesignFlatButton}">
+                                            <Button.CommandParameter>
+                                                <MultiBinding Converter="{StaticResource ConvertToMatchAndComp}" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding ElementName="cbSecondeMatching" Path="SelectedItem" />
+                                                    <Binding ElementName="studentView" Path="CurrentStudentVM" />
+                                                </MultiBinding>
+                                            </Button.CommandParameter>
+                                        </Button>
                                         <Button
                                             x:Name="clearCBSecondeMatchBtn"
                                             Grid.Column="2"
                                             HorizontalAlignment="Right"
-                                            Command="{x:Null}"
-                                            CommandTarget="{Binding ElementName=cbSecondeMatching, Path=SelectedItem}"
                                             Content="נקה"
-                                            Style="{StaticResource MaterialDesignFlatButton}" />
+                                            Style="{StaticResource MaterialDesignFlatButton}">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Click">
+                                                    <ei:ChangePropertyAction
+                                                        PropertyName="SelectedItem"
+                                                        TargetObject="{Binding ElementName=cbSecondeMatching}"
+                                                        Value="{x:Null}" />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </Button>
                                     </Grid>
                                     <ComboBox
                                         x:Name="cbSecondeMatching"
@@ -353,6 +409,7 @@
                 </materialDesign:DialogHost>
             </StackPanel>
             <!--#endregion-->
+
         </StackPanel>
 
         <!--#region Open QA-->

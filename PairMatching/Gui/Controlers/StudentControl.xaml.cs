@@ -109,10 +109,13 @@ namespace Gui.Controlers
             }
         }
 
-        public void SetHeightOfOpenQA(int height = 345, int width = 600)
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
-            lbOpneQA.Height = height;
-            lbOpneQA.Width = width;
+            var matchStud = (sender as Hyperlink).DataContext as Student;
+            if(matchStud != null)
+            {
+                DataContext = matchStud;
+            }
         }
     }
 }

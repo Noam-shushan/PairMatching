@@ -9,7 +9,6 @@
     x:Name="studentsListControl"
     Width="430"
     Height="560"
-    Background="{DynamicResource MaterialDesignPaper}"
     FlowDirection="RightToLeft"
     FontFamily="{DynamicResource MaterialDesignFont}"
     FontSize="14"

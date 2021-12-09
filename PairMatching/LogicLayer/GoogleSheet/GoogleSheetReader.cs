@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
@@ -12,7 +11,7 @@ using Google.Apis.Util.Store;
 using System.IO;
 using System.Threading;
 
-namespace LogicLayer
+namespace LogicLayer.GoogleSheet
 {
     /// <summary>
     /// Read Google Sheet file using Google Sheet Api

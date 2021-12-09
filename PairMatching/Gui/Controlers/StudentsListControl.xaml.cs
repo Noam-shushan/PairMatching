@@ -10,7 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using BO;
 using LogicLayer;
-
+using LogicLayer.Email;
 
 namespace Gui.Controlers
 {
@@ -216,6 +216,7 @@ namespace Gui.Controlers
                 foreach (var s in selectedStudents)
                 {
                     tasks.Add(logicLayer.SendEmailToStudentAsync(s, EmailTypes.StatusQuiz));
+
                 }
                 await Task.WhenAll(tasks);
                 Messages.MessageBoxSimple("המיילים נשלחו בהצלחה!");

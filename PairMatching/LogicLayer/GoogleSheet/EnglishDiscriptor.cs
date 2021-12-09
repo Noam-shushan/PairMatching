@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Configuration;
 using UtilEntities;
 
-namespace LogicLayer
+namespace LogicLayer.GoogleSheet
 {
     /// <summary>
     /// Descriptor for the values in the spreadsheet of the students from around the world
@@ -36,13 +36,13 @@ namespace LogicLayer
 
         public EnglishLevels GetEnglishLevel(string value)
         {
-            switch (value)
+            switch (value.ToLower())
             {
-                case "Excellent (I don't know any hebrew whatsoever)":
+                case "excellent (i don't know any hebrew whatsoever)":
                     return EnglishLevels.GOOD;
-                case "Doesn't have to be perfect. I know some Hebrew":
+                case "doesn't have to be perfect. i know some Hebrew":
                     return EnglishLevels.NOT_GOOD;
-                case "Conversational level":
+                case "conversational level":
                     return EnglishLevels.TALK_LEVEL;
             }
             return EnglishLevels.DONT_MATTER;
@@ -50,13 +50,13 @@ namespace LogicLayer
 
         public Genders GetGender(string value)
         {
-            switch (value)
+            switch (value.ToLower())
             {
-                case "Male":
+                case "male":
                     return Genders.MALE;
-                case "Female":
+                case "female":
                     return Genders.FMALE;
-                case "Prefer not to say":
+                case "prefer not to say":
                     return Genders.DONT_MATTER;
             }
             return default;
@@ -64,15 +64,15 @@ namespace LogicLayer
 
         public LearningStyles GetLearningStyle(string value)
         {
-            switch (value)
+            switch (value.ToLower())
             {
-                case "Deep and slow":
+                case "deep and slow":
                     return LearningStyles.DEEP_AND_SLOW;
                 case "progressed, flowing":
                     return LearningStyles.PROGRESSED_FLOWING;
-                case "Text centered":
+                case "text centered":
                     return LearningStyles.TEXTUALL_CENTERED;
-                case "Philosofical, free talking, deriving from text into thought":
+                case "philosofical, free talking, deriving from text into thought":
                     return LearningStyles.FREE;
             }
             return LearningStyles.DONT_MATTER;
@@ -80,13 +80,13 @@ namespace LogicLayer
 
         public Genders GetPrefferdGender(string value)
         {
-            switch (value)
+            switch (value.ToLower())
             {
-                case "Only with men":
+                case "only with men":
                     return Genders.MALE;
-                case "Only with women":
+                case "only with women":
                     return Genders.FMALE;
-                case "No prefrence":
+                case "no prefrence":
                     return Genders.DONT_MATTER;
             }
             return Genders.DONT_MATTER;
@@ -94,19 +94,19 @@ namespace LogicLayer
 
         private PrefferdTracks SwitchPrefferdTracks(string value)
         {
-            switch (value.Replace(",", "").Trim())
+            switch (value.Replace(",", "").Trim().ToLower())
             {
-                case "Tanya":
+                case "tanya":
                     return PrefferdTracks.TANYA;
-                case "Talmud":
+                case "talmud":
                     return PrefferdTracks.TALMUD;
-                case "Parsha":
+                case "parsha":
                     return PrefferdTracks.PARASHA;
-                case "Prayer":
+                case "tefilah (prayer)":
                     return PrefferdTracks.PRAYER;
-                case "Pirkey Avot (Ethics of the fathers)":
+                case "pirkey Avot (ethics of the fathers)":
                     return PrefferdTracks.PIRKEY_AVOT;
-                case "No preference":
+                case "no preference":
                     return PrefferdTracks.DONT_MATTER;
                 case "independent learning subject":
                     return PrefferdTracks.IndependentLearning;
@@ -127,13 +127,13 @@ namespace LogicLayer
 
         public SkillLevels GetSkillLevel(string value)
         {
-            switch (value)
+            switch (value.ToLower())
             {
-                case "Advanced":
+                case "advanced":
                     return SkillLevels.ADVANCED;
-                case "Moderate":
+                case "moderate":
                     return SkillLevels.MODERATE;
-                case "Begginer":
+                case "begginer":
                     return SkillLevels.BEGGINER;
             }
             return SkillLevels.DONT_MATTER;
@@ -154,21 +154,21 @@ namespace LogicLayer
 
             foreach(var s in timesInString)
             {
-                switch (s.Replace(",", "").Trim())
+                switch (s.Replace(",", "").Trim().ToLower())
                 {
                     case "morning":
                         result.Add(TimesInDay.MORNING);
                         break;
-                    case "Noon":
+                    case "noon":
                         result.Add(TimesInDay.NOON);
                         break;
-                    case "Evening":
+                    case "evening":
                         result.Add(TimesInDay.EVENING);
                         break;
                     case "night":
                         result.Add(TimesInDay.NIGHT);
                         break;
-                    case "This day is not available for me":
+                    case "this day is not available for me":
                         result.Add(TimesInDay.INCAPABLE);
                         break;
                 }
@@ -209,13 +209,13 @@ namespace LogicLayer
 
         public MoreLanguages GetMoreLanguages(string value)
         {
-            switch (value)
+            switch (value.ToLower())
             {
-                case "Yes":
+                case "yes":
                     return MoreLanguages.YES;
-                case "No":
+                case "no":
                     return MoreLanguages.NO;
-                case "I don't know English but I can learn in other languages":
+                case "i don't know english but i can learn in other languages":
                     return MoreLanguages.NOT_ENGLISH;
             }
             return MoreLanguages.NO;
@@ -223,13 +223,13 @@ namespace LogicLayer
 
         public int GetPrefferdNumberOfMatchs(string value)
         {
-            switch (value)
+            switch (value.ToLower())
             {
-                case "One is enough":
+                case "one is enough":
                     return 1;
-                case "I would like to have 2":
+                case "i would like to have 2":
                     return 2;
-                case "I would like to have 3":
+                case "i would like to have 3":
                     return 3;
                 default:
                     break;

@@ -10,7 +10,6 @@
     x:Name="pairListControl"
     Width="1150"
     Height="570"
-    Background="{DynamicResource MaterialDesignPaper}"
     FlowDirection="RightToLeft"
     FontFamily="{DynamicResource MaterialDesignFont}"
     FontSize="14"
@@ -126,12 +125,13 @@
                                     <CheckBox
                                         x:Name="selectAllPairCB"
                                         Checked="selectAllPairCB_Checked"
+                                        ToolTip="סמן את כולם"
                                         Unchecked="selectAllPairCB_Unchecked" />
                                 </DataTemplate>
                             </GridViewColumn.HeaderTemplate>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" ToolTip="סמן חברותא" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -200,7 +200,7 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Width="60" HeaderContainerStyle="{StaticResource HeadersStyle}">
+                        <GridViewColumn Width="80" HeaderContainerStyle="{StaticResource HeadersStyle}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <materialDesign:DialogHost
@@ -231,12 +231,16 @@
                                                     Content="החל" />
                                             </StackPanel>
                                         </materialDesign:DialogHost.DialogContent>
-                                        <Button
-                                            Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
-                                            Style="{StaticResource MaterialDesignIconButton}"
-                                            ToolTip="ערוך חברותא">
-                                            <materialDesign:PackIcon Kind="Pencil" />
-                                        </Button>
+                                        <Grid>
+                                            <materialDesign:Badged Badge="{Binding Notes.Count}" ToolTip="כמות ההערות">
+                                                <Button
+                                                    Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                                                    Style="{StaticResource MaterialDesignIconButton}"
+                                                    ToolTip="ערוך חברותא">
+                                                    <materialDesign:PackIcon Kind="Pencil" />
+                                                </Button>
+                                            </materialDesign:Badged>
+                                        </Grid>
                                     </materialDesign:DialogHost>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>

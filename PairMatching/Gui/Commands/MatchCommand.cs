@@ -13,7 +13,7 @@ namespace Gui.Commands
     {
         public event Func<Student, Student, Task<bool>> MathcAsync;
 
-        public bool IsMatch { get; set; }
+        public bool IsMatch { get; set; } = false;
 
         public event EventHandler CanExecuteChanged
         {
@@ -24,7 +24,7 @@ namespace Gui.Commands
         public bool CanExecute(object parameter)
         {
             // Add logic here
-            return true;
+            return !IsMatch;
         }
 
         public async void Execute(object parameter)

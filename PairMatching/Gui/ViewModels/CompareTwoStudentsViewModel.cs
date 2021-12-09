@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BO;
 using LogicLayer;
 using System.Windows;
+using Gui.Converters;
 
 namespace Gui.ViewModels
 {
@@ -18,6 +19,7 @@ namespace Gui.ViewModels
         public MatchCommand Match { get; set; }
 
         ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
+        private TempPair compareTwoStudents;
 
         public CompareTwoStudentsViewModel(StudentViewModel first, StudentViewModel seconde)
         {
@@ -35,6 +37,9 @@ namespace Gui.ViewModels
             Match = new MatchCommand();
             Match.MathcAsync += Match_MathcAsync;
         }
+
+        public CompareTwoStudentsViewModel(TempPair tempPair) 
+            : this(new StudentViewModel(tempPair.First), new StudentViewModel(tempPair.Second)) { }
 
         private async Task<bool> Match_MathcAsync(Student first, Student second)
         {

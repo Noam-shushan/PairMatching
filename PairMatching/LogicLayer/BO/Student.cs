@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using DO;
-using LogicLayer;
+using static LogicLayer.FindMatching.MatchinHouers;
 using UtilEntities;
+using System.Linq;
 
 namespace BO
 {
@@ -67,7 +62,7 @@ namespace BO
                 {
                     return "";
                 }
-                var diffVal = MatchinHouers.GetDifferenceUtc(UtcOffset).Hours;
+                var diffVal = GetDifferenceUtc(UtcOffset).Hours;
                 var diff = !IsFromIsrael ? $"\nהפרש זמן מישראל: {Math.Abs(diffVal)} שעות " + (diffVal < 0 ? "אחורה" : "קדימה")  : "";
                 return string.Join("\n", from l in DesiredLearningTime
                               let day = Dictionaries.DaysDict[l.Day] + " : "
@@ -178,7 +173,7 @@ namespace BO
         /// </summary>
         public List<int> MatchTo { get; set; } = new List<int>();
 
-        public string MatchToShow { get; set; }
+        public IEnumerable<Student> MatchToShow { get; set; }
 
         public int PrefferdNumberOfMatchs { get; set; }
 
@@ -207,7 +202,7 @@ namespace BO
 
         public List<Note> Notes { get; set; } = new List<Note>();
 
-        public int DiffFromIsrael { get => MatchinHouers.GetDifferenceUtc(UtcOffset).Hours; }
+        public int DiffFromIsrael { get => GetDifferenceUtc(UtcOffset).Hours; }
 
         public override string ToString()
         {

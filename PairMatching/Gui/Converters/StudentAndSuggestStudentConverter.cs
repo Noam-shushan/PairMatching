@@ -21,9 +21,9 @@ namespace Gui.Converters
             var secondStudVM = values[1] as StudentViewModel;
             if(first != null && secondStudVM != null)
             {
-                var firstStudt = logicLayer.GetStudent(first.SuggestStudentId);
-                var firstStudVM = new StudentViewModel(firstStudt);
-                return new CompareTwoStudentsViewModel(firstStudVM, secondStudVM);
+                var firstStud = logicLayer.GetStudent(first.SuggestStudentId);
+                var secondStud = logicLayer.GetStudent(secondStudVM.Id);
+                return new TempPair { First = firstStud, Second = secondStud };
             }
 
             return null;

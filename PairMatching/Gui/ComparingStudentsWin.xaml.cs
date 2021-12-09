@@ -17,8 +17,8 @@ namespace Gui
     {
         private readonly ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
 
-        Student _fromIsrael;
-        Student _fromWolrd;
+        private readonly Student _fromIsrael;
+        private readonly Student _fromWolrd;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -44,6 +44,16 @@ namespace Gui
             
             _fromIsrael.IsCompereWin = true;
             _fromWolrd.IsCompereWin = true;
+
+            foreach(var s in _fromIsrael.MatchToShow)
+            {
+                s.IsCompereWin = true;
+            }
+
+            foreach (var s in _fromWolrd.MatchToShow)
+            {
+                s.IsCompereWin = true;
+            }
 
             studentFromIsrael.DataContext = _fromIsrael;
             studentFromWorld.DataContext = _fromWolrd;

@@ -1,4 +1,5 @@
-﻿using Gui.ViewModels;
+﻿using Gui.Converters;
+using Gui.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,16 +32,12 @@ namespace Gui.Views
         public static readonly DependencyProperty CurrentTwoStudentsVMProperty =
             DependencyProperty.Register("CurrentTwoStudentsVM", typeof(CompareTwoStudentsViewModel), typeof(CompareTwoStudentsView));
 
-
-
         public CompareTwoStudentsView(CompareTwoStudentsViewModel twoStudentsViewModel)
         {
             InitializeComponent();
             CurrentTwoStudentsVM = twoStudentsViewModel;
             CurrentTwoStudentsVM.StudentFromIsrael.IsCompereWin = true;
             CurrentTwoStudentsVM.StudentFromWorld.IsCompereWin = true;
-            
-            
         }
     }
 }

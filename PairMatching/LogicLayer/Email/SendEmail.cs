@@ -10,7 +10,7 @@ using System.Net.Configuration;
 using System.IO;
 
 
-namespace LogicLayer
+namespace LogicLayer.Email
 {
     /// <summary>
     /// Send email from the system.<br/>
@@ -37,13 +37,18 @@ namespace LogicLayer
         /// The template of the email body
         /// </summary>
         private StringBuilder _template = new StringBuilder();
-        
-        readonly CreateEmailTemplate emailTemplateCreator = new CreateEmailTemplate();
+
+        /// <summary>
+        /// create template from html file
+        /// </summary>
+        private readonly CreateEmailTemplate emailTemplateCreator;
 
         /// <summary>
         /// smtp object that send the email.
         /// </summary>
         private readonly SmtpSection smtp;
+
+        private const int CHUNK_SIZE = 20;
 
         /// <summary>
         /// A Singleton referenc of the SendEmail class
@@ -70,6 +75,8 @@ namespace LogicLayer
             // Get the system email address
             FromMail = new MailAddress(mailSettings.Smtp.From, 
                 mailSettings.Smtp.Network.UserName);
+
+            emailTemplateCreator = new CreateEmailTemplate();
         }
 
 
@@ -89,13 +96,14 @@ namespace LogicLayer
                 var emailStatus = EmailAddressChecker.CheckEmailAddress(addr);
                 if(emailStatus == EmailAddressStatus.Valid)
                 {
-                    validAdrress.Add(addr);
+                    validAdrress.Add($"<{addr}>");
                 }
             }
             tempTo = new List<string>(validAdrress);
             _to = string.Join(", ", validAdrress)
                 .Replace("\n", "")
-                .Replace("\r", "");
+                .Replace("\r", "")
+                .Replace("GMAIL", "gmail");
             return this;
         }
 
@@ -126,7 +134,7 @@ namespace LogicLayer
         /// </summary>
         /// <param name="isTest">For testing purposes</param>
         /// <returns>The smtp client</returns>
-        private SmtpClient GetSmtpClient(bool isTest = true)
+        private SmtpClient GetSmtpClient(bool isTest = false)
         {
             return isTest ?
                 // Sender for testing the system
@@ -164,73 +172,58 @@ namespace LogicLayer
             }
 
             SmtpClient client = GetSmtpClient();
+            while (tempTo.Any())
+            {
+                var addressChunk = GetChunkAddress(tempTo, CHUNK_SIZE);
+                await SendOpenEmailToOne(fileAttachments, client, addressChunk);
+                tempTo = tempTo.Skip(CHUNK_SIZE).ToList();
+            }
+        }
 
-            //foreach(var ad in tempTo)
-            //{
-            //    try
-            //    {
-            //        using (var messege = new MailMessage(FromMail.Address,
-            //            ad, _subject, _template.ToString()))
-            //        {
-            //            if (fileAttachments != null)
-            //            {
-            //                foreach (var f in fileAttachments)
-            //                {
-            //                    if (!File.Exists(f))
-            //                    {
-            //                        throw new Exception("File not found");
-            //                    }
-            //                }
+        private string GetChunkAddress(List<string> address, int chunkSize)
+        {
+            return string.Join(", ", address.Take(chunkSize))
+                .Replace("\n", "")
+                .Replace("\r", "")
+                .Replace("GMAIL", "gmail");
+        }
 
-            //                foreach (var f in fileAttachments)
-            //                {
-            //                    messege.Attachments.Add(new Attachment(f));
-            //                }
-            //            }
-            //            await Task.Run(() => client.Send(messege));
-            //        }
-            //    }
-            //    catch (FormatException) // Not valid email eddres
-            //    {
-            //        //throw new FormatException($"The Email address {_to} is not valid");
-            //        continue;
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        //throw new Exception(ex.Message);
-            //        continue;
-            //    }
-            //}
+        private async Task SendOpenEmailToOne(IEnumerable<string> fileAttachments, SmtpClient client, string to)
+        {
             try
             {
                 using (var messege = new MailMessage(FromMail.Address,
-                    _to, _subject, _template.ToString()))
+                    to, _subject, _template.ToString()))
                 {
-                    if (fileAttachments != null)
-                    {
-                        foreach (var f in fileAttachments)
-                        {
-                            if (!File.Exists(f))
-                            {
-                                throw new Exception("File not found");
-                            }
-                        }
-
-                        foreach (var f in fileAttachments)
-                        {
-                            messege.Attachments.Add(new Attachment(f));
-                        }
-                    }
-                    await Task.Run(() => client.Send(messege));
+                    GetAttachments(messege, fileAttachments);
+                    await client.SendMailAsync(messege);
                 }
             }
-            catch (FormatException) // Not valid email eddres
+            catch (Exception ex) when (ex is FormatException || ex is SmtpException)
             {
-                throw new FormatException($"The Email address {_to} is not valid");
+                throw new FormatException($"The Email address {to} is not valid");
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+
+        private void GetAttachments(MailMessage message, IEnumerable<string> fileAttachments)
+        {
+            if (fileAttachments != null)
+            {
+                foreach (var f in fileAttachments)
+                {
+                    if (!File.Exists(f))
+                    {
+                        throw new FileNotFoundException($"{f} File not found");
+                    }
+                }
+                foreach (var f in fileAttachments)
+                {
+                    message.Attachments.Add(new Attachment(f));
+                }
             }
         }
 
@@ -247,27 +240,32 @@ namespace LogicLayer
             }
 
             SmtpClient client = GetSmtpClient();
+            while (tempTo.Any())
+            {
+                var addressChunk = GetChunkAddress(tempTo, CHUNK_SIZE);
+                await SendAutoEmailToOne(client, addressChunk);
+                tempTo = tempTo.Skip(CHUNK_SIZE).ToList();
+            }
+        }
 
+        private async Task SendAutoEmailToOne(SmtpClient client, string to)
+        {
             try
             {
                 using (var messege = new MailMessage(FromMail.Address,
-                    _to, _subject, _template.ToString()))
+                    to, _subject, _template.ToString()))
                 {
                     messege.IsBodyHtml = true;
-                    await Task.Run(() => client.Send(messege));
+                    await client.SendMailAsync(messege);
                 }
             }
-            catch (FormatException)
+            catch (Exception ex) when (ex is FormatException || ex is SmtpException)
             {
-                throw new FormatException($"The Email address {_to} is not valid");
+                throw new FormatException($"The Email address {to} is not valid");
             }
-            catch (SmtpException)
+            catch (Exception ex1)
             {
-                throw new FormatException($"The Email address {_to} is not valid");
-            }
-            catch(Exception ex)
-            {
-                throw new Exception(ex.Message);
+                throw new Exception(ex1.Message);
             }
         }
 

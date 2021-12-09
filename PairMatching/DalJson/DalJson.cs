@@ -12,7 +12,27 @@ namespace DalJson
     public class DalJson : IDataLayer
     {
         #region Singleton
-        public static IDataLayer Instance { get; } = new DalJson();
+        private static IDataLayer _instance;
+
+        private static readonly object _loke = new object();
+
+        public static IDataLayer Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (_loke)
+                    {
+                        if (_instance == null)
+                        {
+                            _instance = new DalJson();
+                        }
+                    }
+                }
+                return _instance;
+            }
+        }
 
         private DalJson() 
         {

@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using BO;
 using Gui.Commands;
+using Gui.Converters;
 using Gui.Views;
 using LogicLayer;
 using UtilEntities;
@@ -17,11 +19,17 @@ namespace Gui.ViewModels
     {
         private readonly ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
 
-        private Student _student;
+        private readonly Student _student;
 
         public UpdateStudentCommand UpdateStudent { get; set; }
 
         public CompareTwoStudentsCommand CompareTo { get; set; }
+
+        public ICommand ClearSuggestChoice { get; set; }
+
+        public ICommand GoToMatchStudentCommand { get; set; }
+
+        public MatchCommand MakeMatch { get; set; }
 
         public NotesViewModel Notes { get; set; }
 
@@ -45,11 +53,43 @@ namespace Gui.ViewModels
 
             CompareTo = new CompareTwoStudentsCommand();
             CompareTo.Compare += CompareTo_Compare;
+
+            MakeMatch = new MatchCommand();
+            MakeMatch.MathcAsync += MakeMatch_MathcAsync;
+
+            ClearSuggestChoice = new ClearSelectionInComboBoxCommand();
+
+            GoToMatchStudentCommand = new RelayCommand(o => { });
+
+            
         }
 
-        private void CompareTo_Compare(CompareTwoStudentsViewModel compareTwoStudents)
+        private void GoToMatchStudent(object id)
         {
-            new CompareTwoStudentsView(compareTwoStudents).Show();
+
+        }
+
+        private async Task<bool> MakeMatch_MathcAsync(Student first, Student second)
+        {
+            try
+            {
+                if (Messages.MessageBoxConfirmation($"בטוח שברצונך להתאים את {first.Name} ל- {second.Name}?"))
+                {
+                    int id = await logicLayer.MatchAsync(first, second);
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Messages.MessageBoxError(ex.Message);
+                return false;
+            }
+        }
+
+        private void CompareTo_Compare(TempPair compareTwoStudents)
+        {
+            new CompareTwoStudentsView(new CompareTwoStudentsViewModel(compareTwoStudents)).Show();
         }
 
         private void UpdateStudent_Update(StudentViewModel studentViewModel)
@@ -218,7 +258,22 @@ namespace Gui.ViewModels
 
         public bool IsFromIsrael { get => _student.IsFromIsrael; }
 
-        public string MatchTo { get => _student.MatchToShow; }
+        List<StudentViewModel> _matchTo;
+        public List<StudentViewModel> MatchTo 
+        { 
+            get
+            {
+                if (_matchTo == null)
+                {
+                    _matchTo = new List<StudentViewModel>();
+                    foreach (var s in _student.MatchToShow)
+                    {
+                        _matchTo.Add(new StudentViewModel(s));
+                    }
+                }
+                return _matchTo;
+            }       
+        }
 
         bool _isCompereWin;
         public bool IsCompereWin 
