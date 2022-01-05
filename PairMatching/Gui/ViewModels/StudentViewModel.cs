@@ -25,8 +25,6 @@ namespace Gui.ViewModels
 
         public CompareTwoStudentsCommand CompareTo { get; set; }
 
-        public ICommand ClearSuggestChoice { get; set; }
-
         public ICommand GoToMatchStudentCommand { get; set; }
 
         public MatchCommand MakeMatch { get; set; }
@@ -56,12 +54,6 @@ namespace Gui.ViewModels
 
             MakeMatch = new MatchCommand();
             MakeMatch.MathcAsync += MakeMatch_MathcAsync;
-
-            ClearSuggestChoice = new ClearSelectionInComboBoxCommand();
-
-            GoToMatchStudentCommand = new RelayCommand(o => { });
-
-            
         }
 
         private void GoToMatchStudent(object id)
@@ -106,6 +98,11 @@ namespace Gui.ViewModels
         public int Id { get => _student.Id; }
 
         public bool IsSimpleStudent { get => _student.IsSimpleStudent; }
+
+        internal Student GetModel()
+        {
+            return _student.Clone();
+        }
 
         /// <summary>
         /// the name of the student

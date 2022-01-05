@@ -204,6 +204,8 @@ namespace BO
 
         public int DiffFromIsrael { get => GetDifferenceUtc(UtcOffset).Hours; }
 
+        public bool IsInArchive { get; set; }
+        
         public override string ToString()
         {
             return $"Name: {Name}\n" +

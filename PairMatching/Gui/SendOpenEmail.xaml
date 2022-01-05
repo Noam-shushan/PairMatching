@@ -9,7 +9,7 @@
     x:Name="openEmail"
     Title="שלח מייל"
     Width="600"
-    MinHeight="500"
+    MinHeight="600"
     Background="{DynamicResource MaterialDesignPaper}"
     FlowDirection="RightToLeft"
     FontFamily="{DynamicResource MaterialDesignFont}"
@@ -34,6 +34,26 @@
                 <TextBlock Margin="0,0,10,0" Text="כתובת:" />
                 <TextBlock Text="{Binding Email}" />
             </StackPanel>
+            <Button
+                x:Name="sendAutoEmailAgainBtn"
+                Width="300"
+                Margin="10"
+                HorizontalAlignment="Left"
+                Click="sendAutoEmailAgainBtn_Click"
+                Content="שלח איימל על התאמה לחברותא שוב">
+                <Button.Style>
+                    <Style BasedOn="{StaticResource MaterialDesignOutlinedButton}" TargetType="Button">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=openEmail, Path=IsPair}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=openEmail, Path=IsPair}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
         </StackPanel>
         <TextBox
             x:Name="tbSubject"

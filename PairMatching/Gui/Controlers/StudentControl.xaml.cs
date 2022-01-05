@@ -117,5 +117,29 @@ namespace Gui.Controlers
                 DataContext = matchStud;
             }
         }
+
+        private void sendToArchiveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedStudent = DataContext as Student;
+            if(selectedStudent != null)
+            {
+                selectedStudent.IsInArchive = true;
+                logicLayer.UpdateStudent(selectedStudent);
+                var mainWin = Application.Current.MainWindow as MainWindow;
+                mainWin.RefreshMyStudentsView();
+            }
+        }
+
+        private void pullFromArchiveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedStudent = DataContext as Student;
+            if (selectedStudent != null)
+            {
+                selectedStudent.IsInArchive = false;
+                logicLayer.UpdateStudent(selectedStudent);
+                var mainWin = Application.Current.MainWindow as MainWindow;
+                mainWin.RefreshMyStudentsView();
+            }
+        }
     }
 }

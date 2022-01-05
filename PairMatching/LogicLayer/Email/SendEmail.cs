@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Net.Mail;
 using System.Threading.Tasks;
-using System.Net;
 using System.Configuration;
 using System.Net.Configuration;
 using System.IO;
+using MimeKit;
+using MailKit.Net.Smtp;
 
 
 namespace LogicLayer.Email
@@ -18,45 +18,20 @@ namespace LogicLayer.Email
     /// </summary>
     public class SendEmail
     {
-        /// <summary>
-        /// The main mail addres of the system
-        /// </summary>
-        public readonly MailAddress FromMail;
+        private readonly MailSettings _mailSettings;
 
-        /// <summary>
-        /// The destination address of the email
-        /// </summary>
-        private string _to = "";
+        public string SystemMail { get; private set; }
 
-        /// <summary>
-        /// The email subject
-        /// </summary>
-        private string _subject = "";
-
-        /// <summary>
-        /// The template of the email body
-        /// </summary>
-        private StringBuilder _template = new StringBuilder();
-
-        /// <summary>
-        /// create template from html file
-        /// </summary>
-        private readonly CreateEmailTemplate emailTemplateCreator;
-
-        /// <summary>
-        /// smtp object that send the email.
-        /// </summary>
-        private readonly SmtpSection smtp;
-
-        private const int CHUNK_SIZE = 20;
+        private const int CHUNK_SIZE = 80;
 
         /// <summary>
         /// A Singleton referenc of the SendEmail class
         /// </summary>
         public static SendEmail Instance { get; } = new SendEmail();
 
-        private SendEmail()
+        private SendEmail(bool isTest = false)
         {
+            
             // Get the the config of the app 
             Configuration oConfig = ConfigurationManager
                 .OpenExeConfiguration(ConfigurationUserLevel.None);
@@ -69,41 +44,60 @@ namespace LogicLayer.Email
             {
                 return;
             }
-            // Get the smtp from the config file
-            smtp = mailSettings.Smtp;
 
-            // Get the system email address
-            FromMail = new MailAddress(mailSettings.Smtp.From, 
-                mailSettings.Smtp.Network.UserName);
+            SystemMail = mailSettings.Smtp.From;
 
-            emailTemplateCreator = new CreateEmailTemplate();
+            _mailSettings = !isTest ? new MailSettings
+            {
+                Host = mailSettings.Smtp.Network.Host,
+                Password = mailSettings.Smtp.Network.Password,
+                Port = mailSettings.Smtp.Network.Port,
+                From = mailSettings.Smtp.From,
+                UserName = mailSettings.Smtp.Network.UserName,
+                EnableSsl = mailSettings.Smtp.Network.EnableSsl
+            } :
+            new MailSettings 
+            {
+                Host = "localhost",
+                EnableSsl = false,
+                From = mailSettings.Smtp.From,
+                Port = 25,
+                UserName = mailSettings.Smtp.Network.UserName
+            };
         }
 
 
-        List<string> tempTo;
+        /// <summary>
+        /// The destination address of the email
+        /// </summary>
+        private List<string> _to = new List<string>();
+
+        /// <summary>
+        /// The email subject
+        /// </summary>
+        private string _subject = "";
+
+        /// <summary>
+        /// The template of the email body
+        /// </summary>
+        private StringBuilder _template = new StringBuilder();
+
         /// <summary>
         /// Set the destination address of the email
         /// </summary>
-        /// <param name="to">email addres</param>
+        /// <param name="to">email address</param>
         /// <returns>this email sender</returns>
-        public SendEmail To(string to)
+        public SendEmail To(params string[] to)
         {
-            _to = to;
             var validAdrress = new List<string>();
-            var adrreses = to.Split(',');
-            foreach (var addr in adrreses)
+            foreach (var addr in to)
             {
-                var emailStatus = EmailAddressChecker.CheckEmailAddress(addr);
-                if(emailStatus == EmailAddressStatus.Valid)
+                if (EmailAddressChecker.CheckEmailAddress(addr) == EmailAddressStatus.Valid)
                 {
-                    validAdrress.Add($"<{addr}>");
+                    validAdrress.Add(addr.Trim());
                 }
             }
-            tempTo = new List<string>(validAdrress);
-            _to = string.Join(", ", validAdrress)
-                .Replace("\n", "")
-                .Replace("\r", "")
-                .Replace("GMAIL", "gmail");
+            _to = validAdrress;
             return this;
         }
 
@@ -130,78 +124,33 @@ namespace LogicLayer.Email
         }
 
         /// <summary>
-        /// Get the smtp client that send the email
-        /// </summary>
-        /// <param name="isTest">For testing purposes</param>
-        /// <returns>The smtp client</returns>
-        private SmtpClient GetSmtpClient(bool isTest = false)
-        {
-            return isTest ?
-                // Sender for testing the system
-                new SmtpClient 
-                { 
-                    Host = "localhost", 
-                    Port = 25, 
-                    EnableSsl = false, 
-                    DeliveryFormat = SmtpDeliveryFormat.International 
-                } :
-                // Sender for the app
-                new SmtpClient
-                {
-                    Host = smtp.Network.Host,
-                    Port = smtp.Network.Port,
-                    UseDefaultCredentials = smtp.Network.DefaultCredentials,
-                    Credentials = new NetworkCredential(smtp.From, smtp.Network.Password),
-                    EnableSsl = smtp.Network.EnableSsl,
-                    DeliveryMethod = smtp.DeliveryMethod,
-                    DeliveryFormat = smtp.DeliveryFormat
-                };
-        }
-
-        /// <summary>
         /// Send an open email with the option to add a file attachment
         /// </summary>
         /// <param name="fileAttachment">file name to attach to the email</param>
         /// <returns></returns>
         public async Task SendOpenMailAsync(IEnumerable<string> fileAttachments = null)
         {
-            if (_to == string.Empty)
+            if (_to?.Count == 0)
             {
-                //throw new Exception("Missing destination address to send email");
                 return;
             }
 
-            SmtpClient client = GetSmtpClient();
-            while (tempTo.Any())
-            {
-                var addressChunk = GetChunkAddress(tempTo, CHUNK_SIZE);
-                await SendOpenEmailToOne(fileAttachments, client, addressChunk);
-                tempTo = tempTo.Skip(CHUNK_SIZE).ToList();
-            }
-        }
-
-        private string GetChunkAddress(List<string> address, int chunkSize)
-        {
-            return string.Join(", ", address.Take(chunkSize))
-                .Replace("\n", "")
-                .Replace("\r", "")
-                .Replace("GMAIL", "gmail");
-        }
-
-        private async Task SendOpenEmailToOne(IEnumerable<string> fileAttachments, SmtpClient client, string to)
-        {
             try
             {
-                using (var messege = new MailMessage(FromMail.Address,
-                    to, _subject, _template.ToString()))
+                SmtpClient client = await GetSmtpClienet();
+
+                IEnumerable<MailboxAddress> listOfAddress = GetAddresses();
+
+                var message = GetMailMessage(fileAttachments);
+
+                while (listOfAddress.Any())
                 {
-                    GetAttachments(messege, fileAttachments);
-                    await client.SendMailAsync(messege);
+                    message.To.Clear();
+                    var temp = listOfAddress.Take(CHUNK_SIZE);
+                    message.To.AddRange(temp);
+                    listOfAddress = listOfAddress.Skip(CHUNK_SIZE);
+                    await client.SendAsync(message);
                 }
-            }
-            catch (Exception ex) when (ex is FormatException || ex is SmtpException)
-            {
-                throw new FormatException($"The Email address {to} is not valid");
             }
             catch (Exception ex)
             {
@@ -209,7 +158,44 @@ namespace LogicLayer.Email
             }
         }
 
-        private void GetAttachments(MailMessage message, IEnumerable<string> fileAttachments)
+        private MimeMessage GetMailMessage(IEnumerable<string> fileAttachments)
+        {
+            var message = new MimeMessage();
+
+            var from = new MailboxAddress(_mailSettings.UserName, _mailSettings.From);
+            message.From.Add(from);
+
+            var bodyBuilder = new BodyBuilder
+            {
+                TextBody = _template.ToString(),
+            };
+            SetAttachments(bodyBuilder, fileAttachments);
+
+            message.Body = bodyBuilder.ToMessageBody();
+            message.Subject = _subject;
+            return message;
+        }
+
+
+        private IEnumerable<MailboxAddress> GetAddresses()
+        {
+            var listOfAddress = new List<MailboxAddress>();
+            foreach (var addr in _to)
+            {
+                try
+                {
+                    listOfAddress.Add(new MailboxAddress("User", addr));
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+
+            return listOfAddress;
+        }
+
+        private void SetAttachments(BodyBuilder bodyBuilder, IEnumerable<string> fileAttachments)
         {
             if (fileAttachments != null)
             {
@@ -222,7 +208,7 @@ namespace LogicLayer.Email
                 }
                 foreach (var f in fileAttachments)
                 {
-                    message.Attachments.Add(new Attachment(f));
+                    bodyBuilder.Attachments.Add(f);
                 }
             }
         }
@@ -231,51 +217,68 @@ namespace LogicLayer.Email
         /// Send email template
         /// </summary>
         /// <returns></returns>
-        public async Task SendAsync()
+        public async Task SendAutoEmailAsync()
         {
-            if (_to == string.Empty)
+            if (_to?.Count == 0)
             {
-                //throw new Exception("Missing destination address to send email");
                 return;
             }
-
-            SmtpClient client = GetSmtpClient();
-            while (tempTo.Any())
+            try
             {
-                var addressChunk = GetChunkAddress(tempTo, CHUNK_SIZE);
-                await SendAutoEmailToOne(client, addressChunk);
-                tempTo = tempTo.Skip(CHUNK_SIZE).ToList();
+                SmtpClient client = await GetSmtpClienet();
+
+                using (var message = new MimeMessage())
+                {
+                    var from = new MailboxAddress(_mailSettings.UserName, _mailSettings.From);
+                    message.From.Add(from);
+
+                    IEnumerable<MailboxAddress> listOfAddress = GetAddresses();
+
+                    message.To.AddRange(listOfAddress);
+
+                    var bodyBuilder = new BodyBuilder
+                    {
+                        HtmlBody = _template.ToString(),
+                    };
+
+                    message.Body = bodyBuilder.ToMessageBody();
+                    message.Subject = _subject;
+
+                    await client.SendAsync(message);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
-        private async Task SendAutoEmailToOne(SmtpClient client, string to)
+        SmtpClient _smtpClient;
+        private async Task<SmtpClient> GetSmtpClienet(bool isTest = false)
         {
-            try
+            if (_smtpClient != null)
             {
-                using (var messege = new MailMessage(FromMail.Address,
-                    to, _subject, _template.ToString()))
-                {
-                    messege.IsBodyHtml = true;
-                    await client.SendMailAsync(messege);
-                }
+                return _smtpClient;
             }
-            catch (Exception ex) when (ex is FormatException || ex is SmtpException)
+            _smtpClient = new SmtpClient();
+
+            await _smtpClient.ConnectAsync(_mailSettings.Host, _mailSettings.Port, _mailSettings.EnableSsl);
+
+            if (!isTest)
             {
-                throw new FormatException($"The Email address {to} is not valid");
+                await _smtpClient.AuthenticateAsync(_mailSettings.From, _mailSettings.Password);
             }
-            catch (Exception ex1)
-            {
-                throw new Exception(ex1.Message);
-            }
+
+            return _smtpClient;
         }
 
         /// <summary>
         /// Send email template
         /// </summary>
         /// <returns></returns>
-        public async Task SendAsync<T>(T model, MailTemplate template)
+        public async Task SendAutoEmailAsync<T>(T model, MailTemplate template)
         {
-            string result = emailTemplateCreator
+            string result = new CreateEmailTemplate()
                 .Compile(model, template.Template.ToString());
 
 
@@ -284,7 +287,7 @@ namespace LogicLayer.Email
 
             await Subject(template.Subject)
                 .Template(temp)
-                .SendAsync();
+                .SendAutoEmailAsync();
         }
 
         /// <summary>
@@ -292,14 +295,14 @@ namespace LogicLayer.Email
         /// </summary>
         /// <param name="exception">The exception that catch</param>
         /// <returns></returns>
-        public async Task Error(Exception exception)
+        internal async Task Error(Exception exception)
         {
             await To("noam8shu@gmail.com")
                 .Subject("Bug in PairMatching")
                 .Template(new StringBuilder()
                         .AppendLine(exception.Message)
                         .AppendLine(exception.StackTrace))
-                .SendAsync();
+                .SendAutoEmailAsync();
         }
     }
 }

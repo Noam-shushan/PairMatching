@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Gui.ViewModels
 {
-    public abstract class ViewModelBase : INotifyPropertyChanged
+    public abstract class ViewModelBase : NotifyPropertyChanged
     {
         public bool IsChanged { get; private set; }
 
@@ -22,14 +22,10 @@ namespace Gui.ViewModels
             }
         }
 
-        protected void OnPropertyChanged(string propName)
+        protected override void OnPropertyChanged(string propName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+            base.OnPropertyChanged(propName);
             IsChanged = true;
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-
     }
 }

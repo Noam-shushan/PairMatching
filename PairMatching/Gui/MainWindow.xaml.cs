@@ -165,10 +165,17 @@ namespace Gui
         {
             IsStatisticsUi = true;
             statistics.DataContext = new RecordCollection(logicLayer.GetStatistics());
-            //new Views.MainView().Show(); in test
+            //new Views.MainView().Show();
         }
 
         #region Students UI
+        private void ArchiveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            IsStudentsUi = true;
+            logicLayer.StudentListFilter = s => s.IsInArchive;
+            studentsListControl.SetItemsSource();
+        }
+
         private void allStudentBtn_Click(object sender, RoutedEventArgs e)
         {
             IsStudentWitoutPairUi = false;

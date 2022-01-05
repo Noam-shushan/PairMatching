@@ -146,6 +146,12 @@
                     Content="משתתפים מישראל"
                     Style="{StaticResource MaterialDesignFlatButton}"
                     ToolBar.OverflowMode="Always" />
+                <Button
+                    x:Name="ArchiveBtn"
+                    Click="ArchiveBtn_Click"
+                    Content="ארכיון"
+                    Style="{StaticResource MaterialDesignFlatButton}"
+                    ToolBar.OverflowMode="Always" />
             </MenuItem>
             <MenuItem>
                 <MenuItem.Header>

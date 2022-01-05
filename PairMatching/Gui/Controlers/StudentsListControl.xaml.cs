@@ -180,7 +180,7 @@ namespace Gui.Controlers
             new SendOpenEmail()
             {
                 StudentName = selectedStudent.Name,
-                Email = selectedStudent.Email
+                Email = new List<string> { selectedStudent.Email }
             }.Show();
         }
 
@@ -197,8 +197,8 @@ namespace Gui.Controlers
                 StudentName = selectedStudents.Count() > 5 ? "כל המסומנים" :
                                 string.Join(", ", from s in selectedStudents
                                                   select s.Name),
-                Email = string.Join(",", from s in selectedStudents
-                                          select s.Email)
+                Email = from s in selectedStudents
+                        select s.Email
             }.Show();
         }
 
@@ -210,15 +210,12 @@ namespace Gui.Controlers
                 Messages.MessageBoxWarning("בחר תלמיד אחד או יותר");
                 return;
             }
-            List<Task> tasks = new List<Task>();
             try
             {
                 foreach (var s in selectedStudents)
                 {
-                    tasks.Add(logicLayer.SendEmailToStudentAsync(s, EmailTypes.StatusQuiz));
-
+                    await logicLayer.SendEmailToStudentAsync(s, EmailTypes.StatusQuiz);
                 }
-                await Task.WhenAll(tasks);
                 Messages.MessageBoxSimple("המיילים נשלחו בהצלחה!");
             }
             catch (Exception ex)
@@ -275,6 +272,18 @@ namespace Gui.Controlers
             catch (Exception ex)
             {
                 Messages.MessageBoxError(ex.Message);
+            }
+        }
+
+        private void sendManyToArchiveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedStudent = (sender as Button).DataContext as Student;
+            if(selectedStudent != null)
+            {
+                selectedStudent.IsInArchive = true;
+                logicLayer.UpdateStudent(selectedStudent);
+                var mainWin = Application.Current.MainWindow as MainWindow;
+                mainWin.RefreshMyStudentsView();
             }
         }
     }

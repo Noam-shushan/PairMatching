@@ -40,7 +40,30 @@ namespace Gui
 
         public string StudentName { get; set; }
 
-        public string Email { get; set; }
+        public IEnumerable<string> Email { get; set; }
+
+        private bool _isPair = false;
+        public bool IsPair
+        {
+            get => _isPair;
+            set
+            {
+                _isPair = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsPair)));
+            }
+        }
+
+        private int _pairId;
+        public int PairId
+        {
+            get => _pairId;
+            set
+            {
+                _pairId = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PairId)));
+            }
+        }
+
 
         public SendOpenEmail()
         {
@@ -116,6 +139,26 @@ namespace Gui
             if(file != null)
             {
                 Files.Remove(file);
+            }
+        }
+
+        private void sendAutoEmailAgainBtn_Click(object sender, RoutedEventArgs e)
+        {
+            bool isSend = false;
+            try 
+            { 
+                logicLayer.SendAutoEmailOnMatchAgain(Email.First(), PairId);
+                Messages.MessageBoxSimple("המייל נשלח בהצלחה");
+                isSend = true;
+            }
+            catch (Exception ex)
+            {
+                Messages.MessageBoxError(ex.Message);
+            }
+            if (isSend)
+            {
+                Files.Clear();
+                Close();
             }
         }
     }

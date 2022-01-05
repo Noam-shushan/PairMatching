@@ -151,15 +151,15 @@ namespace Gui.Controlers
             {
                 StudentName = string.Join(", ", from p in selectedPair
                                                 select p.StudentFromIsrael.Name),
-                Email = string.Join(",", from p in selectedPair
-                                          select p.StudentFromIsrael.Email)
+                Email = from p in selectedPair
+                        select p.StudentFromIsrael.Email
             }.Show();
             new SendOpenEmail()
             {
                 StudentName = string.Join(", ", from p in selectedPair
                                                 select p.StudentFromWorld.Name),
-                Email = string.Join(",", from p in selectedPair
-                                          select p.StudentFromWorld.Email)
+                Email = from p in selectedPair
+                        select p.StudentFromWorld.Email
             }.Show();
         }
 
@@ -171,12 +171,16 @@ namespace Gui.Controlers
                 new SendOpenEmail()
                 {
                     StudentName = selectedPair.StudentFromIsrael.Name,
-                    Email = selectedPair.StudentFromIsrael.Email
+                    Email = new List<string> { selectedPair.StudentFromIsrael.Email },
+                    IsPair = true,
+                    PairId = selectedPair.Id
                 }.Show();
                 new SendOpenEmail()
                 {
                     StudentName = selectedPair.StudentFromWorld.Name,
-                    Email = selectedPair.StudentFromWorld.Email
+                    Email = new List<string> { selectedPair.StudentFromWorld.Email },
+                    IsPair = true,
+                    PairId = selectedPair.Id
                 }.Show();
             }
         }

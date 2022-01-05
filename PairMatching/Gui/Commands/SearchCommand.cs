@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gui.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,14 +8,19 @@ using System.Windows.Input;
 
 namespace Gui.Commands
 {
-    public class ClearSelectionInComboBoxCommand : ICommand
-    {
-        public event Action Clear;
+    public class SearchCommand : ICommand
+    { 
+        MainViewModelBase mainViewModel;
 
         public event EventHandler CanExecuteChanged
         {
             add { CommandManager.RequerySuggested += value; }
             remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public SearchCommand(MainViewModelBase mainView)
+        {
+            mainViewModel = mainView;
         }
 
         public bool CanExecute(object parameter)
@@ -23,7 +29,8 @@ namespace Gui.Commands
         }
 
         public void Execute(object parameter)
-        {//todo not working
+        {
+            mainViewModel.Search(parameter.ToString());
         }
     }
 }

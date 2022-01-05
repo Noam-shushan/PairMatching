@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace Gui.ViewModels
 {
-    public class MainViewModel : INotifyPropertyChanged
+    public class MainViewModel : NotifyPropertyChanged
     {
         public NavigationBarViewModel NavigationBar { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public MainViewModelBase CurrentViewModel
         {
@@ -30,7 +28,7 @@ namespace Gui.ViewModels
 
         private void NavigationBar_ViewChanged()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CurrentViewModel"));
+            OnPropertyChanged(nameof(CurrentViewModel));
         }
     }
 }

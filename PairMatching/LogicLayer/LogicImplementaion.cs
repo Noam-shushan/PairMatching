@@ -135,27 +135,27 @@ namespace LogicLayer
         #endregion
 
         #region Singleton referens of the logic layer
-        private static ILogicLayer _instance;
+        //private static ILogicLayer _instance;
 
-        private static readonly object _loke = new object();
+        //private static readonly object _loke = new object();
 
-        public static ILogicLayer Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (_loke)
-                    {
-                        if (_instance == null)
-                        {
-                            _instance = new LogicImplementaion();
-                        }
-                    }
-                }
-                return _instance;
-            }
-        }
+        public static ILogicLayer Instance { get; } = new LogicImplementaion();
+        //{
+        //    get
+        //    {
+        //        if (_instance == null)
+        //        {
+        //            lock (_loke)
+        //            {
+        //                if (_instance == null)
+        //                {
+        //                    _instance = new LogicImplementaion();
+        //                }
+        //            }
+        //        }
+        //        return _instance;
+        //    }
+        //}
 
         private LogicImplementaion() 
         {
@@ -738,6 +738,19 @@ namespace LogicLayer
         #endregion
 
         #region Sending emails
+        public async Task SendAutoEmailOnMatchAgain(string to, int pairId)
+        {
+            var pair = GetPair(pairId);
+            if(pair.StudentFromIsrael.Email == to)
+            {
+                await SendEmailToPairAsync(pair, EmailTypes.YouGotPair, true, false);
+            }
+            if (pair.StudentFromWorld.Email == to)
+            {
+                await SendEmailToPairAsync(pair, EmailTypes.YouGotPair, false, true);
+            }
+        }
+
         /// <summary>
         /// Send email to new students that registerd in the google forms
         /// </summary>
@@ -752,13 +765,13 @@ namespace LogicLayer
                     {
                         await emailSender
                             .To(s.Email)
-                            .SendAsync(s, Templates.SuccessfullyRegisteredHebrew);
+                            .SendAutoEmailAsync(s, Templates.SuccessfullyRegisteredHebrew);
                     }
                     else
                     {
                         await emailSender
                             .To(s.Email)
-                            .SendAsync(s, Templates.SuccessfullyRegisteredEnglish);
+                            .SendAutoEmailAsync(s, Templates.SuccessfullyRegisteredEnglish);
                     }
                 }
                 catch (FormatException) // the email addres of the student is not valid
@@ -778,40 +791,47 @@ namespace LogicLayer
         /// <param name="pair">The pair to send the email to</param>
         /// <param name="emailTypes">The email type [new pair, pair broke, ect...]</param>
         /// <returns></returns>
-        public async Task SendEmailToPairAsync(BO.Pair pair, EmailTypes emailTypes)
+        public async Task SendEmailToPairAsync(BO.Pair pair, EmailTypes emailTypes, 
+            bool onlyToIsreli = true, bool onlyToWorld = true)
         {
             try
             {
                 switch (emailTypes)
                 {
                     case EmailTypes.YouGotPair:
-                        await emailSender
-                        .To(pair.StudentFromIsrael.Email)
-                            .SendAsync(pair, Templates.YouGotPairHebrew);
-                        
-                        await emailSender
+                        if (onlyToIsreli)
+                        {
+                            await emailSender
+                                .To(pair.StudentFromIsrael.Email)
+                                .SendAutoEmailAsync(pair, Templates.YouGotPairHebrew);
+                        }
+
+                        if (onlyToWorld)
+                        {
+                            await emailSender
                             .To(pair.StudentFromWorld.Email)
-                            .SendAsync(pair, Templates.YouGotPairEnglish);
+                            .SendAutoEmailAsync(pair, Templates.YouGotPairEnglish); 
+                        }
                         break;
                     
                     case EmailTypes.PairBroke:
                         await emailSender
                             .To(pair.StudentFromIsrael.Email)
-                            .SendAsync(pair, Templates.PairBrokeHebrew);
+                            .SendAutoEmailAsync(pair, Templates.PairBrokeHebrew);
 
                         await emailSender
                             .To(pair.StudentFromWorld.Email)
-                            .SendAsync(pair, Templates.PairBrokeEnglish);
+                            .SendAutoEmailAsync(pair, Templates.PairBrokeEnglish);
                         break;
                     case EmailTypes.ToSecretaryNewPair:
                         await emailSender
-                            .To(emailSender.FromMail.Address)
-                            .SendAsync(pair, Templates.ToSecretaryNewPair);
+                            .To(emailSender.SystemMail)
+                            .SendAutoEmailAsync(pair, Templates.ToSecretaryNewPair);
                         break;
                     case EmailTypes.ToSecretaryPairBroke:
                         await emailSender
-                            .To(emailSender.FromMail.Address)
-                            .SendAsync(pair, Templates.ToSecretaryPairBroke);
+                            .To(emailSender.SystemMail)
+                            .SendAutoEmailAsync(pair, Templates.ToSecretaryPairBroke);
                         break;
 
                     default:
@@ -841,13 +861,13 @@ namespace LogicLayer
                         {
                             await emailSender
                                 .To(student.Email)
-                                .SendAsync(student, Templates.SuccessfullyRegisteredHebrew);
+                                .SendAutoEmailAsync(student, Templates.SuccessfullyRegisteredHebrew);
                         }
                         else
                         {
                             await emailSender
                                 .To(student.Email)
-                                .SendAsync(student, Templates.SuccessfullyRegisteredEnglish);
+                                .SendAutoEmailAsync(student, Templates.SuccessfullyRegisteredEnglish);
                         }
                         break;
                     case EmailTypes.StatusQuiz:
@@ -855,13 +875,13 @@ namespace LogicLayer
                         {
                             await emailSender
                                 .To(student.Email)
-                                .SendAsync(student, Templates.StatusQuizHebrew);
+                                .SendAutoEmailAsync(student, Templates.StatusQuizHebrew);
                         }
                         else
                         {
                             await emailSender
                                 .To(student.Email)
-                                .SendAsync(student, Templates.StatusQuizEnglish);
+                                .SendAutoEmailAsync(student, Templates.StatusQuizEnglish);
                         }
                         break;
                     default:
@@ -882,10 +902,10 @@ namespace LogicLayer
         /// <param name="body">The body of the email</param>
         /// <param name="fileAttachment">File name to attach to the email</param>
         /// <returns></returns>
-        public async Task SendOpenEmailAsync(string to, string subject, string body, IEnumerable<string> fileAttachments)
+        public async Task SendOpenEmailAsync(IEnumerable<string> to, string subject, string body, IEnumerable<string> fileAttachments)
         {
             await emailSender
-                .To(to)
+                .To(to.ToArray())
                 .Subject(subject)
                 .Template(new StringBuilder().Append(body))
                 .SendOpenMailAsync(fileAttachments);

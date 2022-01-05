@@ -126,6 +126,35 @@
                 <DataTrigger Binding="{Binding IsOpenToMatch}" Value="False">
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
+                <DataTrigger Binding="{Binding IsInArchive}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style
+            x:Key="inArchiveStyle"
+            BasedOn="{StaticResource MaterialDesignFlatButton}"
+            TargetType="Button">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsInArchive}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsInArchive}" Value="False">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style
+            x:Key="outArchiveStyle"
+            BasedOn="{StaticResource MaterialDesignFlatButton}"
+            TargetType="Button">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsInArchive}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsInArchive}" Value="False">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
@@ -292,6 +321,20 @@
                         </Grid>
                     </materialDesign:DialogHost>
                     <!--#endregion-->
+
+                    <Button
+                        x:Name="sendToArchiveBtn"
+                        Margin="10,0,0,0"
+                        Click="sendToArchiveBtn_Click"
+                        Content="שלח לארכיון"
+                        Style="{StaticResource inArchiveStyle}" />
+
+                    <Button
+                        x:Name="pullFromArchiveBtn"
+                        Margin="10,0,0,0"
+                        Click="pullFromArchiveBtn_Click"
+                        Content="הוצא מארכיון"
+                        Style="{StaticResource outArchiveStyle}" />
 
                 </StackPanel>
 

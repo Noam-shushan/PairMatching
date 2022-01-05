@@ -63,41 +63,7 @@
             <StackPanel Orientation="Horizontal">
 
                 <!--#region Search-->
-                <Grid VerticalAlignment="Bottom">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Button x:Name="searchBtn" Style="{DynamicResource MaterialDesignToolButton}">
-                        <materialDesign:PackIcon Kind="Search" Opacity=".56" />
-                    </Button>
-                    <TextBox
-                        x:Name="tbSearch"
-                        Grid.Column="1"
-                        MinWidth="150"
-                        VerticalAlignment="Center"
-                        materialDesign:HintAssist.Hint="חיפוש"
-                        materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
-                        BorderBrush="#28a7e7" />
-                    <TextBlock
-                        x:Name="tbIsThereResultOfSearcing"
-                        Grid.Row="1"
-                        Grid.Column="1">
-                        <TextBlock.Style>
-                            <Style BasedOn="{StaticResource MaterialDesignBody1TextBlock}" TargetType="TextBlock">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=IsLoadedData, ElementName=Main}" Value="True">
-                                        <Setter Property="Text" Value="string.Empty" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                </Grid>
+                <local:SearchView  CurrntVM="{Binding ElementName=studentsListView, Path=CurrentStudentsListVM.SearchVM}" />
                 <!--#endregion-->
 
                 <!--#region Tools-->
@@ -193,7 +159,7 @@
                 Height="500"
                 ItemsSource="{Binding Students}"
                 ScrollViewer.CanContentScroll="False"
-                SelectedItem="{Binding SelectedStudent, Mode=TwoWay}">
+                SelectedItem="{Binding SelectedStudent}">
                 <ListView.ItemContainerStyle>
                     <Style BasedOn="{StaticResource MaterialDesignGridViewItem}" TargetType="ListViewItem">
                         <Setter Property="ToolTip" Value="לחץ על מנת לראות התאמות ופרטים" />

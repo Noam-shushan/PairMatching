@@ -29,7 +29,7 @@ namespace LogicLayer.GoogleSheet
 
         /// <summary>
         /// Constructor for the Reader.<br/>
-        /// Create credential from service acount.
+        /// Create credential from service account.
         /// </summary>
         public GoogleSheetReader()
         {

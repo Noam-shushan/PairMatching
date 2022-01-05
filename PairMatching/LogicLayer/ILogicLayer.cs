@@ -126,7 +126,8 @@ namespace LogicLayer
         /// <param name="pair">The pair to send the email to</param>
         /// <param name="emailTypes">The email type [new pair, pair broke, ect...]</param>
         /// <returns></returns>
-        Task SendEmailToPairAsync(BO.Pair pair, EmailTypes emailTypes);
+        Task SendEmailToPairAsync(BO.Pair pair, EmailTypes emailTypes,
+            bool onlyToIsreli = true, bool onlyToWorld = true);
 
         /// <summary>
         /// Send automatic email to studnet
@@ -144,7 +145,9 @@ namespace LogicLayer
         /// <param name="body">The body of the email</param>
         /// <param name="fileAttachment">File name to attach to the email</param>
         /// <returns></returns>
-        Task SendOpenEmailAsync(string to, string subject, string body, IEnumerable<string> fileAttachments);
+        Task SendOpenEmailAsync(IEnumerable<string> to, string subject, string body, IEnumerable<string> fileAttachments);
+
+        Task SendAutoEmailOnMatchAgain(string to, int pairId);
         #endregion
 
         #region Pair

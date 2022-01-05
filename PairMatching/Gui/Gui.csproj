@@ -31,7 +31,7 @@
     <UpdateUrl>https://pairmatching.azurewebsites.net/</UpdateUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.htm</WebPage>
-    <ApplicationRevision>32</ApplicationRevision>
+    <ApplicationRevision>36</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -114,10 +114,10 @@
     </Compile>
     <Compile Include="Commands\AddNoteCommand.cs" />
     <Compile Include="Commands\ChangeMainViewCommand.cs" />
-    <Compile Include="Commands\ClearSelectionInComboBoxCommand.cs" />
     <Compile Include="Commands\CompareTwoStudentsCommand.cs" />
     <Compile Include="Commands\MatchCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="Commands\SearchCommand.cs" />
     <Compile Include="Commands\UpdateStudentCommand.cs" />
     <Compile Include="Converters\DataContextToStudentVMConvetor.cs" />
     <Compile Include="Converters\OrdinalConverter.cs" />
@@ -127,6 +127,7 @@
     <Compile Include="Converters\StudentAndSuggestStudentConverter.cs" />
     <Compile Include="Converters\StudentVMToStudentConverter.cs" />
     <Compile Include="Converters\TempPair.cs" />
+    <Compile Include="GuiTools.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Controlers\NoteControl.xaml.cs">
       <DependentUpon>NoteControl.xaml</DependentUpon>
@@ -150,9 +151,11 @@
     <Compile Include="ViewModels\MatchingHistoryViewModel.cs" />
     <Compile Include="ViewModels\NavigationBarViewModel.cs" />
     <Compile Include="ViewModels\NotesViewModel.cs" />
+    <Compile Include="ViewModels\NotifyPropertyChanged.cs" />
     <Compile Include="ViewModels\PairsListViewModel.cs" />
     <Compile Include="ViewModels\PairViewModel.cs" />
     <Compile Include="ViewModels\RecordViewModel.cs" />
+    <Compile Include="ViewModels\SearchViewModel.cs" />
     <Compile Include="ViewModels\StatisticsViewModel.cs" />
     <Compile Include="ViewModels\StudentViewModel.cs" />
     <Compile Include="ViewModels\StudentsListViewModel.cs" />
@@ -175,6 +178,9 @@
     </Compile>
     <Compile Include="Views\PairsView.xaml.cs">
       <DependentUpon>PairsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SearchView.xaml.cs">
+      <DependentUpon>SearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\StatisticsView.xaml.cs">
       <DependentUpon>StatisticsView.xaml</DependentUpon>
@@ -253,6 +259,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PairsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SearchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

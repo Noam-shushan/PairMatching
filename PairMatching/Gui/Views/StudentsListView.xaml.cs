@@ -23,8 +23,6 @@ namespace Gui.Views
     /// </summary>
     public partial class StudentsListView : UserControl
     {
-
-
         public StudentsListViewModel CurrentStudentsListVM
         {
             get { return (StudentsListViewModel)GetValue(CurrentStudentsListVMProperty); }

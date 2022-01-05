@@ -203,6 +203,9 @@
                         <DataTrigger Binding="{Binding Path=IsMatch}" Value="True">
                             <Setter Property="Background" Value="#bee1cf" />
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=IsInArchive}" Value="True">
+                            <Setter Property="Background" Value="#FFEDE7A0" />
+                        </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </ListView.ItemContainerStyle>
@@ -302,6 +305,30 @@
                                         Style="{StaticResource MaterialDesignIconButton}"
                                         ToolTip="מחק משתתף זה">
                                         <materialDesign:PackIcon Kind="Delete" />
+                                    </Button>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        x:Name="sendManyToArchiveBtn"
+                                        Click="sendManyToArchiveBtn_Click"
+                                        ToolTip="שלח לארכיון">
+                                        <Button.Style>
+                                            <Style BasedOn="{StaticResource MaterialDesignIconButton}" TargetType="Button">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsInArchive}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsInArchive}" Value="False">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                        <materialDesign:PackIcon Kind="ArchiveArrowUp" />
                                     </Button>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>

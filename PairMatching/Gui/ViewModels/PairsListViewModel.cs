@@ -14,7 +14,24 @@ namespace Gui.ViewModels
     {
         public List<string> TracksNames { get; set; }
 
-        public ObservableCollection<PairViewModel> Pairs { get; set; }
+        private ObservableCollection<PairViewModel> _pairs;
+        public ObservableCollection<PairViewModel> Pairs
+        {
+            get
+            {
+                if (ListFilter != BaseFilter)
+                {
+                    return new ObservableCollection<PairViewModel>
+                        (_pairs.Where(p => ListFilter(p)));
+                }
+                return _pairs;
+            }
+            set
+            {
+                _pairs = value;
+                OnPropertyChanged(nameof(Pairs));
+            }
+        }
 
         private ILogicLayer logicLayer = LogicFactory.GetLogicFactory();
 
@@ -29,19 +46,21 @@ namespace Gui.ViewModels
                 temp.Add(new PairViewModel(p));
             }
             Pairs = new ObservableCollection<PairViewModel>(temp);
+
+            SearchVM = new SearchViewModel(this);
         }
 
-        public PairsListViewModel(Predicate<Pair> pairsFilter)
+        public override void Search(string subtext)
         {
-            TracksNames = new List<string>(Dictionaries.PrefferdTracksDict.Values);
-
-            var pairs = logicLayer.PairList.ToList().Where(p => pairsFilter(p));
-            var temp = new List<PairViewModel>();
-            foreach (var p in pairs)
+            if (string.IsNullOrEmpty(subtext))
             {
-                temp.Add(new PairViewModel(p));
+                ListFilter = BaseFilter;
             }
-            Pairs = new ObservableCollection<PairViewModel>(temp);
+            else
+            {
+                ListFilter = p => (p as PairViewModel).StudentFromIsrael.Name.SearchText(subtext) ||
+                                (p as PairViewModel).StudentFromWorld.Name.SearchText(subtext);
+            }
         }
     }
 }

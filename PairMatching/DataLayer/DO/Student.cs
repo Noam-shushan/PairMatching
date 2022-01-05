@@ -113,6 +113,8 @@ namespace DO
 
         public List<Note> Notes { get; set; } = new List<Note>();
 
+        public bool IsInArchive { get; set; } = false;
+
         public override string ToString()
         {
             return $"Name: {Name}\n" +

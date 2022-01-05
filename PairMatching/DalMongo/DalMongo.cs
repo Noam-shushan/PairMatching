@@ -16,27 +16,27 @@ namespace DalMongo
 
         #region Singleton
 
-        private static IDataLayer _instance;
+        //private static IDataLayer _instance;
 
-        private static readonly object _loke = new object();
+        //private static readonly object _loke = new object();
 
-        public static IDataLayer Instance 
-        {
-            get
-            {
-                if(_instance == null)
-                {
-                    lock (_loke)
-                    {
-                        if(_instance == null)
-                        {
-                            _instance = new DalMongo();
-                        }
-                    }
-                }
-                return _instance;
-            } 
-        }
+        public static IDataLayer Instance { get; } = new DalMongo();
+        //{
+        //    get
+        //    {
+        //        if(_instance == null)
+        //        {
+        //            lock (_loke)
+        //            {
+        //                if(_instance == null)
+        //                {
+        //                    _instance = new DalMongo();
+        //                }
+        //            }
+        //        }
+        //        return _instance;
+        //    } 
+        //}
 
         private DalMongo()
         {
@@ -172,8 +172,6 @@ namespace DalMongo
             try
             {
                 var students = db.LoadeRecords<Student>(studentsTable);
-
-
                 //TODO fix some broken Data
                 //var dops = from s in students
                 //           group s by s.Name;

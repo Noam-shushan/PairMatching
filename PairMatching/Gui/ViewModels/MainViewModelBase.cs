@@ -7,13 +7,23 @@ using System.Threading.Tasks;
 
 namespace Gui.ViewModels
 {
-    public class MainViewModelBase : INotifyPropertyChanged
+    public abstract class MainViewModelBase : NotifyPropertyChanged
     {
-        protected void OnPropertyChanged(string propName)
+        protected static Predicate<ViewModelBase> BaseFilter { get; } = m => true;
+
+        Predicate<ViewModelBase> _listFilter = BaseFilter;
+        public Predicate<ViewModelBase> ListFilter
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+            get => _listFilter;
+            set
+            {
+                _listFilter = value;
+                OnPropertyChanged(nameof(ListFilter));
+            }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public abstract void Search(string v);
+
+        public SearchViewModel SearchVM { get; set; }
     }
 }

@@ -41,5 +41,9 @@ namespace Gui.ViewModels
             return (150 * val) / max;
         }
 
+        public override void Search(string v)
+        {
+            // nating to do
+        }
     }
 }
