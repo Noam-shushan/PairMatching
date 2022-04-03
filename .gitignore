@@ -13,7 +13,6 @@ packages
 client_secret.json
 pairmatching.json
 *.TokenResponse-user
-*.config
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
