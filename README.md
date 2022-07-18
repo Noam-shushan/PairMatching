@@ -1,4 +1,5 @@
 # PairMatching
+# Move to new version - https://github.com/Noam-shushan/ShalhevetPairMatching
 Pair Matching (CRM and Marketing System) - A management system I built for Steinsaltz Center to help matching people from all around the world to study together Jewish sources.
 - Backend is written in C#  (with WPF as front) and it uses multithreading 
 - Uses Google’s Sheet API  
